@@ -3,7 +3,7 @@
 #include <PicoSoftwareSerial.h>
 #include "gpio.h"
 #include "uart.h"
-SoftwareSerial mySerial2(12, 11);
+SoftwareSerial mySerial2(8, 9);
 void setup() {
   Serial.begin(9600);
   Serial.println("Start");
@@ -12,13 +12,16 @@ void setup() {
 }
 
 void loop() {
-  int data = mySerial2.read();
+  
+  if(mySerial2.available()){
+  Serial.println(mySerial2.read());
+  }
+  /*int data = mySerial2.read();
   while (data != -1) {
     Serial.print((char) data);
     delay(3);
     data = mySerial2.read();
     if (data == -1) {
       Serial.println("");
-    }
+    }*/
   }
-}
