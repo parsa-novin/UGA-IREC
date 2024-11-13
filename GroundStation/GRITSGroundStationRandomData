@@ -1,0 +1,44 @@
+import serial.tools.list_ports
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from itertools import count
+import random
+
+
+timeStamp = []
+altitude = []
+temp = []
+velocity = []
+index = count()
+
+fig, (alt, temp_plt, velo) = plt.subplots(3, figsize=(8, 6))
+
+def animate(i):
+    timeStamp.append(next(index))
+    altitude.append(random.randint(500, 1000))
+    temp.append(random.randint(60, 70))
+    velocity.append(random.randint(110000, 300000))
+          
+    alt.clear()
+    temp_plt.clear()
+    velo.clear()
+
+    alt.plot(timeStamp, altitude)
+    alt.set_title('Altitude')
+    alt.grid(True)
+
+    temp_plt.plot(timeStamp, temp)
+    temp_plt.set_title('Temperature')
+    temp_plt.grid(True)
+
+    velo.plot(timeStamp, velocity)
+    velo.set_title('Velocity')
+    velo.grid(True)
+            
+    plt.tight_layout()
+
+
+ani = FuncAnimation(fig, animate, interval=500)
+
+plt.tight_layout()
+plt.show()
