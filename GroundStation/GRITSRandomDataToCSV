@@ -1,0 +1,46 @@
+import csv
+import random
+import time
+
+time_val = 0
+alt_val = 0
+velo_val = 0
+temp_val = 0
+event_1 = 0
+event_2 = 0
+
+
+
+fieldNames = ["TimeStamp", "Altitude", "Velocity", "Temperature", "Event1", "Event2"]
+
+with open('testData.csv', 'w') as csv_file:
+    csv_writer = csv.DictWriter(csv_file, fieldnames = fieldNames)
+    csv_writer.writeheader()
+
+while True:
+
+    with open('testData.csv', 'a') as csv_file:
+        csv_writer = csv.DictWriter(csv_file, fieldnames = fieldNames)
+
+        info = {"TimeStamp": time_val,
+                "Altitude": alt_val,
+                "Velocity": velo_val,
+                "Temperature": temp_val,
+                "Event1": event_1,
+                "Event2": event_2,
+        }
+
+        csv_writer.writerow(info)
+
+        time_val += 1
+        alt_val = alt_val + random.randint(0, 1000)
+        velo_val = velo_val + random.randint(20000, 1000000)
+        temp_val = temp_val + random.randint(70, 220)
+        event_1 = 0
+        event_2 = 0
+
+    time.sleep(5)
+
+
+
+
