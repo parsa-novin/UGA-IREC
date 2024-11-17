@@ -11,6 +11,8 @@
 HardwareSerial rrc3Serial(2);
 HardwareSerial radioSerial(1);
 void setup(){
+  rrc3Serial.flush();
+  radioSerial.flush();
   pinMode(RXD2, GPIO_PULLDOWN_ENABLE); 
   // Serial Monitor
   Serial.begin(RRC3_BAUD);
@@ -29,6 +31,7 @@ void loop(){
     char incomingByte = rrc3Serial.read();  // Read a byte
     if ((int) incomingByte == 13 || count > 16) {  // End of a packet (NMEA sentence)
       radioSerial.println(gpsData);  // Process the complete GPS data
+      Serial.println(gpsData);
       gpsData = "";  // Reset buffer for next packet
       count = 0;
       if((int) incomingByte == 13){
