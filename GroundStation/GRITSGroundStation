@@ -14,10 +14,12 @@ index = count()
 fig, (alt, temp_plt, velo) = plt.subplots(3, figsize=(8, 6))
 
 def animate(i):
-    timeStamp.append(next(index))
-    altitude.append(random.randint(500, 1000))
-    temp.append(random.randint(60, 70))
-    velocity.append(random.randint(110000, 300000))
+    testData = pd.read_csv('Data.csv')
+
+    timeStamp = testData["TimeStamp"]#grab the data from the last packet
+    altitude = testData["Altitude"]
+    temp = testData["Temperature"]
+    velocity = testData["Velocity"]
           
     alt.clear()
     temp_plt.clear()
