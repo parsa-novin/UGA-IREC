@@ -35,7 +35,7 @@ GPSData['LON'] = GPSData['LON'] - -80.41969 # Zeroing launch pad lat and long
 # 
 GPSData['DeltaT'] = GPSData['UNIXTIME'].diff() # calculate delta t of between entries. It changes from 0.1s to 1s after apogee detection.
 # GPSData['Calc_VERTV'] = GPSData['Altitude AGL']/GPSData['DeltaT'] # manually claculate vertical velocity to see if it's legit
-# print(GPSData.head())
+PrimAltData['DeltaT'] = PrimAltData['Time'].diff()
 
 # plt.plot(GPSData['UNIXTIME'], GPSData['VERTV'], label='Given Vertical Velocity')
 # plt.plot(GPSData['UNIXTIME'], GPSData['VERTV'], label='Calculated Vertical Velocity')
@@ -58,9 +58,16 @@ GPSData['NSVelSmooth'] = GPSData['NSVel'].rolling(window=7, center=True).mean()
 
 # Calculate angle from vertical (zenith) based off the velocity readout
 GPSData['Zenith'] = 90 - ((np.arctan(GPSData['VERTV']/GPSData['HORZV'])) * 180/np.pi)
-
+# Calculating total velocity
 GPSData['TotalV'] = np.sqrt(GPSData['HORZV']**2 + GPSData['VERTV']**2)
+# Calculating GPS and Altimiter vertical acceleration
+GPSData['VERTA'] = GPSData['VERTV'].diff() / GPSData['DeltaT']
+PrimAltData['VERTA'] = PrimAltData['Velocity'].diff() / PrimAltData['DeltaT']
+# Smoothing them (they be roughhhhhhh)
+GPSData['VERTASmooth'] = GPSData['VERTA'].rolling(window=7, center=True).mean()
+PrimAltData['VERTASmooth'] = PrimAltData['VERTA'].rolling(window=7, center=True).mean()
 
+# Saving to CSV's for diagnostic purposes
 GPSData.to_csv('pythonmoddedgpsdata.csv')
 PrimAltData.to_csv('pythonmoddedaltdata.csv')
 
@@ -81,8 +88,6 @@ ax1.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting a
 ax1.legend()
 ax1.grid()
 
-
-
 ax2.title.set_text('Distance from Pad (ft)')
 ax2.plot(GPSData['UNIXTIME'], GPSData['EWFeet'], label='East-West')
 ax2.plot(GPSData['UNIXTIME'], GPSData['NSFeet'], label='North-South')
@@ -92,7 +97,7 @@ ax2.legend()
 ax2.grid()
 fig1.subplots_adjust(hspace=0.5) # fixing title overlapping axis label and numbers
 
-ax3.title.set_text('Velocity Vector Angle')
+ax3.title.set_text('Velocity Vector Angle (From GPS Velocity Data)')
 ax3.plot(GPSData['UNIXTIME'], GPSData['Zenith'], label='Degrees from Vertical')
 ax3.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting apogee
 # ax1.axhline(y=90,color='k', linestyle='-', linewidth = 0.5)
@@ -152,7 +157,30 @@ ax2.set_xlim([0, 30])
 ax2.legend()
 ax2.grid()
 
-fig2.subplots_adjust(hspace=0.45) # fixing title overlapping axis label and numbers
+fig3.subplots_adjust(hspace=0.45) # fixing title overlapping axis label and numbers
+
+
+# FIGURE 4: Acceleration
+fig4 = plt.figure(4, figsize=(10.,10.))
+ax1 = fig4.add_subplot(2,1,1)
+ax2 = fig4.add_subplot(2,1,2)
+
+ax1.title.set_text('Acceleration (ft/s^2)')
+ax1.plot(GPSData['UNIXTIME'], GPSData['VERTA'], label='GPS')
+ax1.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting apogee
+ax1.plot(PrimAltData['Time'], PrimAltData['VERTA'], label='Altimiter' )
+ax1.legend()
+ax1.grid()
+
+ax2.title.set_text('Vertical Acceleration (ft/s^2)')
+ax2.plot(GPSData['UNIXTIME'], GPSData['VERTASmooth'], label='GPS')
+ax2.plot(PrimAltData['Time'], PrimAltData['VERTASmooth'], label='Altimeter')
+ax2.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting apogee
+ax2.legend()
+ax2.grid()
+# UGLY ASS DATA AINT NO WAY WE CAN GET A DRAG COEFFICIENT FROM THIS
+# BUT IM GONNA GIVE IT A GO
+fig4.subplots_adjust(hspace=0.45) # fixing title overlapping axis label and numbers
 
 plt.show()
 
