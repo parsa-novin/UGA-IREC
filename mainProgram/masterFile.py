@@ -2,8 +2,22 @@ import pigpio
 import sys
 import os
 import threading
+import board
+import busio
 import serial
+import struct
 from imuGet import getVectors
+from adafruit_bno08x.i2c import BNO08X_I2C
+from adafruit_bno08x import (
+    BNO_REPORT_ACCELEROMETER,
+    BNO_REPORT_GYROSCOPE,
+    BNO_REPORT_MAGNETOMETER,
+)
+
+i2c  = busio.I2C(board.D1, board.D0)
+imu  = BNO08X_I2C(i2c, address=0x4A)
+
+
 
 pi = pigpio.pi()
 
@@ -28,5 +42,5 @@ pi.set_mode(MANN_CLK, pigpio.ALT0)
 pi.set_mode(E_STOP, pigpio.OUTPUT)
 
 while(True):
-    uart.write(struct.pack("<9h", getVectors()))
+    uartRadio.write(struct.pack("<9h", getVectors()))
     time.sleep(0.01)

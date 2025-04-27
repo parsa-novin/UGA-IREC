@@ -13,13 +13,6 @@ from adafruit_bno08x import (
 i2c  = busio.I2C(board.D1, board.D0)
 imu  = BNO08X_I2C(i2c, address=0x4A)
 def getVectors():
-    for rpt in (BNO_REPORT_ACCELEROMETER,
-                BNO_REPORT_GYROSCOPE,
-                BNO_REPORT_MAGNETOMETER):
-        imu.enable_feature(rpt)
-
-    uart = serial.Serial('/dev/ttyAMA3', 115200, timeout=1, write_timeout=0)
-
     while True:
         try:
             a = imu.acceleration
@@ -37,7 +30,8 @@ def getVectors():
             int(g[0]*1000), int(g[1]*1000), int(g[2]*1000),
             int(m[0]*1000), int(m[1]*1000), int(m[3]*1000),)
         try:
-            return(*vals)
+            return(vals)
+            print(line)
         except serial.SerialTimeoutException:
             pass              # UART TX buffer full ? drop this sample
 
