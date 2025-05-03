@@ -1,9 +1,8 @@
 import time
-import sys
 
 def testFunction(az, t):
     global airbrakesServo
-    if(az < 0 & t > 0):
+    if(az < 0 and t > 0):
         airbrakesServo+=2
         return (500 + (2000 * airbrakesServo) // 180)
     else:

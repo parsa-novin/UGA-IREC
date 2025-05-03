@@ -45,9 +45,10 @@ while(True):
     uartRadio.write(struct.pack("<9h", getVectors()))
     time.sleep(0.01)
     pi.set_servo_pulsewidth(12, testFunction(az, time))
-    if(testFunction(az, time) > 1888 & velocity > 90):
-        threading.Thread(target=waitAndReset, args=((velocity/500) * 5), daemon=True).start()
+    if(testFunction(az, time) > 1888 and velocity > 90):
+        threading.Thread(target=waitAndReset, args=(((velocity/500) * 5),), daemon=True).start()
     elif(velocity > 90):
         print("servo actuate")
     else:
-        pi.set_servo_pulsewidth(12, testFunction(az, time, 75))
+        airbrakesServo = 73
+        pi.set_servo_pulsewidth(12, testFunction(az, time))
