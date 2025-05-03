@@ -1,12 +1,12 @@
 import pigpio
-import sys
-import os
 import threading
 import board
 import busio
 import serial
 import struct
+import time
 from imuGet import getVectors
+from airbrakes import testFunction, waitAndReset
 from adafruit_bno08x.i2c import BNO08X_I2C
 from adafruit_bno08x import (
     BNO_REPORT_ACCELEROMETER,
@@ -16,11 +16,11 @@ from adafruit_bno08x import (
 
 i2c  = busio.I2C(board.D1, board.D0)
 imu  = BNO08X_I2C(i2c, address=0x4A)
-
+servo_enabled = True
 
 
 pi = pigpio.pi()
-
+pi.set_servo_pulsewidth(12, 500 + (2000 * 75) // 180)
 uartRadio = serial.Serial("/dev/ttyAMA3", 115200, timeout=1, write_timeout=0)
 
 ADC_SER_ENABLE = 19
@@ -40,7 +40,14 @@ AIRBRAKES = 12
 pi.set_mode(AIRBRAKES, pigpio.ALT0)
 pi.set_mode(MANN_CLK, pigpio.ALT0)
 pi.set_mode(E_STOP, pigpio.OUTPUT)
-
+airbrakesServo = 75
 while(True):
     uartRadio.write(struct.pack("<9h", getVectors()))
     time.sleep(0.01)
+    pi.set_servo_pulsewidth(12, testFunction(az, time))
+    if(testFunction(az, time) > 1888 & velocity > 90):
+        threading.Thread(target=waitAndReset, args=((velocity/500) * 5), daemon=True).start()
+    elif(velocity > 90):
+        print("servo actuate")
+    else:
+        pi.set_servo_pulsewidth(12, testFunction(az, time, 75))
