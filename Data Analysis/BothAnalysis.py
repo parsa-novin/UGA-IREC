@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-# CHANGE THESE IF NEEDED YEE HAW
+# CHANGE THESE IF NEEDED
 FrontalArea = 0.1486 # frontal area of the rocket in feet squared
 BurnoutMass = 50 # mass of the rocket with the burnt out motor, in pounds-mass
 AirTemp = 20 # degrees in celsius
@@ -215,7 +215,7 @@ ax2 = fig5.add_subplot(2,1,2)
 ax1.title.set_text('Acceleration due to Drag (ft/s^2)')
 ax1.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting apogee
 ax1.axvline(x=3.2, color='r', linestyle='--', label='Motor Burnout') # line denoting motor burnout
-ax1.plot(GPSData['UNIXTIME'], GPSData['DragA_Smooth'], label='Smoothed')
+ax1.plot(GPSData['UNIXTIME'], GPSData['DragA_Smooth'], label='Acceleration (smoothed)')
 ax1.legend()
 ax1.grid()
 ax1.set_xlim([0, 20])
@@ -223,7 +223,7 @@ ax1.set_ylim([0, 10])
 
 
 ax2.title.set_text('Coefficient of Drag')
-ax2.plot(GPSDataTrimmed['UNIXTIME'], GPSDataTrimmed['CoeffDrag'], label='S')
+ax2.plot(GPSDataTrimmed['UNIXTIME'], GPSDataTrimmed['CoeffDrag'], label='CD')
 ax2.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting apogee
 ax2.axvline(x=3.2, color='r', linestyle='--', label='Motor Burnout') # line denoting motor burnout
 ax2.legend()
