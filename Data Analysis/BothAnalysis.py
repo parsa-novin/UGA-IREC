@@ -6,13 +6,13 @@ FrontalArea = 0.1486 # frontal area of the rocket in feet squared
 BurnoutMass = 50 # mass of the rocket with the burnt out motor, in pounds-mass
 AirTemp = 20 # degrees in celsius
 
-GPSData = pd.read_csv('KJ4SAE01517_04-13-2025_12_59_18.csv')
+GPSData = pd.read_csv('IREC 2025 FW.csv')
 # reading csv for GPS
 
-PrimAltData = pd.read_csv('Cloud ROSCO.csv')
+PrimAltData = pd.read_csv('IREC 2025 Secondary.csv')
 # reading csv for primary altimeter
 TimeModifier = 0.5  
-GPSData['UNIXTIME'] = (GPSData['UNIXTIME'] - (1744577957 + TimeModifier)).round(1)
+GPSData['UNIXTIME'] = (GPSData['UNIXTIME'] - (1749686955.599 + TimeModifier)).round(1)
 # subtract a value from the UNIX time to yield a more readable value (zeroing time).
 # The starting UNIX time is 1744577953.7, I like 1744577957.0 because I see the first movement immediately afterwards.
 # THERE'S SO MUCH FLOATING POINT ERROR JESUS CHRIST
@@ -199,7 +199,7 @@ ax2.axvline(x=16.4, color='k', linestyle='--', label='Apogee') # line denoting a
 ax2.axvline(x=3.2, color='r', linestyle='--', label='Motor Burnout') # line denoting motor burnout
 ax2.legend()
 ax2.grid()
-ax2.set_ylim([-100, 300])
+ax2.set_ylim([-100, 700])
 ax2.set_xlim([0, 20])
 # UGLY ASS DATA AINT NO WAY WE CAN GET A DRAG COEFFICIENT FROM THIS
 # BUT IM GONNA GIVE IT A GO
