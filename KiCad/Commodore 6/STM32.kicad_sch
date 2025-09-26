@@ -144,6 +144,155 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:FerriteBead"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "FB"
+				(at -3.81 0.635 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "FerriteBead"
+				(at 3.81 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Ferrite bead"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "L ferrite bead inductor filter"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Inductor_* L_* *Ferrite*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "FerriteBead_0_1"
+				(polyline
+					(pts
+						(xy -2.7686 0.4064) (xy -1.7018 2.2606) (xy 2.7686 -0.3048) (xy 1.6764 -2.159) (xy -2.7686 0.4064)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 1.27) (xy 0 1.2954)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -1.27) (xy 0 -1.2192)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "FerriteBead_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "MCU_ST_STM32H5:STM32H562RITx"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -4443,6 +4592,76 @@
 		(uuid "f20bf88b-2521-41f8-b244-25c7c5208404")
 	)
 	(symbol
+		(lib_id "Device:FerriteBead")
+		(at 212.09 45.72 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0b52d4cc-0d2e-4137-9965-6298ffb7a1b4")
+		(property "Reference" "FB2"
+			(at 215.9 44.3991 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "FerriteBead"
+			(at 215.9 46.9391 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 210.312 45.72 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 212.09 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Ferrite bead"
+			(at 212.09 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "290cb16e-454c-4ab0-86cc-43f65275b02f")
+		)
+		(pin "2"
+			(uuid "8e2b8d7c-bb0e-48aa-ae98-9fae4d19365e")
+		)
+		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "FB2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GNDD")
 		(at 99.06 143.51 0)
 		(unit 1)
@@ -4499,6 +4718,12 @@
 			(uuid "f5b0884d-9a44-4625-bba6-25a8c8548a58")
 		)
 		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR04")
+					(unit 1)
+				)
+			)
 			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR04")
@@ -4756,6 +4981,12 @@
 		)
 		(instances
 			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "U2")
+					(unit 1)
+				)
+			)
+			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "U2")
 					(unit 1)
@@ -4826,6 +5057,12 @@
 		)
 		(instances
 			(project "STM32"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C8")
+					(unit 1)
+				)
+			)
+			(project "STM32"
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C8")
 					(unit 1)
@@ -4891,6 +5128,12 @@
 			(uuid "13afa2cb-afd0-4bd2-ab06-03b1b1a59dc9")
 		)
 		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR03")
+					(unit 1)
+				)
+			)
 			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR03")
@@ -5148,6 +5391,12 @@
 		)
 		(instances
 			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "U1")
+					(unit 1)
+				)
+			)
+			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "U1")
 					(unit 1)
@@ -5218,6 +5467,12 @@
 		)
 		(instances
 			(project "STM32"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C6")
+					(unit 1)
+				)
+			)
+			(project "STM32"
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C6")
 					(unit 1)
@@ -5282,6 +5537,12 @@
 			(uuid "903531fd-6c35-4f0c-93f8-28c8eb22eacc")
 		)
 		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR05")
+					(unit 1)
+				)
+			)
 			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR05")
@@ -5348,6 +5609,12 @@
 		)
 		(instances
 			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR02")
+					(unit 1)
+				)
+			)
+			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR02")
 					(unit 1)
@@ -5412,6 +5679,12 @@
 			(uuid "69b27faf-f13f-4ce2-b536-8c4aede681e9")
 		)
 		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR08")
+					(unit 1)
+				)
+			)
 			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR08")
@@ -5478,6 +5751,12 @@
 		)
 		(instances
 			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR07")
+					(unit 1)
+				)
+			)
+			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR07")
 					(unit 1)
@@ -5542,6 +5821,12 @@
 			(uuid "0dfe43ff-7463-44ff-8063-17abcd6c0b05")
 		)
 		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR06")
+					(unit 1)
+				)
+			)
 			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR06")
@@ -5613,6 +5898,12 @@
 		)
 		(instances
 			(project "STM32"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C3")
+					(unit 1)
+				)
+			)
+			(project "STM32"
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C3")
 					(unit 1)
@@ -5677,6 +5968,12 @@
 			(uuid "8112acd7-30fe-4784-a982-6c73fd905d08")
 		)
 		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "#PWR01")
+					(unit 1)
+				)
+			)
 			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "#PWR01")
@@ -5748,6 +6045,12 @@
 		)
 		(instances
 			(project "STM32"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C7")
+					(unit 1)
+				)
+			)
+			(project "STM32"
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C7")
 					(unit 1)
@@ -5817,6 +6120,12 @@
 			(uuid "640c6322-74dc-43f6-a831-d3d79f4e3c95")
 		)
 		(instances
+			(project "STM32"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C4")
+					(unit 1)
+				)
+			)
 			(project "STM32"
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C4")
@@ -5888,6 +6197,12 @@
 		)
 		(instances
 			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C2")
+					(unit 1)
+				)
+			)
+			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C2")
 					(unit 1)
@@ -5957,6 +6272,12 @@
 			(uuid "9ac69195-ac80-4fdb-8df3-27cb433b3619")
 		)
 		(instances
+			(project "STM32"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C5")
+					(unit 1)
+				)
+			)
 			(project "STM32"
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C5")
@@ -6028,6 +6349,12 @@
 		)
 		(instances
 			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "C1")
+					(unit 1)
+				)
+			)
+			(project ""
 				(path "/e345dc83-291e-4b8e-a64c-6f20b389685e"
 					(reference "C1")
 					(unit 1)
@@ -6035,10 +6362,74 @@
 			)
 		)
 	)
-	(sheet_instances
-		(path "/"
-			(page "1")
+	(symbol
+		(lib_id "Device:FerriteBead")
+		(at 124.46 44.45 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f2bfeda9-ffa1-496f-a074-ee5709cfa78f")
+		(property "Reference" "FB1"
+			(at 128.27 43.1291 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "FerriteBead"
+			(at 128.27 45.6691 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 122.682 44.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 124.46 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Ferrite bead"
+			(at 124.46 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "007d6457-c323-4cd6-b48f-cd63fc35349f")
+		)
+		(pin "1"
+			(uuid "88b5faf7-827d-4eb4-a42c-241ae343cb5b")
+		)
+		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
+					(reference "FB1")
+					(unit 1)
+				)
+			)
 		)
 	)
-	(embedded_fonts no)
 )

@@ -1,0 +1,50 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "b9095539-bc89-4298-a950-6d575a118e25")
+	(paper "A4")
+	(lib_symbols)
+	(sheet
+		(at 68.58 36.83)
+		(size 33.02 26.67)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7e369b11-576d-4f2c-abdf-f3ed9df88ef1")
+		(property "Sheetname" "Buck Converter"
+			(at 68.58 36.1184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Buck Converter.kicad_sch"
+			(at 68.58 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 6"
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f"
+					(page "5")
+				)
+			)
+		)
+	)
+)
