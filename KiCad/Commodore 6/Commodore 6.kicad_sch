@@ -89,48 +89,6 @@
 			)
 		)
 	)
-	(sheet
-		(at 193.04 59.69)
-		(size 13.97 12.7)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "a17d9f5b-72ac-4087-9da9-426ded6802ea")
-		(property "Sheetname" "SD Card"
-			(at 193.04 58.9784 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "SD Card.kicad_sch"
-			(at 193.04 72.9746 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "Commodore 6"
-				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88"
-					(page "3")
-				)
-			)
-		)
-	)
 	(sheet_instances
 		(path "/"
 			(page "1")
