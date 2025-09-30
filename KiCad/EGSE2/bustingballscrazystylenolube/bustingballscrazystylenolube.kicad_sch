@@ -1,0 +1,98 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "93514605-6b24-46cc-859f-51fd06f5909b")
+	(paper "A4")
+	(lib_symbols)
+	(sheet
+		(at 90.17 68.58)
+		(size 19.05 16.51)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7376404c-bfe7-474d-a1ec-b86efd1cb026")
+		(property "Sheetname" "USBHELL"
+			(at 90.17 67.8684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "PDControl.kicad_sch"
+			(at 90.17 85.6746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "bustingballscrazystylenolube"
+				(path "/93514605-6b24-46cc-859f-51fd06f5909b"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 91.44 96.52)
+		(size 17.78 10.16)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a66ec8ed-64a1-4a45-8291-f5bb909f825b")
+		(property "Sheetname" "IO"
+			(at 91.44 95.8084 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "IO.kicad_sch"
+			(at 91.44 107.2646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "bustingballscrazystylenolube"
+				(path "/93514605-6b24-46cc-859f-51fd06f5909b"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

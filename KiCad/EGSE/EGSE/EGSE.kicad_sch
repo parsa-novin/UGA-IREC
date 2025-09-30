@@ -73,6 +73,16 @@
 	)
 	(wire
 		(pts
+			(xy 90.17 76.2) (xy 92.71 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c54a0c4-576e-44df-8d2c-2ea014f8ce87")
+	)
+	(wire
+		(pts
 			(xy 113.03 57.15) (xy 119.38 57.15)
 		)
 		(stroke
@@ -213,6 +223,16 @@
 	)
 	(wire
 		(pts
+			(xy 92.71 60.96) (xy 90.17 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e2c0c351-6e82-4448-8032-9cc5fa3bed72")
+	)
+	(wire
+		(pts
 			(xy 121.92 104.14) (xy 121.92 54.61)
 		)
 		(stroke
@@ -230,6 +250,16 @@
 			(type default)
 		)
 		(uuid "ebaf1045-4ecb-4466-abcd-b2394f9a79f6")
+	)
+	(wire
+		(pts
+			(xy 90.17 60.96) (xy 90.17 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f2dc5cf3-82e8-4ede-a6ae-4e9323d333ff")
 	)
 	(wire
 		(pts
@@ -266,7 +296,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "IO.kicad_sch"
 			(at 92.71 64.0846 0)
 			(effects
 				(font
@@ -338,6 +368,16 @@
 		(pin "VOUT" input
 			(at 92.71 58.42 180)
 			(uuid "2389ce75-16ab-417a-811d-5d1fbe378b4b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "VIN" output
+			(at 92.71 60.96 180)
+			(uuid "f372063a-2f61-4a5d-9b68-2bf675e761a5")
 			(effects
 				(font
 					(size 1.27 1.27)
