@@ -1502,6 +1502,106 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "I2C ADDRESS:"
+		(exclude_from_sim no)
+		(at 83.058 102.362 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "02c25f9d-20d5-4d95-ac27-27d248c97b07")
+	)
+	(text "I2C ADDRESS:"
+		(exclude_from_sim no)
+		(at 68.072 56.896 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "431b4766-4727-4bf1-a192-3a638982fa2c")
+	)
+	(text "MUX: 0x70\nIIM: 0x68\n"
+		(exclude_from_sim no)
+		(at 67.564 61.976 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "4c184a5c-422d-437b-b3e5-461fe388a592")
+	)
+	(text "BMI: 0X69\n"
+		(exclude_from_sim no)
+		(at 93.726 150.876 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "5aff2300-ad91-4d68-a50f-00813da08aa9")
+	)
+	(text "I2C ADDRESS:\n"
+		(exclude_from_sim no)
+		(at 217.932 118.11 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "68c5cc88-528d-45ae-8c44-4738fc4d34a6")
+	)
+	(text "I2C ADDRESS:\n"
+		(exclude_from_sim no)
+		(at 95.25 147.066 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "6d549bf6-2204-4f6d-9119-26b2bba37084")
+	)
+	(text "I2C ADDRESS:\n"
+		(exclude_from_sim no)
+		(at 254 87.884 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b7f4cdd6-722f-4b1f-8e66-f1e55c121fe0")
+	)
+	(text "MMC: 0X30\n"
+		(exclude_from_sim no)
+		(at 216.662 121.158 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "c8d6a048-b72e-4d0a-84b1-75853134df85")
+	)
+	(text "MS5: 0X76\n"
+		(exclude_from_sim no)
+		(at 252.73 90.932 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "d0191084-855c-44ab-a744-0a059a269c9a")
+	)
+	(text "Temp: 0x48\n"
+		(exclude_from_sim no)
+		(at 82.55 105.664 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "ed45b43a-71e8-4383-830e-71bcdebbbbc1")
+	)
 	(global_label "INT-MMC"
 		(shape input)
 		(at 133.35 81.28 0)
