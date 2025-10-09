@@ -2464,6 +2464,48 @@
 		)
 	)
 	(sheet
+		(at 200.025 44.45)
+		(size 23.495 15.24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "87bcbd75-d39f-4349-beeb-9080787b8c18")
+		(property "Sheetname" "I2C Buffer"
+			(at 200.025 43.7384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "I2C Buffer.kicad_sch"
+			(at 200.025 60.2746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 214.63 85.09)
 		(size 27.94 20.32)
 		(exclude_from_sim no)
