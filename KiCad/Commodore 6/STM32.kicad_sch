@@ -5300,6 +5300,12 @@
 		(uuid "8d489be6-5676-47d6-9b2e-6b1fbad24b0c")
 	)
 	(junction
+		(at 347.98 100.33)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9cdcc392-c5f3-40ea-a62d-8d93559e9557")
+	)
+	(junction
 		(at 116.84 78.74)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5381,6 +5387,16 @@
 	)
 	(wire
 		(pts
+			(xy 342.9 102.87) (xy 347.98 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "025dc1cb-bc09-47bd-ac62-8964f9cbd645")
+	)
+	(wire
+		(pts
 			(xy 400.05 166.37) (xy 448.31 166.37)
 		)
 		(stroke
@@ -5438,6 +5454,16 @@
 			(type default)
 		)
 		(uuid "083f15dd-ac11-48e4-bd57-1ef295a97783")
+	)
+	(wire
+		(pts
+			(xy 400.05 102.87) (xy 448.31 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08b27870-247f-49e2-9ea3-0c3983fa9e6d")
 	)
 	(wire
 		(pts
@@ -5701,7 +5727,7 @@
 	)
 	(wire
 		(pts
-			(xy 344.17 100.33) (xy 351.79 100.33)
+			(xy 342.9 100.33) (xy 347.98 100.33)
 		)
 		(stroke
 			(width 0)
@@ -5831,6 +5857,16 @@
 	)
 	(wire
 		(pts
+			(xy 347.98 100.33) (xy 351.79 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3eefe189-8058-4522-b460-8a90c18c11e6")
+	)
+	(wire
+		(pts
 			(xy 179.07 92.71) (xy 179.07 88.9)
 		)
 		(stroke
@@ -5898,6 +5934,16 @@
 			(type default)
 		)
 		(uuid "4b4ba144-6553-4697-9b23-6fbbae237008")
+	)
+	(wire
+		(pts
+			(xy 400.05 100.33) (xy 448.31 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c077298-b440-4039-82b4-0082c81a9a08")
 	)
 	(wire
 		(pts
@@ -6488,6 +6534,16 @@
 			(type default)
 		)
 		(uuid "b741f680-e601-4a1f-8b97-772a905195ee")
+	)
+	(wire
+		(pts
+			(xy 347.98 102.87) (xy 347.98 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b838b9fd-086c-4063-9801-7bca96a28956")
 	)
 	(wire
 		(pts
@@ -7209,6 +7265,28 @@
 			)
 		)
 	)
+	(global_label "CAM_TX"
+		(shape input)
+		(at 448.31 100.33 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4c5abde2-7411-4cd2-9dd7-29ad60f7aa02")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 458.2499 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "I2C_SDA"
 		(shape input)
 		(at 353.06 113.03 180)
@@ -7627,6 +7705,28 @@
 			)
 		)
 	)
+	(global_label "CAM_RX"
+		(shape input)
+		(at 448.31 102.87 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9d1618c3-ccc4-4711-aa43-161c58621c4c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 458.5523 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "I2C_SCL"
 		(shape input)
 		(at 241.3 158.75 0)
@@ -7915,7 +8015,7 @@
 	)
 	(global_label "H7_NRST"
 		(shape output)
-		(at 344.17 100.33 180)
+		(at 342.9 100.33 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7925,7 +8025,29 @@
 		)
 		(uuid "e06a4e11-4295-4e46-bb24-e0c847371144")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 332.8996 100.33 0)
+			(at 331.6296 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "NTSC_INTR"
+		(shape input)
+		(at 342.9 102.87 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "eb5dd7a2-7e5b-4a77-9ba0-12534cb1fd47")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 329.9967 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
