@@ -9134,6 +9134,28 @@
 			)
 		)
 	)
+	(global_label "Payload_Switch"
+		(shape input)
+		(at 156.21 123.19 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b778e58f-e00e-4f07-9190-fc7c830b42cb")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 138.6503 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "SPI_SCK"
 		(shape input)
 		(at 422.91 168.91 0)
