@@ -2506,6 +2506,48 @@
 		)
 	)
 	(sheet
+		(at 120.65 148.59)
+		(size 31.75 24.13)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "bd54c1aa-247c-4340-9de9-44d0c0e040e9")
+		(property "Sheetname" "GPS"
+			(at 120.65 147.8784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "GPS.kicad_sch"
+			(at 120.65 173.3046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 214.63 85.09)
 		(size 27.94 20.32)
 		(exclude_from_sim no)
