@@ -9332,6 +9332,28 @@
 			)
 		)
 	)
+	(global_label "ADC_IN"
+		(shape input)
+		(at 156.21 133.35 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a9935a9d-d2ce-4cf6-847b-46623cac1c37")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 146.6933 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "USART_TX"
 		(shape input)
 		(at 425.45 123.19 0)
