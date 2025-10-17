@@ -2506,6 +2506,48 @@
 		)
 	)
 	(sheet
+		(at 136.652 28.448)
+		(size 24.892 19.812)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "94b03863-4f6c-4232-bb6c-dbc8fe3a9ec0")
+		(property "Sheetname" "Transceiver"
+			(at 136.652 27.7364 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Transceiver.kicad_sch"
+			(at 136.652 48.8446 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 120.65 148.59)
 		(size 31.75 24.13)
 		(exclude_from_sim no)
