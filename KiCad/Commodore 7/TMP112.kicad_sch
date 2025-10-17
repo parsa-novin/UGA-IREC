@@ -849,22 +849,10 @@
 		)
 	)
 	(junction
-		(at 116.84 109.22)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3f2273e0-af65-4a8f-b26d-bbb2d4521066")
-	)
-	(junction
 		(at 162.56 99.06)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "65c03835-95b7-4af4-b3bd-e0ef37d47473")
-	)
-	(junction
-		(at 110.49 104.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ad2cf7a0-ecb9-4c5e-8be0-3cc02f699ffa")
 	)
 	(wire
 		(pts
@@ -878,26 +866,6 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 97.79) (xy 116.84 97.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2556b763-071f-40db-89d3-08defb736c89")
-	)
-	(wire
-		(pts
-			(xy 106.68 97.79) (xy 106.68 100.33)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "39215aeb-76d0-4988-89b1-6001613bbb3a")
-	)
-	(wire
-		(pts
 			(xy 158.75 99.06) (xy 158.75 96.52)
 		)
 		(stroke
@@ -908,37 +876,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 72.39) (xy 106.68 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4f77d3f7-da52-40a6-ab09-8a83a2bab43a")
-	)
-	(wire
-		(pts
-			(xy 106.68 100.33) (xy 110.49 100.33)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "536e09bb-980f-49ac-90ca-1e5ae03f84f9")
-	)
-	(wire
-		(pts
-			(xy 114.3 72.39) (xy 114.3 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "54d1c4ae-b140-43eb-b847-3d9b070879c5")
-	)
-	(wire
-		(pts
-			(xy 106.68 109.22) (xy 116.84 109.22)
+			(xy 106.68 109.22) (xy 123.19 109.22)
 		)
 		(stroke
 			(width 0)
@@ -948,7 +886,7 @@
 	)
 	(wire
 		(pts
-			(xy 110.49 104.14) (xy 123.19 104.14)
+			(xy 106.68 104.14) (xy 123.19 104.14)
 		)
 		(stroke
 			(width 0)
@@ -965,90 +903,6 @@
 			(type default)
 		)
 		(uuid "74cd6224-c623-41af-9760-45df9225b0a3")
-	)
-	(wire
-		(pts
-			(xy 116.84 97.79) (xy 116.84 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ab152af9-c620-4866-897f-16b63f5705f8")
-	)
-	(wire
-		(pts
-			(xy 110.49 100.33) (xy 110.49 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "aece0b4c-1826-4aca-a349-5ef4f56ceb1c")
-	)
-	(wire
-		(pts
-			(xy 116.84 109.22) (xy 123.19 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d1a9b3b4-9459-425d-830f-fa596b842b04")
-	)
-	(wire
-		(pts
-			(xy 106.68 104.14) (xy 110.49 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e1791657-27ba-4a07-8c1a-873e4f16737b")
-	)
-	(global_label "3.3v"
-		(shape input)
-		(at 114.3 72.39 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "2347d4fd-a449-4024-8f75-84b531ad28b0")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 114.3 65.4134 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "3.3v"
-		(shape input)
-		(at 106.68 72.39 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "2d38787f-72c4-4a61-b532-dbea62abba84")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 106.68 65.4134 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
 	)
 	(global_label "I2C-SDA-MAIN"
 		(shape input)
@@ -1184,76 +1038,6 @@
 		)
 	)
 	(symbol
-		(lib_id "CRCW08055K00FKTA:CRCW08055K00FKTA")
-		(at 106.68 87.63 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "106a7e2f-595e-4df9-b876-b0fa4a856ace")
-		(property "Reference" "R3"
-			(at 100.584 86.106 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "5K"
-			(at 101.6 88.646 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "CRCW08055K00FKTA:RESC2012X50N"
-			(at 106.68 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 106.68 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 106.68 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "148a2234-bf32-4a78-b50f-21ba5a7bf6b7")
-		)
-		(pin "2"
-			(uuid "c61742dc-9b0a-4258-bb47-55eb08c83a2a")
-		)
-		(instances
-			(project "Commodore 7"
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/1f366fb6-2a99-4d72-9f79-52b24411d3f7"
-					(reference "R3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GNDD")
 		(at 158.75 101.6 0)
 		(unit 1)
@@ -1314,77 +1098,6 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/1f366fb6-2a99-4d72-9f79-52b24411d3f7"
 					(reference "#PWR06")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "CRCW08055K00FKTA:CRCW08055K00FKTA")
-		(at 114.3 87.63 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "6c2c6b34-ed50-4edb-aaad-5aeb143d0f53")
-		(property "Reference" "R4"
-			(at 118.11 86.3599 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "5K"
-			(at 118.11 88.8999 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "CRCW08055K00FKTA:RESC2012X50N"
-			(at 114.3 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 114.3 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 114.3 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "27b97402-ddcd-446a-a1de-3b6c119d84ca")
-		)
-		(pin "2"
-			(uuid "24526d44-92b4-4d67-9ef8-4bba46a07172")
-		)
-		(instances
-			(project "Commodore 7"
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/1f366fb6-2a99-4d72-9f79-52b24411d3f7"
-					(reference "R4")
 					(unit 1)
 				)
 			)
