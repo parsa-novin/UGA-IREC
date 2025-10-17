@@ -1085,6 +1085,330 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "RC0402FR:RC0402FR-074K7L"
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 5.715 3.81 0)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "RC0402FR-074K7L"
+				(at 6.35 -3.81 0)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "YAG_R0402_YAG"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "RC0402FR-074K7L"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "RC0402FR-074K7L"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "YAG_R0402_YAG YAG_R0402_YAG-M YAG_R0402_YAG-L"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "RC0402FR-074K7L_1_1"
+				(polyline
+					(pts
+						(xy 2.54 0) (xy 3.175 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.175 1.27) (xy 4.445 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 4.445 -1.27) (xy 5.715 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.715 1.27) (xy 6.985 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 6.985 -1.27) (xy 8.255 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 8.255 1.27) (xy 9.525 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 9.525 -1.27) (xy 10.16 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin unspecified line
+					(at 0 0 0)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 12.7 0 180)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "RC0402FR-074K7L_1_2"
+				(polyline
+					(pts
+						(xy -1.27 8.255) (xy 1.27 9.525)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 5.715) (xy 1.27 6.985)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 3.175) (xy 1.27 4.445)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy -1.27 3.175)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 9.525) (xy 0 10.16)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 6.985) (xy -1.27 8.255)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 4.445) (xy -1.27 5.715)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin unspecified line
+					(at 0 12.7 270)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 0 0 90)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Sensor_Motion:IIM-42652"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3723,35 +4047,34 @@
 		)
 	)
 	(symbol
-		(lib_id "2025-10-06_20-52-39:CRG0805F2K7")
-		(at 215.9 54.61 270)
+		(lib_id "RC0402FR:RC0402FR-074K7L")
+		(at 191.77 67.31 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "10d771a9-b50d-4e3f-9b73-2db06000a95f")
-		(property "Reference" "R26"
-			(at 218.44 59.6899 90)
+		(uuid "1877c726-7554-4bc8-ad47-3d67f673d750")
+		(property "Reference" "R1"
+			(at 185.928 60.198 90)
 			(effects
 				(font
 					(size 1.524 1.524)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Value" "2.7k"
-			(at 218.44 62.2299 90)
+		(property "Value" "4.7k"
+			(at 184.658 62.738 90)
 			(effects
 				(font
 					(size 1.524 1.524)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Footprint" "CRG0805F2K7:RES0805_CRG_TYCO_TYC"
-			(at 215.9 54.61 0)
+		(property "Footprint" "RC0402FR:YAG_R0402_YAG"
+			(at 191.77 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3760,8 +4083,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1773204&DocType=Data+Sheet&DocLang=English&PartCntxt=1623181-1&DocFormat=pdf"
-			(at 215.9 54.61 0)
+		(property "Datasheet" "RC0402FR-074K7L"
+			(at 191.77 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3771,7 +4094,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 215.9 54.61 0)
+			(at 191.77 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3780,15 +4103,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "50c66584-8007-414a-b58d-253abf622fbe")
+			(uuid "c1d810f5-ea0a-4c75-898f-4d4f087e1b24")
 		)
 		(pin "1"
-			(uuid "b25b3763-b319-41f0-a8e4-e82a6aa755f5")
+			(uuid "6c54cc52-6ef5-4e86-90d1-4620c05f7cd9")
 		)
 		(instances
 			(project ""
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
-					(reference "R26")
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -3922,78 +4245,6 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
 					(reference "#PWR035")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "2025-10-06_20-52-39:CRG0805F2K7")
-		(at 198.12 54.61 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "279659d9-7c7a-42a7-9a8a-d8b450f620ac")
-		(property "Reference" "R24"
-			(at 200.66 59.6899 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "2.7k"
-			(at 200.66 62.2299 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "CRG0805F2K7:RES0805_CRG_TYCO_TYC"
-			(at 198.12 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1773204&DocType=Data+Sheet&DocLang=English&PartCntxt=1623181-1&DocFormat=pdf"
-			(at 198.12 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 198.12 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "aeaf62ec-9e9c-452e-8945-c3f9f3f8546e")
-		)
-		(pin "2"
-			(uuid "1947a0d3-832a-479d-9f50-52535c3783a3")
-		)
-		(instances
-			(project ""
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
-					(reference "R24")
 					(unit 1)
 				)
 			)
@@ -4197,6 +4448,148 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
 					(reference "#PWR034")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RC0402FR:RC0402FR-074K7L")
+		(at 207.01 67.31 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4686eca2-eecd-4a01-ace6-2b6605799aa3")
+		(property "Reference" "R3"
+			(at 210.566 59.944 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 209.042 63.5 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "RC0402FR:YAG_R0402_YAG"
+			(at 207.01 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "RC0402FR-074K7L"
+			(at 207.01 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 207.01 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "59b1689c-2cdf-4d33-af5d-f81d7f1299a2")
+		)
+		(pin "1"
+			(uuid "cf06d1a3-30ba-414a-8804-f787d406b092")
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
+					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RC0402FR:RC0402FR-074K7L")
+		(at 215.9 67.31 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "48e0e104-22c2-4935-9b9d-b02ca6c67f40")
+		(property "Reference" "R4"
+			(at 219.71 60.706 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 218.694 63.754 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "RC0402FR:YAG_R0402_YAG"
+			(at 215.9 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "RC0402FR-074K7L"
+			(at 215.9 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 215.9 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "1da2772d-ab6e-487e-b077-2345ae7adfb1")
+		)
+		(pin "1"
+			(uuid "7b520e84-6886-46d6-9d5c-450c8e9ae5e7")
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
+					(reference "R4")
 					(unit 1)
 				)
 			)
@@ -4612,6 +5005,77 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
 					(reference "U10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RC0402FR:RC0402FR-074K7L")
+		(at 198.12 67.31 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "86190fd5-2110-4f57-98af-37f18ec477ae")
+		(property "Reference" "R2"
+			(at 200.406 59.69 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 199.898 62.992 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "RC0402FR:YAG_R0402_YAG"
+			(at 198.12 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "RC0402FR-074K7L"
+			(at 198.12 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 198.12 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "90711ac9-d1c3-49d4-b01a-8349853454b2")
+		)
+		(pin "1"
+			(uuid "e219af19-14e1-4e1b-9543-22eee8fcc7d0")
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
+					(reference "R2")
 					(unit 1)
 				)
 			)
@@ -5612,77 +6076,6 @@
 		)
 	)
 	(symbol
-		(lib_id "2025-10-06_20-52-39:CRG0805F2K7")
-		(at 191.77 54.61 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "dfb2462d-8388-4447-97fa-5999d24b487c")
-		(property "Reference" "R22"
-			(at 184.404 60.452 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "2.7k"
-			(at 184.404 62.992 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "CRG0805F2K7:RES0805_CRG_TYCO_TYC"
-			(at 191.77 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1773204&DocType=Data+Sheet&DocLang=English&PartCntxt=1623181-1&DocFormat=pdf"
-			(at 191.77 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 191.77 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3478d044-717c-41d1-ba9c-685063d5cc18")
-		)
-		(pin "2"
-			(uuid "6d229ed3-7a29-473b-8051-090babcbe9ac")
-		)
-		(instances
-			(project ""
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
-					(reference "R22")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GNDD")
 		(at 92.71 95.25 0)
 		(unit 1)
@@ -5882,78 +6275,6 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
 					(reference "R20")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "2025-10-06_20-52-39:CRG0805F2K7")
-		(at 207.01 54.61 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "ec94b813-f97f-4ac7-ae7e-afdd13da0ca4")
-		(property "Reference" "R25"
-			(at 209.55 59.6899 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "2.7k"
-			(at 209.55 62.2299 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "CRG0805F2K7:RES0805_CRG_TYCO_TYC"
-			(at 207.01 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1773204&DocType=Data+Sheet&DocLang=English&PartCntxt=1623181-1&DocFormat=pdf"
-			(at 207.01 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 207.01 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "b82a51da-b34e-486a-af64-e96fa9c2be68")
-		)
-		(pin "1"
-			(uuid "b4f11fc8-0904-4f35-8792-b779c555b769")
-		)
-		(instances
-			(project ""
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/2aa1a3bd-d660-4212-b4a4-b22a0d7fd107"
-					(reference "R25")
 					(unit 1)
 				)
 			)
