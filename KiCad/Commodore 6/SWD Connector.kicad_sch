@@ -2382,6 +2382,107 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:GND"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:GNDD"
 			(power)
 			(pin_numbers
@@ -2519,6 +2620,18 @@
 		)
 		(uuid 61203aa1-c8a6-4339-9045-b5874f3c15df)
 	)
+	(rectangle
+		(start 87.884 164.592)
+		(end 122.174 179.324)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid f44ac25f-5499-4de2-837a-39e266937c7a)
+	)
 	(text "Transceiver"
 		(exclude_from_sim no)
 		(at 42.164 103.378 0)
@@ -2538,6 +2651,16 @@
 			)
 		)
 		(uuid "82fbd504-c940-4e12-87fe-23550ac25b3d")
+	)
+	(text "AirBrake PWM\n"
+		(exclude_from_sim no)
+		(at 94.742 162.814 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "91a73ce8-5be5-4233-a5ce-acda744132ba")
 	)
 	(text "R needs to match Zo"
 		(exclude_from_sim no)
@@ -3113,6 +3236,16 @@
 	)
 	(wire
 		(pts
+			(xy 109.22 175.26) (xy 105.41 175.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a7345da4-c3c7-4441-9ab0-9e8efff92d54")
+	)
+	(wire
+		(pts
 			(xy 198.12 52.07) (xy 198.12 44.45)
 		)
 		(stroke
@@ -3454,6 +3587,28 @@
 		(uuid "186d719c-9e89-4985-9d1e-c5baf94fea0b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 129.078 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "AIR_PWM"
+		(shape input)
+		(at 109.22 175.26 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1bc1cdfe-d0b9-41dc-be1b-c7710b127f96")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 120.309 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3897,6 +4052,73 @@
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/bdfeaed1-7752-4155-a309-90b04c28ef55"
 					(reference "#PWR033")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 105.41 172.72 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "39f535e7-d942-4ea9-943a-380839989a53")
+		(property "Reference" "#PWR090"
+			(at 111.76 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 109.22 172.7199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 105.41 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 105.41 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 105.41 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "43be99f2-214a-4f30-925e-1f697a183f4b")
+		)
+		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/bdfeaed1-7752-4155-a309-90b04c28ef55"
+					(reference "#PWR090")
 					(unit 1)
 				)
 			)
@@ -5702,7 +5924,7 @@
 	)
 	(symbol
 		(lib_id "2025-10-14_01-11-02:B02B-XASK-1LFSN")
-		(at 129.54 170.18 180)
+		(at 105.41 175.26 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5710,7 +5932,7 @@
 		(dnp no)
 		(uuid "a74aab4f-f4e2-4d48-a451-51da214b26e9")
 		(property "Reference" "PWM_Header"
-			(at 120.904 161.544 0)
+			(at 96.774 166.624 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -5718,7 +5940,7 @@
 			)
 		)
 		(property "Value" "B02B-XASK-1LFSN"
-			(at 120.904 163.83 0)
+			(at 96.774 168.91 0)
 			(effects
 				(font
 					(size 1.016 1.016)
@@ -5726,7 +5948,7 @@
 			)
 		)
 		(property "Footprint" "CONN_B02B-XASK-1LFSN_JST"
-			(at 129.54 170.18 0)
+			(at 105.41 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5736,7 +5958,7 @@
 			)
 		)
 		(property "Datasheet" "B02B-XASK-1LFSN"
-			(at 129.54 170.18 0)
+			(at 105.41 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5746,7 +5968,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 129.54 170.18 0)
+			(at 105.41 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
