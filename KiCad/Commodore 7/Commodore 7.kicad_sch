@@ -1504,7 +1504,7 @@
 	)
 	(text "I2C ADDRESS:"
 		(exclude_from_sim no)
-		(at 83.058 102.362 0)
+		(at 83.058 89.662 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1514,7 +1514,7 @@
 	)
 	(text "I2C ADDRESS:"
 		(exclude_from_sim no)
-		(at 68.072 56.896 0)
+		(at 69.342 55.626 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1524,7 +1524,7 @@
 	)
 	(text "MUX: 0x70\nIIM: 0x68\n"
 		(exclude_from_sim no)
-		(at 67.564 61.976 0)
+		(at 68.834 60.706 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1534,7 +1534,7 @@
 	)
 	(text "BMI: 0X69\n"
 		(exclude_from_sim no)
-		(at 93.726 150.876 0)
+		(at 81.026 133.096 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1544,7 +1544,7 @@
 	)
 	(text "I2C ADDRESS:\n"
 		(exclude_from_sim no)
-		(at 217.932 118.11 0)
+		(at 73.152 165.1 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1554,7 +1554,7 @@
 	)
 	(text "I2C ADDRESS:\n"
 		(exclude_from_sim no)
-		(at 95.25 147.066 0)
+		(at 82.55 129.286 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1564,7 +1564,7 @@
 	)
 	(text "I2C ADDRESS:\n"
 		(exclude_from_sim no)
-		(at 254 87.884 0)
+		(at 68.58 26.924 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1574,7 +1574,7 @@
 	)
 	(text "MMC: 0X30\n"
 		(exclude_from_sim no)
-		(at 216.662 121.158 0)
+		(at 71.882 168.148 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1584,7 +1584,7 @@
 	)
 	(text "MS5: 0X76\n"
 		(exclude_from_sim no)
-		(at 252.73 90.932 0)
+		(at 67.31 29.972 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1594,7 +1594,7 @@
 	)
 	(text "Temp: 0x48\n"
 		(exclude_from_sim no)
-		(at 82.55 105.664 0)
+		(at 82.55 92.964 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1604,7 +1604,7 @@
 	)
 	(global_label "INT-MMC"
 		(shape input)
-		(at 133.35 81.28 0)
+		(at 168.91 87.63 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1614,7 +1614,7 @@
 		)
 		(uuid "2274ffec-c8d1-4865-93ac-8cd3cec6df34")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 144.9833 81.28 0)
+			(at 180.5433 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1626,7 +1626,7 @@
 	)
 	(global_label "3.3v"
 		(shape input)
-		(at 133.35 71.12 0)
+		(at 168.91 77.47 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1636,7 +1636,7 @@
 		)
 		(uuid "427b784e-e9c4-4be0-9a76-cd7329f56962")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 140.3266 71.12 0)
+			(at 175.8866 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1648,7 +1648,7 @@
 	)
 	(global_label "5v"
 		(shape input)
-		(at 133.35 73.66 0)
+		(at 168.91 80.01 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1658,7 +1658,7 @@
 		)
 		(uuid "67fc106e-147b-4214-a859-a2aa4db1bc28")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 138.5123 73.66 0)
+			(at 174.0723 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1670,7 +1670,7 @@
 	)
 	(global_label "I2C-SCL-MAIN"
 		(shape input)
-		(at 120.65 76.2 180)
+		(at 156.21 82.55 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1680,7 +1680,7 @@
 		)
 		(uuid "6bb6ba3e-97d6-4c0b-b9a8-af8061ec714b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 103.4528 76.2 0)
+			(at 139.0128 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1692,7 +1692,7 @@
 	)
 	(global_label "INT1-BMI"
 		(shape input)
-		(at 133.35 76.2 0)
+		(at 168.91 82.55 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1702,7 +1702,7 @@
 		)
 		(uuid "762426a3-262a-4783-9a8c-9b3a62b27ce7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 145.3462 76.2 0)
+			(at 180.9062 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1714,7 +1714,7 @@
 	)
 	(global_label "INT2-BMI"
 		(shape input)
-		(at 133.35 78.74 0)
+		(at 168.91 85.09 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1724,7 +1724,7 @@
 		)
 		(uuid "87b41cc1-74c9-4719-b8e5-930e90f81a49")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 145.3462 78.74 0)
+			(at 180.9062 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1736,7 +1736,7 @@
 	)
 	(global_label "IIM-MAIN-INT"
 		(shape input)
-		(at 120.65 81.28 180)
+		(at 156.21 87.63 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1746,7 +1746,7 @@
 		)
 		(uuid "9c478245-6504-4a6c-a472-5834461260f4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 104.4808 81.28 0)
+			(at 140.0408 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1758,7 +1758,7 @@
 	)
 	(global_label "I2C-SDA-MAIN"
 		(shape input)
-		(at 120.65 78.74 180)
+		(at 156.21 85.09 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1768,7 +1768,7 @@
 		)
 		(uuid "a9771cb4-9cf1-40d6-b6d4-adb6cadd94ef")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 103.3923 78.74 0)
+			(at 138.9523 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1780,7 +1780,7 @@
 	)
 	(global_label "3.3v"
 		(shape input)
-		(at 120.65 71.12 180)
+		(at 156.21 77.47 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1790,7 +1790,7 @@
 		)
 		(uuid "be7fbb09-ea8f-46d2-bddc-1f63eae98574")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 113.6734 71.12 0)
+			(at 149.2334 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1802,7 +1802,7 @@
 	)
 	(global_label "5v"
 		(shape input)
-		(at 120.65 73.66 180)
+		(at 156.21 80.01 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1812,7 +1812,7 @@
 		)
 		(uuid "d293c288-2261-4a3a-8cc8-088351d821af")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 115.4877 73.66 0)
+			(at 151.0477 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1824,7 +1824,7 @@
 	)
 	(global_label "IIM-MAIN-RESET"
 		(shape input)
-		(at 120.65 83.82 180)
+		(at 156.21 90.17 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1834,7 +1834,7 @@
 		)
 		(uuid "e31322b4-fe14-4930-8e99-e91fc9bc82d8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 101.6386 83.82 0)
+			(at 137.1986 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1846,7 +1846,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDD")
-		(at 120.65 66.04 270)
+		(at 156.21 72.39 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1854,7 +1854,7 @@
 		(dnp no)
 		(uuid "00c9ec95-3b37-45fd-8539-6b004947eb89")
 		(property "Reference" "#PWR02"
-			(at 114.3 66.04 0)
+			(at 149.86 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1863,7 +1863,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 117.856 66.04 90)
+			(at 153.416 72.39 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1872,7 +1872,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 120.65 66.04 0)
+			(at 156.21 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1881,7 +1881,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 120.65 66.04 0)
+			(at 156.21 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1890,7 +1890,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 120.65 66.04 0)
+			(at 156.21 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1912,7 +1912,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic_MountingPin:Conn_02x20_Odd_Even_MountingPin")
-		(at 125.73 88.9 0)
+		(at 161.29 95.25 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1921,7 +1921,7 @@
 		(fields_autoplaced yes)
 		(uuid "740b3ef3-62d3-4ab1-b88e-a7ed21a8f34b")
 		(property "Reference" "J2"
-			(at 127 59.69 0)
+			(at 162.56 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1929,7 +1929,7 @@
 			)
 		)
 		(property "Value" "Conn_02x20_Odd_Even_MountingPin"
-			(at 127 62.23 0)
+			(at 162.56 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1937,7 +1937,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 125.73 88.9 0)
+			(at 161.29 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1946,7 +1946,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 125.73 88.9 0)
+			(at 161.29 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1955,7 +1955,7 @@
 			)
 		)
 		(property "Description" "Generic connectable mounting pin connector, double row, 02x20, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 125.73 88.9 0)
+			(at 161.29 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2097,7 +2097,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDD")
-		(at 133.35 66.04 90)
+		(at 168.91 72.39 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2105,7 +2105,7 @@
 		(dnp no)
 		(uuid "829ee429-8b26-4d29-971a-97def1f440bb")
 		(property "Reference" "#PWR01"
-			(at 139.7 66.04 0)
+			(at 175.26 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2114,7 +2114,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 136.652 66.04 90)
+			(at 172.212 72.39 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2123,7 +2123,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 133.35 66.04 0)
+			(at 168.91 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2132,7 +2132,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 133.35 66.04 0)
+			(at 168.91 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2141,7 +2141,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 133.35 66.04 0)
+			(at 168.91 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2163,7 +2163,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDA")
-		(at 120.65 68.58 270)
+		(at 156.21 74.93 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2172,7 +2172,7 @@
 		(fields_autoplaced yes)
 		(uuid "98ab5478-588e-4a97-80f0-6386e4557dda")
 		(property "Reference" "#PWR04"
-			(at 114.3 68.58 0)
+			(at 149.86 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2181,7 +2181,7 @@
 			)
 		)
 		(property "Value" "GNDA"
-			(at 116.84 68.5799 90)
+			(at 152.4 74.9299 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2190,7 +2190,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 120.65 68.58 0)
+			(at 156.21 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2199,7 +2199,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 120.65 68.58 0)
+			(at 156.21 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2208,7 +2208,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDA\" , analog ground"
-			(at 120.65 68.58 0)
+			(at 156.21 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2230,7 +2230,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDA")
-		(at 133.35 68.58 90)
+		(at 168.91 74.93 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2239,7 +2239,7 @@
 		(fields_autoplaced yes)
 		(uuid "b239f2ca-3577-49c8-8a35-ffcb3fb3f6ae")
 		(property "Reference" "#PWR03"
-			(at 139.7 68.58 0)
+			(at 175.26 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2248,7 +2248,7 @@
 			)
 		)
 		(property "Value" "GNDA"
-			(at 137.16 68.5799 90)
+			(at 172.72 74.9299 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2257,7 +2257,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 133.35 68.58 0)
+			(at 168.91 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2266,7 +2266,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 133.35 68.58 0)
+			(at 168.91 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2275,7 +2275,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDA\" , analog ground"
-			(at 133.35 68.58 0)
+			(at 168.91 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2296,7 +2296,7 @@
 		)
 	)
 	(sheet
-		(at 173.99 114.3)
+		(at 29.21 161.29)
 		(size 33.02 24.13)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2312,7 +2312,7 @@
 		)
 		(uuid "19f4b4af-23a2-4703-834c-89636fa65de5")
 		(property "Sheetname" "MMC5983"
-			(at 173.99 113.5884 0)
+			(at 29.21 160.5784 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2321,7 +2321,7 @@
 			)
 		)
 		(property "Sheetfile" "MMC5983.kicad_sch"
-			(at 173.99 139.0146 0)
+			(at 29.21 186.0046 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2338,7 +2338,7 @@
 		)
 	)
 	(sheet
-		(at 29.21 99.06)
+		(at 29.21 86.36)
 		(size 43.18 25.4)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2354,7 +2354,7 @@
 		)
 		(uuid "1f366fb6-2a99-4d72-9f79-52b24411d3f7")
 		(property "Sheetname" "TMP112"
-			(at 29.21 98.3484 0)
+			(at 29.21 85.6484 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2363,7 +2363,7 @@
 			)
 		)
 		(property "Sheetfile" "TMP112.kicad_sch"
-			(at 29.21 125.0446 0)
+			(at 29.21 112.3446 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2380,7 +2380,7 @@
 		)
 	)
 	(sheet
-		(at 27.94 55.88)
+		(at 29.21 54.61)
 		(size 29.21 20.32)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2396,7 +2396,7 @@
 		)
 		(uuid "2aa1a3bd-d660-4212-b4a4-b22a0d7fd107")
 		(property "Sheetname" "IIM-42652"
-			(at 27.94 55.1684 0)
+			(at 29.21 53.8984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2405,7 +2405,7 @@
 			)
 		)
 		(property "Sheetfile" "MAIN CONNECTION.kicad_sch"
-			(at 27.94 76.7846 0)
+			(at 29.21 75.5146 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2422,7 +2422,7 @@
 		)
 	)
 	(sheet
-		(at 41.91 143.51)
+		(at 29.21 125.73)
 		(size 43.18 24.13)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2438,7 +2438,7 @@
 		)
 		(uuid "5957d6f3-67b6-46f3-b569-ac79090e2ab1")
 		(property "Sheetname" "BMI270"
-			(at 41.91 142.7984 0)
+			(at 29.21 125.0184 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2447,7 +2447,7 @@
 			)
 		)
 		(property "Sheetfile" "BMI270.kicad_sch"
-			(at 41.91 168.2246 0)
+			(at 29.21 150.4446 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2464,7 +2464,7 @@
 		)
 	)
 	(sheet
-		(at 200.025 44.45)
+		(at 103.505 88.9)
 		(size 23.495 15.24)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2480,7 +2480,7 @@
 		)
 		(uuid "87bcbd75-d39f-4349-beeb-9080787b8c18")
 		(property "Sheetname" "I2C Buffer"
-			(at 200.025 43.7384 0)
+			(at 103.505 88.1884 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2489,7 +2489,7 @@
 			)
 		)
 		(property "Sheetfile" "I2C Buffer.kicad_sch"
-			(at 200.025 60.2746 0)
+			(at 103.505 104.7246 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2506,7 +2506,7 @@
 		)
 	)
 	(sheet
-		(at 136.652 28.448)
+		(at 203.2 53.34)
 		(size 24.892 19.812)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2522,7 +2522,7 @@
 		)
 		(uuid "94b03863-4f6c-4232-bb6c-dbc8fe3a9ec0")
 		(property "Sheetname" "Transceiver"
-			(at 136.652 27.7364 0)
+			(at 203.2 52.6284 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2531,7 +2531,7 @@
 			)
 		)
 		(property "Sheetfile" "Transceiver.kicad_sch"
-			(at 136.652 48.8446 0)
+			(at 203.2 73.7366 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2548,7 +2548,7 @@
 		)
 	)
 	(sheet
-		(at 120.65 148.59)
+		(at 203.708 19.812)
 		(size 31.75 24.13)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2564,7 +2564,7 @@
 		)
 		(uuid "bd54c1aa-247c-4340-9de9-44d0c0e040e9")
 		(property "Sheetname" "GPS"
-			(at 120.65 147.8784 0)
+			(at 203.708 19.1004 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2573,7 +2573,7 @@
 			)
 		)
 		(property "Sheetfile" "GPS.kicad_sch"
-			(at 120.65 173.3046 0)
+			(at 203.708 44.5266 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2590,7 +2590,7 @@
 		)
 	)
 	(sheet
-		(at 214.63 85.09)
+		(at 29.21 24.13)
 		(size 27.94 20.32)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2606,7 +2606,7 @@
 		)
 		(uuid "e5d1ebb0-0c2d-4417-ba07-6770ff860f94")
 		(property "Sheetname" "MS560702"
-			(at 214.63 84.3784 0)
+			(at 29.21 23.4184 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2615,7 +2615,7 @@
 			)
 		)
 		(property "Sheetfile" "MS560702.kicad_sch"
-			(at 214.63 105.9946 0)
+			(at 29.21 45.0346 0)
 			(effects
 				(font
 					(size 1.27 1.27)
