@@ -1338,6 +1338,16 @@
 	)
 	(wire
 		(pts
+			(xy 218.44 59.69) (xy 218.44 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3da6e5c8-b02a-469e-8cc6-30cd87a7f875")
+	)
+	(wire
+		(pts
 			(xy 120.65 77.47) (xy 120.65 91.44)
 		)
 		(stroke
@@ -1345,6 +1355,16 @@
 			(type default)
 		)
 		(uuid "432c5283-8398-4514-a002-443e490cd126")
+	)
+	(wire
+		(pts
+			(xy 218.44 67.31) (xy 218.44 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c0b8a57-549c-498c-8dc5-50e6573f2592")
 	)
 	(wire
 		(pts
@@ -1680,11 +1700,11 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "48554862-affb-4457-ad7c-55a3a662d528")
-		(property "Reference" "C9"
+		(property "Reference" "C9/MSAST219LB5106KTNA01"
 			(at 106.172 74.93 0)
 			(effects
 				(font
-					(size 1.27 1.27)
+					(size 0.508 0.508)
 				)
 				(justify left)
 			)
@@ -1734,7 +1754,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "C9")
+					(reference "C9/MSAST219LB5106KTNA01")
 					(unit 1)
 				)
 			)
@@ -1822,16 +1842,16 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "541096cb-2e07-4d15-9719-0203803782c7")
-		(property "Reference" "C13"
-			(at 185.42 71.628 0)
+		(property "Reference" "GRM21BR61A226ME44L"
+			(at 194.564 72.136 0)
 			(effects
 				(font
-					(size 1.27 1.27)
+					(size 0.635 0.635)
 				)
 			)
 		)
 		(property "Value" "22uF"
-			(at 185.674 75.946 0)
+			(at 192.786 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1874,7 +1894,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "C13")
+					(reference "GRM21BR61A226ME44L")
 					(unit 1)
 				)
 			)
@@ -1888,10 +1908,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "543cedb8-5006-4297-a4fa-80bce5ef44a5")
-		(property "Reference" "L1"
-			(at 170.18 63.5 90)
+		(property "Reference" "VLP8040T-3R3N"
+			(at 170.434 63.754 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1942,7 +1961,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "L1")
+					(reference "VLP8040T-3R3N")
 					(unit 1)
 				)
 			)
@@ -1957,11 +1976,11 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "5a1e83fb-7656-4fbb-817f-8322a47deff9")
-		(property "Reference" "C11"
+		(property "Reference" "C11/08053C104KAT2A"
 			(at 158.75 71.628 90)
 			(effects
 				(font
-					(size 1.27 1.27)
+					(size 0.635 0.635)
 				)
 			)
 		)
@@ -2009,7 +2028,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "C11")
+					(reference "C11/08053C104KAT2A")
 					(unit 1)
 				)
 			)
@@ -2025,7 +2044,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5a8f4493-c63e-4d08-9003-baa00193a201")
-		(property "Reference" "R1"
+		(property "Reference" "R1/RC0201FR-0710KL"
 			(at 214.63 83.8199 0)
 			(effects
 				(font
@@ -2079,7 +2098,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "R1")
+					(reference "R1/RC0201FR-0710KL")
 					(unit 1)
 				)
 			)
@@ -2153,7 +2172,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 218.44 64.77 0)
+		(at 218.44 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2162,7 +2181,7 @@
 		(fields_autoplaced yes)
 		(uuid "6a475390-cb6a-45c3-ac57-a23b38df9cbc")
 		(property "Reference" "R5"
-			(at 220.98 63.4999 0)
+			(at 220.98 62.2299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2171,7 +2190,7 @@
 			)
 		)
 		(property "Value" "170R"
-			(at 220.98 66.0399 0)
+			(at 220.98 64.7699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2180,7 +2199,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 216.662 64.77 90)
+			(at 216.662 63.5 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2189,7 +2208,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 64.77 0)
+			(at 218.44 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2198,7 +2217,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 218.44 64.77 0)
+			(at 218.44 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2375,17 +2394,17 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9c55f092-5f0f-4eed-b7ee-166e6eee65fa")
-		(property "Reference" "C10"
-			(at 95.758 74.93 0)
+		(property "Reference" "C10/MSAST219LB5106KTNA01"
+			(at 88.138 74.168 0)
 			(effects
 				(font
-					(size 1.27 1.27)
+					(size 0.508 0.508)
 				)
 				(justify left)
 			)
 		)
 		(property "Value" "10uF"
-			(at 95.504 77.47 0)
+			(at 95.504 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2429,7 +2448,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "C10")
+					(reference "C10/MSAST219LB5106KTNA01")
 					(unit 1)
 				)
 			)
@@ -2443,10 +2462,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c683f5cd-96a6-4d2a-854c-7374251fb544")
-		(property "Reference" "R2"
-			(at 214.63 71.1199 0)
+		(property "Reference" "R2/RC0201FR-0756K2L"
+			(at 213.868 71.374 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2454,8 +2472,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "55k"
-			(at 214.63 73.6599 0)
+		(property "Value" "56.2k"
+			(at 213.868 73.406 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2499,7 +2517,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "R2")
+					(reference "R2/RC0201FR-0756K2L")
 					(unit 1)
 				)
 			)
@@ -2581,16 +2599,16 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "db5eefb2-f1af-476b-85b1-21cd80515bca")
-		(property "Reference" "C12"
-			(at 175.26 71.628 0)
+		(property "Reference" "GRM21BR61A226ME44L"
+			(at 172.212 72.136 0)
 			(effects
 				(font
-					(size 1.27 1.27)
+					(size 0.635 0.635)
 				)
 			)
 		)
 		(property "Value" "22uF"
-			(at 175.26 75.692 0)
+			(at 173.228 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2633,7 +2651,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "C12")
+					(reference "GRM21BR61A226ME44L")
 					(unit 1)
 				)
 			)
