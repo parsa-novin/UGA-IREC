@@ -2169,7 +2169,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0cc955b2-9eb7-4cad-a05d-c75642b384fd")
-		(property "Reference" "C22"
+		(property "Reference" "C?"
 			(at 64.77 88.9 90)
 			(effects
 				(font
@@ -2217,6 +2217,14 @@
 		)
 		(pin "1"
 			(uuid "4b4ba9d6-1bd5-4a78-93c0-8cc729883fe2")
+		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976/240451c1-e615-4278-a787-66f461d7f41d/8b5ceb89-e278-430f-8b1b-07541160bcb8"
+					(reference "C?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2328,7 +2336,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "247fd42d-9475-4c12-95c8-a48a4ef57b16")
-		(property "Reference" "L6"
+		(property "Reference" "L?"
 			(at 76.2 91.44 90)
 			(effects
 				(font
@@ -2377,6 +2385,14 @@
 		(pin "1"
 			(uuid "70695d30-1a7f-4d03-8896-daa33f664af2")
 		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976/240451c1-e615-4278-a787-66f461d7f41d/8b5ceb89-e278-430f-8b1b-07541160bcb8"
+					(reference "L?")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "2025-10-22_05-11-54:DLF162500LT-5028A1")
@@ -2388,7 +2404,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "30cdf28f-43fc-4dc3-954a-d682f6b5ad79")
-		(property "Reference" "U10"
+		(property "Reference" "U?"
 			(at 171.45 97.79 0)
 			(effects
 				(font
@@ -2445,6 +2461,14 @@
 		(pin "4"
 			(uuid "8362b0ca-3f82-4643-a4a3-6f4a9023f984")
 		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976/240451c1-e615-4278-a787-66f461d7f41d/8b5ceb89-e278-430f-8b1b-07541160bcb8"
+					(reference "U?")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Connector:Conn_Coaxial")
@@ -2456,7 +2480,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "32f3e92d-0405-491b-a8c8-623087a8a395")
-		(property "Reference" "J1"
+		(property "Reference" "J?"
 			(at 247.65 109.5131 0)
 			(effects
 				(font
@@ -2507,6 +2531,14 @@
 		(pin "1"
 			(uuid "7752050d-f81b-49ff-831b-47fa54c5c46c")
 		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976/240451c1-e615-4278-a787-66f461d7f41d/8b5ceb89-e278-430f-8b1b-07541160bcb8"
+					(reference "J?")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -2518,7 +2550,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "51df6242-0c59-45c6-a187-8efb84171184")
-		(property "Reference" "#PWR037"
+		(property "Reference" "#PWR?"
 			(at 243.84 121.92 0)
 			(effects
 				(font
@@ -2564,6 +2596,14 @@
 		)
 		(pin "1"
 			(uuid "bb4fa0df-319f-4a86-be31-1d278db52149")
+		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976/240451c1-e615-4278-a787-66f461d7f41d/8b5ceb89-e278-430f-8b1b-07541160bcb8"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2989,7 +3029,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cfcf7577-8de2-4a92-a9b0-90ce340ba56a")
-		(property "Reference" "C21"
+		(property "Reference" "C?"
 			(at 218.4463 104.14 90)
 			(effects
 				(font
@@ -3037,6 +3077,14 @@
 		)
 		(pin "2"
 			(uuid "36e4070e-50e2-4b79-8777-7403d87a95f6")
+		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976/240451c1-e615-4278-a787-66f461d7f41d/8b5ceb89-e278-430f-8b1b-07541160bcb8"
+					(reference "C?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
