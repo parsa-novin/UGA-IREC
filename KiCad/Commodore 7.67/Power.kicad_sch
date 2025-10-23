@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "198883b4-c131-4922-8c6b-3c0a2c0b8a2e")
+	(uuid "7435cb83-68d3-4b9e-9b07-6c42dbda241f")
 	(paper "A4")
 	(lib_symbols
 		(symbol "2025-10-22_05-18-30:TPS7A2033PDQNRM3"
@@ -854,6 +854,28 @@
 			)
 			(embedded_fonts no)
 		)
+	)
+	(text_box "current draws:\ntx 12.5dBm 24mA typ\nrx high sens 8.2mA typ\nLNA + switch 12mA\nPA to 0.8W ~900mA max (at 3.3v)"
+		(exclude_from_sim no)
+		(at 39.37 149.86 0)
+		(size 46.99 13.97)
+		(margins 0.9525 0.9525 0.9525 0.9525)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(type color)
+			(color 255 9 0 0.38)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(color 0 0 0 1)
+			)
+			(justify left top)
+		)
+		(uuid "84408b98-6742-4fd2-b329-1f6a40acd03d")
 	)
 	(junction
 		(at 49.53 68.58)
