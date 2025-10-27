@@ -658,6 +658,96 @@
 			(embedded_fonts no)
 		)
 	)
+	(wire
+		(pts
+			(xy 33.02 146.05) (xy 167.64 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0e036280-ce69-4b3f-8c68-06fa4438355b")
+	)
+	(wire
+		(pts
+			(xy 167.64 92.71) (xy 151.13 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "97292b47-6e7f-4f87-99bf-124cd6ff857a")
+	)
+	(wire
+		(pts
+			(xy 72.39 83.82) (xy 78.74 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a4978cf5-d115-4641-84df-5fcc54075acd")
+	)
+	(wire
+		(pts
+			(xy 43.18 83.82) (xy 50.8 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9310b95-ebe9-46bb-85f7-ba973795e708")
+	)
+	(wire
+		(pts
+			(xy 95.25 77.47) (xy 78.74 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e973176c-df52-4a75-901d-c5de42b8e692")
+	)
+	(wire
+		(pts
+			(xy 167.64 146.05) (xy 167.64 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed686559-b56e-41b9-9929-f251ccf16e97")
+	)
+	(wire
+		(pts
+			(xy 33.02 87.63) (xy 33.02 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f138bab8-113d-4c06-abda-c61166832e65")
+	)
+	(wire
+		(pts
+			(xy 33.02 63.5) (xy 33.02 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8d9314a-ff16-4980-9171-de9b905c9e53")
+	)
+	(wire
+		(pts
+			(xy 78.74 77.47) (xy 78.74 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe405de2-435b-4d70-98d4-085790e3bb01")
+	)
 	(global_label "3.3v"
 		(shape input)
 		(at 95.25 85.09 180)
@@ -940,6 +1030,132 @@
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
 					(reference "#PWR025")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25.4 52.07)
+		(size 12.7 11.43)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "085ae652-96da-4679-a380-e5a789d9eb34")
+		(property "Sheetname" "antenna"
+			(at 25.4 51.3584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "asdasd.kicad_sch"
+			(at 25.4 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
+					(page "12")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 50.8 78.74)
+		(size 21.59 11.43)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "27281333-fcc0-4e4f-9f26-74be67046467")
+		(property "Sheetname" "SAW"
+			(at 50.8 78.0284 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "asduadf.kicad_sch"
+			(at 50.8 90.7546 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
+					(page "11")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 21.59 80.01)
+		(size 21.59 7.62)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "c316ab5d-d2ae-4314-a2e6-874be36bfe96")
+		(property "Sheetname" "LNA"
+			(at 21.59 79.2984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "untitled.kicad_sch"
+			(at 21.59 88.2146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
+					(page "10")
 				)
 			)
 		)
