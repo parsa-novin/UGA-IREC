@@ -4894,6 +4894,227 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "SLW-1277744-3A-N-D Switch:SLW-1277744-3A-N-D"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "S"
+				(at -5.08 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Value" "SLW-1277744-3A-N-D"
+				(at -5.08 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Footprint" "SLW-1277744-3A-N-D:SW_SLW-1277744-3A-N-D"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "PARTREV" "1.01"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "STANDARD" "Manufacturer Recommendations"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MAXIMUM_PACKAGE_HEIGHT" "8.0mm"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MANUFACTURER" "Same Sky"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(symbol "SLW-1277744-3A-N-D_0_0"
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -7.62 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 0) (xy 0.254 2.1336)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 2.54)
+					(radius 0.3302)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 -2.54)
+					(radius 0.3302)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy 0.381 2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -2.54) (xy 0.381 -2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -10.16 0 0)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "SN74CBT16233DLR Multiplexer:SN74CBT16233DLR"
 			(pin_names
 				(offset 0.254)
@@ -6032,191 +6253,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Switch:SW_Nidec_CAS-120A1"
-			(pin_names
-				(offset 1)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 4.318 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SW_Nidec_CAS-120A1"
-				(at 0 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "Button_Switch_SMD:Nidec_Copal_CAS-120A"
-				(at 0 -10.16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://www.nidec-components.com/e/catalog/switch/cas.pdf"
-				(at 0 -7.62 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Switch, single pole double throw"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "switch single-pole double-throw spdt ON-ON"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "*Nidec?Copal?CAS?120A*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_Nidec_CAS-120A1_0_1"
-				(circle
-					(center -2.032 0)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.651 0.254) (xy 1.651 2.286)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 2.54)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 -2.54)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Nidec_CAS-120A1_1_1"
-				(rectangle
-					(start -3.175 3.81)
-					(end 3.175 -3.81)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 2.54 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 -2.54 180)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "TCA9509DGKR Level Shifter:TCA9509DGKR"
 			(pin_names
 				(offset 0.254)
@@ -7263,6 +7299,16 @@
 		)
 		(uuid "2079acd8-cccd-40a4-ab65-9656eb67547a")
 	)
+	(text "SEL Turns on DCMI; GND Turns on NTSC\n"
+		(exclude_from_sim no)
+		(at 170.18 121.666 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "21998b85-937f-44df-86a1-680b808006ba")
+	)
 	(text "Microphone"
 		(exclude_from_sim no)
 		(at 246.38 143.256 0)
@@ -7561,6 +7607,16 @@
 	)
 	(wire
 		(pts
+			(xy 190.5 116.84) (xy 186.69 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "114c6511-6a47-4bd9-a9d9-eaea69568cd3")
+	)
+	(wire
+		(pts
 			(xy 163.83 48.26) (xy 140.97 48.26)
 		)
 		(stroke
@@ -7591,7 +7647,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 114.3) (xy 173.99 114.3)
+			(xy 146.05 114.3) (xy 171.45 114.3)
 		)
 		(stroke
 			(width 0)
@@ -8551,7 +8607,7 @@
 	)
 	(wire
 		(pts
-			(xy 143.51 119.38) (xy 173.99 119.38)
+			(xy 143.51 119.38) (xy 171.45 119.38)
 		)
 		(stroke
 			(width 0)
@@ -8978,16 +9034,6 @@
 			(type default)
 		)
 		(uuid "f5930dc4-9188-44dc-86bd-083f4d4ae9e4")
-	)
-	(wire
-		(pts
-			(xy 187.96 116.84) (xy 184.15 116.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f6380226-3150-4aaa-a58c-13685342407f")
 	)
 	(wire
 		(pts
@@ -11408,7 +11454,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "FH12_22S_0_5SH_55 C2I Camera Connector:CONN_FH12-22S-0.5SH55_HIR"
 			(at 135.89 262.89 0)
 			(effects
 				(font
@@ -11581,7 +11627,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 187.96 116.84 270)
+		(at 190.5 116.84 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11590,7 +11636,7 @@
 		(fields_autoplaced yes)
 		(uuid "16d8f5cb-6178-44ab-a692-f3218b1090fb")
 		(property "Reference" "#PWR083"
-			(at 184.15 116.84 0)
+			(at 186.69 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11599,7 +11645,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 191.77 116.8399 90)
+			(at 194.31 116.8399 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11608,7 +11654,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 187.96 116.84 0)
+			(at 190.5 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11617,7 +11663,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 187.96 116.84 0)
+			(at 190.5 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11626,7 +11672,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 187.96 116.84 0)
+			(at 190.5 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11672,7 +11718,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "ADV7280AWBCPZ NTSC:CP-32-12_ADI"
 			(at 280.67 41.91 0)
 			(effects
 				(font
@@ -12037,7 +12083,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "ABM8AIG-28.63636MHZ-12-2Z-T3:XTAL_ABM8AIG-28.63636MHZ-12-2Z-T3"
+		(property "Footprint" "ABM8AIG_28_63636MHZ_12_2Z_T3 Crystal:XTAL_ABM8AIG-28.63636MHZ-12-2Z-T3"
 			(at 266.7 90.17 0)
 			(effects
 				(font
@@ -12955,7 +13001,7 @@
 				)
 			)
 		)
-		(property "Footprint" "DMM-4026-B-I2S-R:MIC_DMM-4026-B-I2S-R"
+		(property "Footprint" "DMM_4026_B_I2S_R Microphone:MIC_DMM-4026-B-I2S-R"
 			(at 276.86 165.1 0)
 			(effects
 				(font
@@ -13255,6 +13301,118 @@
 		)
 	)
 	(symbol
+		(lib_id "SLW-1277744-3A-N-D Switch:SLW-1277744-3A-N-D")
+		(at 176.53 116.84 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "68f7b155-0b4c-4467-9d8d-30dec3f958d6")
+		(property "Reference" "SW3"
+			(at 179.07 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SLW-1277744-3A-N-D"
+			(at 179.07 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "SLW_1277744_3A_N_D Switch:SW_SLW-1277744-3A-N-D"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "1.01"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "8.0mm"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Same Sky"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1abdbc5a-5202-4efe-a30c-50a7bf673238")
+		)
+		(pin "3"
+			(uuid "4bf9906e-abce-4216-bd09-5069b830d230")
+		)
+		(pin "2"
+			(uuid "ccdecc7b-80c5-4918-ab31-cb33929482cf")
+		)
+		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/45f54d03-8d68-4556-bd65-30012701e800"
+					(reference "SW3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+5V")
 		(at 140.97 81.28 270)
 		(unit 1)
@@ -13347,7 +13505,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "TCA9509DGKR Level Shifter:DGK8"
 			(at 144.78 162.56 0)
 			(effects
 				(font
@@ -13701,7 +13859,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "SN74CBT16233DLR Multiplexer:DL56"
 			(at 80.01 48.26 0)
 			(effects
 				(font
@@ -14512,85 +14670,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Nidec_CAS-120A1")
-		(at 179.07 116.84 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a20775f2-fb6b-4837-83db-e6def16b1613")
-		(property "Reference" "SW3"
-			(at 179.07 110.744 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SW_Nidec_CAS-120A1"
-			(at 179.07 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "Button_Switch_SMD:Nidec_Copal_CAS-120A"
-			(at 179.07 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.nidec-components.com/e/catalog/switch/cas.pdf"
-			(at 179.07 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Switch, single pole double throw"
-			(at 179.07 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Instructions" "SEL Turns on DCMI; GND Turns on NTSC"
-			(at 163.068 122.174 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "3"
-			(uuid "ee902f6f-ca3d-4df2-9a18-04bdcf8826e2")
-		)
-		(pin "2"
-			(uuid "b398ac9b-7658-4e89-9177-fbfd12130122")
-		)
-		(pin "1"
-			(uuid "0b2e1842-a490-4ae7-a948-1e1775b1786d")
-		)
-		(instances
-			(project "Commodore 6"
-				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/45f54d03-8d68-4556-bd65-30012701e800"
-					(reference "SW3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 266.7 78.74 0)
 		(unit 1)
@@ -14817,7 +14896,7 @@
 				)
 			)
 		)
-		(property "Footprint" "FH12-24S-0.5SH_55_:HRS_FH12-24S-0.5SH_55_"
+		(property "Footprint" "FH12_24S_0_5SH_55 Camera Connector:HRS_FH12-24S-0.5SH_55_"
 			(at 48.26 193.04 0)
 			(effects
 				(font

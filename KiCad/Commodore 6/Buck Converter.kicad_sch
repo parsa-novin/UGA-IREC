@@ -2943,7 +2943,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "SLW-1277545-3A-RA-N-D:SLW-1277545-3A-RA-N-D"
+		(symbol "SLW-1277744-3A-N-D Switch:SLW-1277744-3A-N-D"
 			(pin_names
 				(offset 1.016)
 			)
@@ -2959,7 +2959,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Value" "SLW-1277545-3A-RA-N-D"
+			(property "Value" "SLW-1277744-3A-N-D"
 				(at -5.08 -5.08 0)
 				(effects
 					(font
@@ -2968,7 +2968,7 @@
 					(justify left top)
 				)
 			)
-			(property "Footprint" "SLW-1277545-3A-RA-N-D:SW_SLW-1277545-3A-RA-N-D"
+			(property "Footprint" "SLW-1277744-3A-N-D:SW_SLW-1277744-3A-N-D"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3016,7 +3016,7 @@
 					(hide yes)
 				)
 			)
-			(property "MAXIMUM_PACKAGE_HEIGHT" "5.0mm"
+			(property "MAXIMUM_PACKAGE_HEIGHT" "8.0mm"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3036,7 +3036,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "SLW-1277545-3A-RA-N-D_0_0"
+			(symbol "SLW-1277744-3A-N-D_0_0"
 				(polyline
 					(pts
 						(xy -5.08 0) (xy -7.62 0)
@@ -3472,6 +3472,16 @@
 	)
 	(wire
 		(pts
+			(xy 83.82 96.52) (xy 93.98 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1637bf1a-c093-4cc7-8c54-e53eda1aa44e")
+	)
+	(wire
+		(pts
 			(xy 200.66 81.28) (xy 214.63 81.28)
 		)
 		(stroke
@@ -3512,17 +3522,7 @@
 	)
 	(wire
 		(pts
-			(xy 109.22 88.9) (xy 115.57 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3ba7c17e-c17b-460f-8309-551ad1c1d41e")
-	)
-	(wire
-		(pts
-			(xy 120.65 77.47) (xy 120.65 91.44)
+			(xy 120.65 77.47) (xy 120.65 93.98)
 		)
 		(stroke
 			(width 0)
@@ -3579,16 +3579,6 @@
 			(type default)
 		)
 		(uuid "7389ae5d-9354-46b5-940c-4b9a4cc81ad7")
-	)
-	(wire
-		(pts
-			(xy 115.57 88.9) (xy 115.57 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "73a0b292-f563-450e-a184-9248005e5032")
 	)
 	(wire
 		(pts
@@ -3659,6 +3649,16 @@
 			(type default)
 		)
 		(uuid "9c9693bd-1070-4905-950a-2fa14a981ae1")
+	)
+	(wire
+		(pts
+			(xy 109.22 93.98) (xy 120.65 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9e9115e0-98e4-4480-8fae-07626f9fd4a5")
 	)
 	(wire
 		(pts
@@ -3742,16 +3742,6 @@
 	)
 	(wire
 		(pts
-			(xy 109.22 88.9) (xy 109.22 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d715fc08-546b-4e79-a0f2-b9990b299dca")
-	)
-	(wire
-		(pts
 			(xy 177.8 68.58) (xy 177.8 69.85)
 		)
 		(stroke
@@ -3759,16 +3749,6 @@
 			(type default)
 		)
 		(uuid "e7252931-b9e3-40cd-a58c-bef2f612f6e9")
-	)
-	(wire
-		(pts
-			(xy 115.57 91.44) (xy 120.65 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ed4943a5-c9e9-41a0-b2ea-b1476a2e7e32")
 	)
 	(wire
 		(pts
@@ -3841,118 +3821,6 @@
 				)
 				(justify right)
 				(hide yes)
-			)
-		)
-	)
-	(symbol
-		(lib_id "SLW-1277545-3A-RA-N-D:SLW-1277545-3A-RA-N-D")
-		(at 99.06 93.98 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "086c25cd-95ae-4ae2-a023-dca61b2f776e")
-		(property "Reference" "S1"
-			(at 101.6 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SLW-1277545-3A-RA-N-D switch"
-			(at 101.6 88.9 0)
-			(effects
-				(font
-					(size 0.508 0.508)
-				)
-			)
-		)
-		(property "Footprint" "SLW-1277545-3A-RA-N-D:SW_SLW-1277545-3A-RA-N-D"
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "1.01"
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "5.0mm"
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Same Sky"
-			(at 99.06 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "3"
-			(uuid "ee666a85-bf5e-46ff-b7cf-cc583462b137")
-		)
-		(pin "1"
-			(uuid "6eaf259a-bcae-41e0-a9b4-db87a0b067f0")
-		)
-		(pin "2"
-			(uuid "b5da8fb9-325f-4119-a992-a4a1ef58c2db")
-		)
-		(instances
-			(project ""
-				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "S1")
-					(unit 1)
-				)
 			)
 		)
 	)
@@ -4064,7 +3932,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 177.8 77.47 0)
 			(effects
 				(font
@@ -4136,7 +4004,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 217.17 68.58 0)
 			(effects
 				(font
@@ -4182,7 +4050,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDD")
-		(at 93.98 96.52 0)
+		(at 83.82 96.52 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4190,8 +4058,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3604895f-a10e-4985-a4cf-cbc302ff569d")
-		(property "Reference" "#PWR054"
-			(at 93.98 102.87 0)
+		(property "Reference" "#PWR053"
+			(at 83.82 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4200,7 +4068,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 93.98 100.33 0)
+			(at 83.82 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4208,7 +4076,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 93.98 96.52 0)
+			(at 83.82 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4217,7 +4085,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 93.98 96.52 0)
+			(at 83.82 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4226,7 +4094,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 93.98 96.52 0)
+			(at 83.82 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4240,7 +4108,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "#PWR054")
+					(reference "#PWR053")
 					(unit 1)
 				)
 			)
@@ -4256,7 +4124,7 @@
 		(dnp no)
 		(uuid "49c6b405-23f8-4451-8c56-9b9d0a498933")
 		(property "Reference" "C30"
-			(at 105.41 74.676 90)
+			(at 105.41 75.692 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4265,7 +4133,7 @@
 			)
 		)
 		(property "Value" "CL31B106KAHNNNE/10uf"
-			(at 105.918 76.962 90)
+			(at 103.378 78.232 90)
 			(effects
 				(font
 					(size 0.508 0.508)
@@ -4273,7 +4141,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "CL31B106KAHNNNE:CAPC3216X180N"
+		(property "Footprint" "CL31B106KAHNNNE capacitor:CAPC3216X180N"
 			(at 102.87 77.47 0)
 			(effects
 				(font
@@ -4514,7 +4382,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 214.63 93.98 0)
 			(effects
 				(font
@@ -4583,7 +4451,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 154.94 74.93 0)
 			(effects
 				(font
@@ -4721,7 +4589,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LTST_C190KRKT red led:LED_LTST-C190_LTO"
 			(at 217.17 55.88 0)
 			(effects
 				(font
@@ -4793,7 +4661,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 214.63 81.28 0)
 			(effects
 				(font
@@ -4904,6 +4772,117 @@
 		)
 	)
 	(symbol
+		(lib_id "SLW-1277744-3A-N-D Switch:SLW-1277744-3A-N-D")
+		(at 99.06 93.98 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bcfd02d8-7973-41eb-affe-53fa2061ccfd")
+		(property "Reference" "SW2"
+			(at 106.426 87.884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SLW-1277744-3A-N-D"
+			(at 102.616 89.662 0)
+			(effects
+				(font
+					(size 0.635 0.635)
+				)
+			)
+		)
+		(property "Footprint" "Button_Switch_SMD:Nidec_Copal_CAS-120A"
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "1.01"
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "8.0mm"
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Same Sky"
+			(at 99.06 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "853b001f-4355-4583-ae8b-6b1f44249bd9")
+		)
+		(pin "3"
+			(uuid "ecdc499b-56d1-49ec-8595-8802a06bc6ee")
+		)
+		(pin "1"
+			(uuid "60163ec7-ac0d-407e-90d6-b8d76b0a946d")
+		)
+		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
+					(reference "SW2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "2025-10-26_01-45-42:SRN8040-3R3Y")
 		(at 162.56 59.69 0)
 		(unit 1)
@@ -4929,7 +4908,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Inductor_SMD:L_Bourns-SRN8040_8x8.15mm"
 			(at 162.56 59.69 0)
 			(effects
 				(font
@@ -5191,7 +5170,7 @@
 			)
 		)
 		(property "Value" "CL31B106KAHNNNE/10uf"
-			(at 93.726 78.232 90)
+			(at 93.218 78.232 90)
 			(effects
 				(font
 					(size 0.508 0.508)
@@ -5199,7 +5178,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "CL31B106KAHNNNE:CAPC3216X180N"
+		(property "Footprint" "CL31B106KAHNNNE capacitor:CAPC3216X180N"
 			(at 92.71 77.47 0)
 			(effects
 				(font
@@ -5422,7 +5401,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ec9e4a5e-a766-4bd4-8f05-9ed438dfddd9")
-		(property "Reference" "#PWR053"
+		(property "Reference" "#PWR054"
 			(at 92.71 88.9 0)
 			(effects
 				(font
@@ -5472,7 +5451,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/0eaef56c-69f1-4e48-a682-2dae5a86159f/7e369b11-576d-4f2c-abdf-f3ed9df88ef1"
-					(reference "#PWR053")
+					(reference "#PWR054")
 					(unit 1)
 				)
 			)
@@ -5505,7 +5484,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 187.96 77.47 0)
 			(effects
 				(font
