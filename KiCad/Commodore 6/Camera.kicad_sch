@@ -4894,7 +4894,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "SLW-1277744-3A-N-D Switch:SLW-1277744-3A-N-D"
+		(symbol "SLW-1277545-3A-RA-N-D HSwitch:SLW-1277545-3A-RA-N-D"
 			(pin_names
 				(offset 1.016)
 			)
@@ -4910,7 +4910,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Value" "SLW-1277744-3A-N-D"
+			(property "Value" "SLW-1277545-3A-RA-N-D"
 				(at -5.08 -5.08 0)
 				(effects
 					(font
@@ -4919,7 +4919,7 @@
 					(justify left top)
 				)
 			)
-			(property "Footprint" "SLW-1277744-3A-N-D:SW_SLW-1277744-3A-N-D"
+			(property "Footprint" "SLW-1277545-3A-RA-N-D:SW_SLW-1277545-3A-RA-N-D"
 				(at 0 0 0)
 				(effects
 					(font
@@ -4967,7 +4967,7 @@
 					(hide yes)
 				)
 			)
-			(property "MAXIMUM_PACKAGE_HEIGHT" "8.0mm"
+			(property "MAXIMUM_PACKAGE_HEIGHT" "5.0mm"
 				(at 0 0 0)
 				(effects
 					(font
@@ -4987,7 +4987,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "SLW-1277744-3A-N-D_0_0"
+			(symbol "SLW-1277545-3A-RA-N-D_0_0"
 				(polyline
 					(pts
 						(xy -5.08 0) (xy -7.62 0)
@@ -13301,118 +13301,6 @@
 		)
 	)
 	(symbol
-		(lib_id "SLW-1277744-3A-N-D Switch:SLW-1277744-3A-N-D")
-		(at 176.53 116.84 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "68f7b155-0b4c-4467-9d8d-30dec3f958d6")
-		(property "Reference" "SW3"
-			(at 179.07 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SLW-1277744-3A-N-D"
-			(at 179.07 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "SLW_1277744_3A_N_D Switch:SW_SLW-1277744-3A-N-D"
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "1.01"
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "8.0mm"
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Same Sky"
-			(at 176.53 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1abdbc5a-5202-4efe-a30c-50a7bf673238")
-		)
-		(pin "3"
-			(uuid "4bf9906e-abce-4216-bd09-5069b830d230")
-		)
-		(pin "2"
-			(uuid "ccdecc7b-80c5-4918-ab31-cb33929482cf")
-		)
-		(instances
-			(project ""
-				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/45f54d03-8d68-4556-bd65-30012701e800"
-					(reference "SW3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:+5V")
 		(at 140.97 81.28 270)
 		(unit 1)
@@ -14194,6 +14082,117 @@
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/45f54d03-8d68-4556-bd65-30012701e800"
 					(reference "#PWR097")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "SLW-1277545-3A-RA-N-D HSwitch:SLW-1277545-3A-RA-N-D")
+		(at 176.53 116.84 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "82cd6f8e-1e9f-44b9-97e3-598d692d6230")
+		(property "Reference" "SW3"
+			(at 178.562 109.474 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SLW-1277545-3A-RA-N-D"
+			(at 184.912 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "SLW_1277545_3A_RA_N_D HSwitch:SW_SLW-1277545-3A-RA-N-D"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "1.01"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "5.0mm"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Same Sky"
+			(at 176.53 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "39eba5be-30a8-4ddb-b427-287ef4eca978")
+		)
+		(pin "1"
+			(uuid "335cca2d-4eeb-445e-8b73-8309caea522c")
+		)
+		(pin "3"
+			(uuid "44e4d7ec-01ad-4316-93d9-8e265942a85c")
+		)
+		(instances
+			(project ""
+				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83/45f54d03-8d68-4556-bd65-30012701e800"
+					(reference "SW3")
 					(unit 1)
 				)
 			)
