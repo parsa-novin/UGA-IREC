@@ -965,37 +965,68 @@
 		)
 	)
 	(symbol
+<<<<<<< HEAD
 		(lib_id "RF_Amplifier:BGU7004")
 		(at 193.04 91.44 0)
+=======
+		(lib_id "YG0043AA:YG0043AA")
+		(at 50.8 50.8 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
+<<<<<<< HEAD
 		(uuid "a0c2b1a0-4bab-43e4-b466-425dfd567dc9")
 		(property "Reference" "U7"
 			(at 223.52 93.3754 0)
+=======
+		(uuid "9f27d22f-7c06-4f94-bcd4-a36c1bfaca72")
+		(property "Reference" "E1"
+			(at 54.61 48.0694 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+<<<<<<< HEAD
 			)
 		)
 		(property "Value" "~"
 			(at 223.52 95.9154 0)
+=======
+				(justify left)
+			)
+		)
+		(property "Value" "YG0043AA"
+			(at 54.61 50.6094 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+<<<<<<< HEAD
 			)
 		)
 		(property "Footprint" "SOT-886"
 			(at 193.04 92.71 0)
+=======
+				(justify left)
+			)
+		)
+		(property "Footprint" "YG0043AA:XDCR_YG0043AA"
+			(at 50.8 50.8 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+<<<<<<< HEAD
+=======
+				(justify bottom)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 				(hide yes)
 			)
 		)
