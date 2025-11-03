@@ -5,250 +5,6 @@
 	(uuid "ba668511-6c06-4bb1-ba0e-dfe67ce7b1b5")
 	(paper "A4")
 	(lib_symbols
-		(symbol "BGU7004_115:BGU7004,115"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "IC"
-				(at 29.21 7.62 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Value" "BGU7004,115"
-				(at 29.21 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Footprint" "BGU7004115"
-				(at 29.21 -94.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://www.nxp.com/docs/en/data-sheet/BGU7004.pdf"
-				(at 29.21 -194.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Description" "RF Amplifier Low Noise Amplifier"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Height" "0.5"
-				(at 29.21 -394.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Manufacturer_Name" "NXP"
-				(at 29.21 -494.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Manufacturer_Part_Number" "BGU7004,115"
-				(at 29.21 -594.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Mouser Part Number" "771-BGU7004,115"
-				(at 29.21 -694.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/NXP-Semiconductors/BGU7004115?qs=vbj%2FKoHZRAjvSA08C7lcmQ%3D%3D"
-				(at 29.21 -794.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Arrow Part Number" ""
-				(at 29.21 -894.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(property "Arrow Price/Stock" ""
-				(at 29.21 -994.92 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-					(hide yes)
-				)
-			)
-			(symbol "BGU7004,115_1_1"
-				(rectangle
-					(start 5.08 2.54)
-					(end 27.94 -7.62)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin passive line
-					(at 0 0 0)
-					(length 5.08)
-					(name "GND_1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -2.54 0)
-					(length 5.08)
-					(name "GND_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 0)
-					(length 5.08)
-					(name "RF_IN"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 0 180)
-					(length 5.08)
-					(name "RF_OUT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -2.54 180)
-					(length 5.08)
-					(name "ENABLE"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -5.08 180)
-					(length 5.08)
-					(name "VCC"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "NEO-M9N-00B:NEO-M9N-00B"
 			(pin_names
 				(offset 1.016)
@@ -789,38 +545,32 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "YG0043AA:YG0043AA"
-			(pin_names
-				(offset 1.016)
-			)
+		(symbol "RF_Amplifier:BGU7004"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "E"
-				(at 3.175 5.715 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-				)
-			)
-			(property "Value" "YG0043AA"
-				(at 3.175 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-				)
-			)
-			(property "Footprint" "YG0043AA:XDCR_YG0043AA"
+			(property "Reference" "U"
 				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify bottom)
+				)
+			)
+			(property "Value" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "SOT-886"
+				(at 0 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
 					(hide yes)
 				)
 			)
@@ -830,7 +580,6 @@
 					(font
 						(size 1.27 1.27)
 					)
-					(hide yes)
 				)
 			)
 			(property "Description" ""
@@ -842,109 +591,125 @@
 					(hide yes)
 				)
 			)
-			(property "PARTREV" "1.3"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "STANDARD" "Manufacturer Recommendations"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "MAXIMUM_PACKAGE_HEIGHT" "4.90 mm"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "MANUFACTURER" "Quectel"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(symbol "YG0043AA_0_0"
+			(symbol "BGU7004_1_1"
 				(polyline
 					(pts
-						(xy 0 8.001) (xy 0 2.54)
+						(xy 10.795 -1.905) (xy 10.795 -14.605) (xy 24.765 -8.255) (xy 10.795 -1.905)
 					)
 					(stroke
-						(width 0.254)
-						(type default)
+						(width 0)
+						(type solid)
+						(color 0 0 0 1)
 					)
 					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy -2.667 8.001)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0 -5.08)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.413 8.001) (xy 0 2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
+						(type color)
+						(color 255 252 209 1)
 					)
 				)
 				(pin input line
-					(at 0 -5.08 90)
+					(at 10.8956 -8.3556 180)
 					(length 2.54)
-					(name "~"
+					(name "RF_IN"
 						(effects
 							(font
-								(size 1.016 1.016)
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 13.97 -2.54 90)
+					(length 2.54)
+					(name "Vcc"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 13.97 -13.97 270)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 17.78 -3.81 90)
+					(length 2.54)
+					(name "ENABLE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 17.78 -12.7 270)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
 							)
 						)
 					)
 					(number "1"
 						(effects
 							(font
-								(size 1.016 1.016)
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 24.7163 -8.2825 0)
+					(length 2.54)
+					(name "RF_OUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
 							)
 						)
 					)
@@ -1137,6 +902,16 @@
 	)
 	(wire
 		(pts
+			(xy 33.02 63.5) (xy 33.02 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8d9314a-ff16-4980-9171-de9b905c9e53")
+	)
+	(wire
+		(pts
 			(xy 78.74 77.47) (xy 78.74 83.82)
 		)
 		(stroke
@@ -1190,206 +965,81 @@
 		)
 	)
 	(symbol
-		(lib_id "BGU7004_115:BGU7004,115")
-		(at 13.97 76.2 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "1589dd7c-99e7-4850-a23a-544ccb08d948")
-		(property "Reference" "IC1"
-			(at 30.48 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "BGU7004,115"
-			(at 30.48 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "BGU7004:BGU7004115"
-			(at 43.18 171.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.nxp.com/docs/en/data-sheet/BGU7004.pdf"
-			(at 43.18 271.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Description" "RF Amplifier Low Noise Amplifier"
-			(at 13.97 76.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Height" "0.5"
-			(at 43.18 471.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer_Name" "NXP"
-			(at 43.18 571.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer_Part_Number" "BGU7004,115"
-			(at 43.18 671.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Mouser Part Number" "771-BGU7004,115"
-			(at 43.18 771.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/NXP-Semiconductors/BGU7004115?qs=vbj%2FKoHZRAjvSA08C7lcmQ%3D%3D"
-			(at 43.18 871.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Arrow Part Number" ""
-			(at 43.18 971.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(property "Arrow Price/Stock" ""
-			(at 43.18 1071.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-				(hide yes)
-			)
-		)
-		(pin "6"
-			(uuid "8eda8c12-dec5-455e-88a6-b852b19396c3")
-		)
-		(pin "3"
-			(uuid "51312356-e23e-471d-a6bf-7ba4290369d9")
-		)
-		(pin "4"
-			(uuid "1cdcaf0c-b7c9-4741-b515-ab002fa78730")
-		)
-		(pin "2"
-			(uuid "70b5868f-1a77-4aa5-8335-c5fe1e111e4f")
-		)
-		(pin "1"
-			(uuid "7172c91b-9792-4a79-895c-d331e12206f6")
-		)
-		(pin "5"
-			(uuid "4cfa2fb4-1949-4e19-a65a-364d879016a9")
-		)
-		(instances
-			(project ""
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
-					(reference "IC1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
+<<<<<<< HEAD
+		(lib_id "RF_Amplifier:BGU7004")
+		(at 193.04 91.44 0)
+=======
 		(lib_id "YG0043AA:YG0043AA")
 		(at 50.8 50.8 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
+<<<<<<< HEAD
+		(uuid "a0c2b1a0-4bab-43e4-b466-425dfd567dc9")
+		(property "Reference" "U7"
+			(at 223.52 93.3754 0)
+=======
 		(uuid "9f27d22f-7c06-4f94-bcd4-a36c1bfaca72")
 		(property "Reference" "E1"
 			(at 54.61 48.0694 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+<<<<<<< HEAD
+			)
+		)
+		(property "Value" "~"
+			(at 223.52 95.9154 0)
+=======
 				(justify left)
 			)
 		)
 		(property "Value" "YG0043AA"
 			(at 54.61 50.6094 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+<<<<<<< HEAD
+			)
+		)
+		(property "Footprint" "SOT-886"
+			(at 193.04 92.71 0)
+=======
 				(justify left)
 			)
 		)
 		(property "Footprint" "YG0043AA:XDCR_YG0043AA"
 			(at 50.8 50.8 0)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+<<<<<<< HEAD
+=======
 				(justify bottom)
+>>>>>>> parent of 82eaf36 (hi!!!!!)
 				(hide yes)
 			)
 		)
 		(property "Datasheet" ""
-			(at 50.8 50.8 0)
+			(at 193.04 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
 		(property "Description" ""
-			(at 50.8 50.8 0)
+			(at 193.04 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1397,53 +1047,28 @@
 				(hide yes)
 			)
 		)
-		(property "PARTREV" "1.3"
-			(at 50.8 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "2"
+			(uuid "dc4903fe-39f1-42dd-9904-7d85b86fc89c")
 		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 50.8 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "3"
+			(uuid "ca0a7cbf-d815-4996-83d4-061303ce5189")
 		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "4.90 mm"
-			(at 50.8 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "4"
+			(uuid "56c267c1-fb02-46b2-a223-8cea88c20199")
 		)
-		(property "MANUFACTURER" "Quectel"
-			(at 50.8 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "6"
+			(uuid "87b8ffd0-83b6-4340-a746-3fa8f89a9904")
 		)
 		(pin "1"
-			(uuid "e282d1dd-4ff3-4e18-9d5d-a1e111904ea1")
+			(uuid "64bb3ae9-1f3b-4a81-9e07-648ab1d75590")
+		)
+		(pin "5"
+			(uuid "275eff60-35ed-480b-8b6f-2eced4e69834")
 		)
 		(instances
-			(project "Commodore 7"
+			(project ""
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
-					(reference "E1")
+					(reference "U7")
 					(unit 1)
 				)
 			)
@@ -1692,6 +1317,48 @@
 		)
 	)
 	(sheet
+		(at 25.4 52.07)
+		(size 12.7 11.43)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "085ae652-96da-4679-a380-e5a789d9eb34")
+		(property "Sheetname" "antenna"
+			(at 25.4 51.3584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "asdasd.kicad_sch"
+			(at 25.4 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
+					(page "12")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 50.8 78.74)
 		(size 21.59 11.43)
 		(exclude_from_sim no)
@@ -1729,6 +1396,48 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
 					(page "11")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 21.59 80.01)
+		(size 21.59 7.62)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "c316ab5d-d2ae-4314-a2e6-874be36bfe96")
+		(property "Sheetname" "LNA"
+			(at 21.59 79.2984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "untitled.kicad_sch"
+			(at 21.59 88.2146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/bd54c1aa-247c-4340-9de9-44d0c0e040e9"
+					(page "10")
 				)
 			)
 		)
