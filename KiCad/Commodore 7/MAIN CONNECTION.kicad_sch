@@ -2325,6 +2325,12 @@
 		(uuid "8d82247a-884c-4a6d-90a1-5df71f999e16")
 	)
 	(junction
+		(at 52.07 149.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "93f3cdf1-db43-4623-a783-7b41764742e4")
+	)
+	(junction
 		(at 90.17 66.04)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2389,12 +2395,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f3c1aa5f-725d-4b51-ac05-d267eddf4c1f")
-	)
-	(junction
-		(at 52.07 149.86)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f8074417-5330-40bf-bcc9-39bafd360dd5")
 	)
 	(junction
 		(at 116.84 82.55)
@@ -2521,6 +2521,16 @@
 			(type default)
 		)
 		(uuid "15ce95b3-86ee-4937-bec7-a981bcc6fe79")
+	)
+	(wire
+		(pts
+			(xy 52.07 149.86) (xy 72.39 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "19644b76-d487-4c5c-953a-ad61170e2da1")
 	)
 	(wire
 		(pts
@@ -2661,16 +2671,6 @@
 			(type default)
 		)
 		(uuid "44243adf-483b-4fdc-bf4a-29abd47ffe39")
-	)
-	(wire
-		(pts
-			(xy 52.07 149.86) (xy 72.39 149.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "450c1527-d41d-4c11-b728-0a3bbc6c9676")
 	)
 	(wire
 		(pts
@@ -2854,16 +2854,6 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 149.86) (xy 52.07 149.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "74247577-2ad8-4eae-9f0d-65610b917f54")
-	)
-	(wire
-		(pts
 			(xy 207.01 77.47) (xy 185.42 77.47)
 		)
 		(stroke
@@ -2881,6 +2871,16 @@
 			(type default)
 		)
 		(uuid "7601d2d4-b3a3-4c23-b335-366f1d16dd31")
+	)
+	(wire
+		(pts
+			(xy 43.18 149.86) (xy 52.07 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "77708554-6451-40d1-a223-6b41c02ec71b")
 	)
 	(wire
 		(pts
@@ -2931,6 +2931,16 @@
 			(type default)
 		)
 		(uuid "800d45f0-25f8-416e-acae-cd822c02723d")
+	)
+	(wire
+		(pts
+			(xy 59.69 109.22) (xy 59.69 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "82935875-8e9a-4c9a-99c1-0fd85f389d75")
 	)
 	(wire
 		(pts
@@ -3011,6 +3021,16 @@
 			(type default)
 		)
 		(uuid "976c3893-98c1-44b7-85c4-577e8d641cea")
+	)
+	(wire
+		(pts
+			(xy 52.07 138.43) (xy 52.07 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ebe7e48-0e26-4510-b8b1-a41feb2fa279")
 	)
 	(wire
 		(pts
@@ -3134,16 +3154,6 @@
 	)
 	(wire
 		(pts
-			(xy 59.69 147.32) (xy 59.69 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bed4b8b3-2833-48fc-8c17-3c41cc5dd8e1")
-	)
-	(wire
-		(pts
 			(xy 93.98 59.69) (xy 95.25 59.69)
 		)
 		(stroke
@@ -3251,16 +3261,6 @@
 			(type default)
 		)
 		(uuid "e5e26bbc-8b76-4e12-9590-445373423dae")
-	)
-	(wire
-		(pts
-			(xy 52.07 138.43) (xy 52.07 149.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e7aa29fe-b878-4dcf-af8e-1793e74d9744")
 	)
 	(wire
 		(pts
@@ -5871,7 +5871,7 @@
 	)
 	(symbol
 		(lib_id "2025-10-06_20-52-39:CRG0805F2K7")
-		(at 52.07 138.43 180)
+		(at 39.37 138.43 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5879,7 +5879,7 @@
 		(dnp no)
 		(uuid "d1dd46b7-c179-420c-835a-8dc9fd545d28")
 		(property "Reference" "R23"
-			(at 48.006 140.97 0)
+			(at 43.434 135.89 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -5887,7 +5887,7 @@
 			)
 		)
 		(property "Value" "2.7K"
-			(at 42.672 141.224 0)
+			(at 48.768 135.636 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -5895,7 +5895,7 @@
 			)
 		)
 		(property "Footprint" "CRG0805F2K7:RES0805_CRG_TYCO_TYC"
-			(at 52.07 138.43 0)
+			(at 39.37 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5905,7 +5905,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1773204&DocType=Data+Sheet&DocLang=English&PartCntxt=1623181-1&DocFormat=pdf"
-			(at 52.07 138.43 0)
+			(at 39.37 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5915,7 +5915,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 52.07 138.43 0)
+			(at 39.37 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
