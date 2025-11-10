@@ -3534,28 +3534,6 @@
 			)
 		)
 	)
-	(global_label "I2C-SCL-MAIN"
-		(shape input)
-		(at 201.93 114.3 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "4c964dac-5cdb-4a33-8f61-ce5b14cc41ff")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.7328 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "SDA-IIM1"
 		(shape input)
 		(at 226.06 134.62 180)
@@ -3723,6 +3701,28 @@
 		(uuid "94e552dd-0c64-4bf5-ad17-48926b5b5d5d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 45.2143 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "I2C-SLC-MAIN"
+		(shape input)
+		(at 201.93 114.3 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "964d7b7f-d319-473d-b1dd-28f6674c0142")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 184.7328 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
