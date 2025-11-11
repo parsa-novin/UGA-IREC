@@ -6432,6 +6432,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Bit Bang\n"
+		(exclude_from_sim no)
+		(at 339.344 112.014 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "4e6b3549-cd94-4e55-a4b9-bb9afcd77b0f")
+	)
 	(text "FLASH IC\n"
 		(exclude_from_sim no)
 		(at 279.654 155.194 0)
@@ -6441,6 +6451,16 @@
 			)
 		)
 		(uuid "9ce5aaa8-a7f3-4b18-aca6-b87fc5856f8c")
+	)
+	(text "Bit Bang\n"
+		(exclude_from_sim no)
+		(at 255.778 138.684 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b78d6d30-a9ba-4ef7-abf2-eed0b60290cc")
 	)
 	(text "SD Card"
 		(exclude_from_sim no)
@@ -6797,6 +6817,16 @@
 			(type default)
 		)
 		(uuid "0688cf7f-ffce-423c-8d47-7251de6c6a38")
+	)
+	(wire
+		(pts
+			(xy 238.76 143.51) (xy 207.01 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "068beb2a-b4db-45ab-b53c-e9c681558a15")
 	)
 	(wire
 		(pts
@@ -7440,6 +7470,16 @@
 	)
 	(wire
 		(pts
+			(xy 238.76 137.16) (xy 238.76 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "538b35cd-9731-443a-bc46-a45ea9701e48")
+	)
+	(wire
+		(pts
 			(xy 406.4 68.58) (xy 420.37 68.58)
 		)
 		(stroke
@@ -7580,6 +7620,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 113.03) (xy 156.21 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61ec1721-3577-43b0-a6e7-2eeffe149135")
+	)
+	(wire
+		(pts
 			(xy 189.23 59.69) (xy 189.23 60.96)
 		)
 		(stroke
@@ -7690,6 +7740,16 @@
 	)
 	(wire
 		(pts
+			(xy 238.76 137.16) (xy 240.03 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7abbbfac-e435-4dd6-905a-c2c3a7c1dbea")
+	)
+	(wire
+		(pts
 			(xy 207.01 113.03) (xy 240.03 113.03)
 		)
 		(stroke
@@ -7707,6 +7767,16 @@
 			(type default)
 		)
 		(uuid "7b609284-013d-4fe2-95fd-55ea63be0a1b")
+	)
+	(wire
+		(pts
+			(xy 240.03 139.7) (xy 240.03 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d51cb24-7ed3-4fb7-a8b7-071af722e887")
 	)
 	(wire
 		(pts
@@ -8540,6 +8610,16 @@
 	)
 	(wire
 		(pts
+			(xy 207.01 146.05) (xy 240.03 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ece50465-a43c-4883-9db1-39709cc2617e")
+	)
+	(wire
+		(pts
 			(xy 127 123.19) (xy 156.21 123.19)
 		)
 		(stroke
@@ -8846,6 +8926,28 @@
 			)
 		)
 	)
+	(global_label "GPS_PPS"
+		(shape input)
+		(at 144.78 113.03 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "22ccd026-ab22-415d-974c-92c26e4a0afa")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 133.3282 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "H5_SWO"
 		(shape output)
 		(at 210.82 151.13 0)
@@ -8881,6 +8983,50 @@
 		(uuid "2c0352da-9e91-4986-af00-d9352ff9586a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 252.0261 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "UART_RX"
+		(shape input)
+		(at 240.03 139.7 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2c273825-af25-452c-adcd-b28fc2019dd6")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 251.119 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "UART_TX"
+		(shape input)
+		(at 240.03 137.16 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2c41eb4d-eb16-4f74-8d84-e2b7ffdfbcfe")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 250.8166 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
