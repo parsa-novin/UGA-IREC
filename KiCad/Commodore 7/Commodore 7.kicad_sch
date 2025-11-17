@@ -1501,6 +1501,16 @@
 		)
 		(uuid "ed45b43a-71e8-4383-830e-71bcdebbbbc1")
 	)
+	(wire
+		(pts
+			(xy 149.86 74.93) (xy 156.21 74.93)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "33bdb3f3-5b18-4481-9187-ba1fe4710e47")
+	)
 	(global_label "VBATT"
 		(shape input)
 		(at 168.91 87.63 0)
@@ -1811,7 +1821,7 @@
 	)
 	(global_label "I2C-SDA-MAIN"
 		(shape input)
-		(at 156.21 74.93 180)
+		(at 149.86 74.93 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1821,7 +1831,7 @@
 		)
 		(uuid "a9771cb4-9cf1-40d6-b6d4-adb6cadd94ef")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 138.9523 74.93 0)
+			(at 132.6023 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2367,7 +2377,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_2x20_P1.00mm_Vertical"
 			(at 161.29 95.25 0)
 			(effects
 				(font
