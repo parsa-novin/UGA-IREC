@@ -6617,6 +6617,16 @@
 	)
 	(wire
 		(pts
+			(xy 267.97 135.89) (xy 273.05 135.89)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4322e7ef-29f9-4752-bb37-96d6988f5c5a")
+	)
+	(wire
+		(pts
 			(xy 35.56 100.33) (xy 33.02 100.33)
 		)
 		(stroke
@@ -7177,6 +7187,16 @@
 	)
 	(wire
 		(pts
+			(xy 267.97 133.35) (xy 271.78 133.35)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c8abab52-bfae-49fd-b291-ecd7397cacc9")
+	)
+	(wire
+		(pts
 			(xy 231.14 127) (xy 234.95 127)
 		)
 		(stroke
@@ -7685,6 +7705,28 @@
 			)
 		)
 	)
+	(global_label "UART_TX"
+		(shape input)
+		(at 271.78 133.35 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7730b3b8-27f9-40f5-a572-93f16d176e7c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 282.5666 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "TXD"
 		(shape input)
 		(at 238.76 92.71 180)
@@ -7918,6 +7960,28 @@
 		(uuid "cba1cdcb-353f-47ae-bd54-3a52ad54937d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 271.0157 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "UART_RX"
+		(shape input)
+		(at 273.05 135.89 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ccfdc62b-acfe-4215-a378-d58ea74b452c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 284.139 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
