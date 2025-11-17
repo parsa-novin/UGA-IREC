@@ -1941,7 +1941,7 @@
 			)
 		)
 	)
-	(global_label "IIM-MAIN-RESET"
+	(global_label "I2C-MAIN-RESET"
 		(shape input)
 		(at 156.21 110.49 180)
 		(fields_autoplaced yes)
@@ -1953,7 +1953,7 @@
 		)
 		(uuid "e31322b4-fe14-4930-8e99-e91fc9bc82d8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 137.1986 110.49 0)
+			(at 136.7753 110.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2367,7 +2367,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_2x20_P1.00mm_Vertical"
+		(property "Footprint" ""
 			(at 161.29 95.25 0)
 			(effects
 				(font
