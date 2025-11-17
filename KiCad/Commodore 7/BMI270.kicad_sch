@@ -1156,6 +1156,16 @@
 	)
 	(wire
 		(pts
+			(xy 162.56 118.11) (xy 162.56 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c5a0f63-0edb-4c51-8182-15432edd8aa6")
+	)
+	(wire
+		(pts
 			(xy 142.24 127) (xy 142.24 120.65)
 		)
 		(stroke
@@ -1173,16 +1183,6 @@
 			(type default)
 		)
 		(uuid "199c345a-67eb-4037-be9b-2950ea1a2b04")
-	)
-	(wire
-		(pts
-			(xy 162.56 97.79) (xy 162.56 118.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1c730dbc-4a67-4867-9139-34ac1416c9fa")
 	)
 	(wire
 		(pts
@@ -1707,7 +1707,7 @@
 	)
 	(symbol
 		(lib_id "2025-10-06_19-12-57:CC0603KRX7R7BB104")
-		(at 162.56 97.79 90)
+		(at 162.56 90.17 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1715,7 +1715,7 @@
 		(dnp no)
 		(uuid "456f5947-e040-4552-9327-2dbc7b9273d5")
 		(property "Reference" "C2"
-			(at 163.576 91.186 90)
+			(at 161.544 96.774 90)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -1724,7 +1724,7 @@
 			)
 		)
 		(property "Value" ".1uF"
-			(at 164.338 95.758 90)
+			(at 160.782 92.202 90)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -1733,7 +1733,7 @@
 			)
 		)
 		(property "Footprint" "CC0603KRXQRQBB104:CC0603N_YAG"
-			(at 162.56 97.79 0)
+			(at 162.56 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1743,7 +1743,7 @@
 			)
 		)
 		(property "Datasheet" "CC0603KRX7R7BB104"
-			(at 162.56 97.79 0)
+			(at 162.56 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1753,7 +1753,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 162.56 97.79 0)
+			(at 162.56 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
