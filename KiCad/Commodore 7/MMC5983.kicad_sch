@@ -905,36 +905,50 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:GNDA"
-			(power)
-			(pin_numbers
-				(hide yes)
-			)
+		(symbol "RC0402FR:RC0402FR-074K7L"
 			(pin_names
-				(offset 0)
-				(hide yes)
+				(offset 0.254)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "#PWR"
-				(at 0 -6.35 0)
+			(property "Reference" "R"
+				(at 5.715 3.81 0)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "RC0402FR-074K7L"
+				(at 6.35 -3.81 0)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "YAG_R0402_YAG"
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
+						(italic yes)
 					)
 					(hide yes)
 				)
 			)
-			(property "Value" "GNDA"
-				(at 0 -3.81 0)
+			(property "Datasheet" "RC0402FR-074K7L"
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
+						(italic yes)
 					)
+					(hide yes)
 				)
 			)
-			(property "Footprint" ""
+			(property "Description" ""
 				(at 0 0 0)
 				(effects
 					(font
@@ -943,7 +957,15 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" ""
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "RC0402FR-074K7L"
 				(at 0 0 0)
 				(effects
 					(font
@@ -952,7 +974,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"GNDA\" , analog ground"
+			(property "ki_fp_filters" "YAG_R0402_YAG YAG_R0402_YAG-M YAG_R0402_YAG-L"
 				(at 0 0 0)
 				(effects
 					(font
@@ -961,34 +983,95 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "GNDA_0_1"
+			(symbol "RC0402FR-074K7L_1_1"
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+						(xy 2.54 0) (xy 3.175 1.27)
 					)
 					(stroke
-						(width 0)
+						(width 0.2032)
 						(type default)
 					)
 					(fill
 						(type none)
 					)
 				)
-			)
-			(symbol "GNDA_1_1"
-				(pin power_in line
-					(at 0 0 270)
-					(length 0)
-					(name "~"
+				(polyline
+					(pts
+						(xy 3.175 1.27) (xy 4.445 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 4.445 -1.27) (xy 5.715 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.715 1.27) (xy 6.985 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 6.985 -1.27) (xy 8.255 1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 8.255 1.27) (xy 9.525 -1.27)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 9.525 -1.27) (xy 10.16 0)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin unspecified line
+					(at 0 0 0)
+					(length 2.54)
+					(name ""
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -996,6 +1079,146 @@
 						)
 					)
 					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 12.7 0 180)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "RC0402FR-074K7L_1_2"
+				(polyline
+					(pts
+						(xy -1.27 8.255) (xy 1.27 9.525)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 5.715) (xy 1.27 6.985)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 3.175) (xy 1.27 4.445)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy -1.27 3.175)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 9.525) (xy 0 10.16)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 6.985) (xy -1.27 8.255)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 4.445) (xy -1.27 5.715)
+					)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin unspecified line
+					(at 0 12.7 270)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 0 0 90)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1138,10 +1361,22 @@
 		(uuid "585221e7-88fc-4d53-a40f-f441c1be722b")
 	)
 	(junction
+		(at 104.14 92.71)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d0283ad2-3c6f-40b4-a60e-ea8d8a77b300")
+	)
+	(junction
 		(at 177.8 85.09)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d3afcb97-aab6-434d-985f-1b4a1f928f25")
+	)
+	(junction
+		(at 97.79 90.17)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fad8102f-c7ba-42d4-8981-3ffd2f1ee930")
 	)
 	(wire
 		(pts
@@ -1175,6 +1410,16 @@
 	)
 	(wire
 		(pts
+			(xy 104.14 69.85) (xy 104.14 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "39691c4e-9693-47ec-8325-42804e261756")
+	)
+	(wire
+		(pts
 			(xy 177.8 85.09) (xy 182.88 85.09)
 		)
 		(stroke
@@ -1202,6 +1447,16 @@
 			(type default)
 		)
 		(uuid "5ddbe4da-3bf6-4e72-b3af-d422102d5c36")
+	)
+	(wire
+		(pts
+			(xy 104.14 92.71) (xy 118.11 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "69355ad8-02d2-445d-9e1e-5a53ac376d42")
 	)
 	(wire
 		(pts
@@ -1245,7 +1500,7 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 92.71) (xy 118.11 92.71)
+			(xy 92.71 92.71) (xy 104.14 92.71)
 		)
 		(stroke
 			(width 0)
@@ -1255,13 +1510,23 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 90.17) (xy 118.11 90.17)
+			(xy 93.98 90.17) (xy 97.79 90.17)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "b53c746b-33d7-45c5-962c-92c3bcff7d0a")
+	)
+	(wire
+		(pts
+			(xy 97.79 59.69) (xy 97.79 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bcfe0f8c-2834-428f-8cfe-d115a3662a6a")
 	)
 	(wire
 		(pts
@@ -1272,6 +1537,16 @@
 			(type default)
 		)
 		(uuid "c4fe8f65-0e93-4e87-888b-36a4922359a8")
+	)
+	(wire
+		(pts
+			(xy 97.79 90.17) (xy 118.11 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c915f534-c2fb-4d94-81af-a0535d8fa547")
 	)
 	(wire
 		(pts
@@ -1506,52 +1781,55 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GNDA")
-		(at 162.56 69.85 180)
+		(lib_id "RC0402FR:RC0402FR-074K7L")
+		(at 97.79 46.99 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "209bc9b8-65ff-4884-ae8d-846d15cad946")
-		(property "Reference" "#PWR016"
-			(at 162.56 63.5 0)
+		(uuid "2e928309-3610-41c0-8bb3-ba746bc961f0")
+		(property "Reference" "R12"
+			(at 100.33 52.0699 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 100.33 54.6099 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "YAG_R0402_YAG"
+			(at 97.79 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
+					(italic yes)
 				)
 				(hide yes)
 			)
 		)
-		(property "Value" "GNDA"
-			(at 162.56 64.77 0)
+		(property "Datasheet" "RC0402FR-074K7L"
+			(at 97.79 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 162.56 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
+					(italic yes)
 				)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
-			(at 162.56 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDA\" , analog ground"
-			(at 162.56 69.85 0)
+		(property "Description" ""
+			(at 97.79 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1560,12 +1838,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "6d2237c0-ec7d-4e51-82d2-970f3270f1f3")
+			(uuid "07835eae-818a-4dae-9f30-732fd02e4065")
+		)
+		(pin "2"
+			(uuid "92893e3a-5ef9-4b6c-80d0-34454bba25b1")
 		)
 		(instances
-			(project "Commodore 7"
+			(project ""
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
-					(reference "#PWR016")
+					(reference "R12")
 					(unit 1)
 				)
 			)
@@ -1632,6 +1913,72 @@
 			(project ""
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
 					(reference "#PWR013")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDD")
+		(at 162.56 69.85 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "47dbdfc0-bed4-4919-83f9-e6fd972d9f8d")
+		(property "Reference" "#PWR016"
+			(at 162.56 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDD"
+			(at 162.56 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 162.56 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 162.56 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
+			(at 162.56 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "aa1c27d7-0e9f-4183-bcb6-244697548c21")
+		)
+		(instances
+			(project ""
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -1849,6 +2196,78 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
 					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RC0402FR:RC0402FR-074K7L")
+		(at 104.14 57.15 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8f7b3710-44fe-47b7-bf40-bda0ce1ce31c")
+		(property "Reference" "R11"
+			(at 106.68 62.2299 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 106.68 64.7699 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "YAG_R0402_YAG"
+			(at 104.14 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "RC0402FR-074K7L"
+			(at 104.14 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 104.14 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ff90f1da-bf2a-48f6-a60f-81af9fb357e0")
+		)
+		(pin "2"
+			(uuid "e073cdbf-8a20-4c2b-a480-13faffb25385")
+		)
+		(instances
+			(project ""
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
+					(reference "R11")
 					(unit 1)
 				)
 			)
