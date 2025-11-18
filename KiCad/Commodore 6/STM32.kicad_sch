@@ -7936,6 +7936,16 @@
 	)
 	(wire
 		(pts
+			(xy 147.32 118.11) (xy 156.21 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "991ac1ac-8085-4b59-9da2-157ae3480749")
+	)
+	(wire
+		(pts
 			(xy 332.74 78.74) (xy 346.71 78.74)
 		)
 		(stroke
@@ -9240,6 +9250,28 @@
 			)
 		)
 	)
+	(global_label "SPI_NSS_RADIO"
+		(shape input)
+		(at 147.32 118.11 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4f261334-753b-4b5c-a411-aa2325acf223")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 130.0019 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "SPI_MOSI"
 		(shape input)
 		(at 424.18 179.07 0)
@@ -10330,7 +10362,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "06f5a9cf-d870-46fe-a986-be542cf319ae")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR015"
 			(at 381 76.2 0)
 			(effects
 				(font
@@ -10380,7 +10412,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR013")
+					(reference "#PWR015")
 					(unit 1)
 				)
 			)
@@ -10396,7 +10428,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "07a69f3a-2671-452d-959f-e09f7abccd33")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR010"
 			(at 274.32 161.29 0)
 			(effects
 				(font
@@ -10447,7 +10479,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR09")
+					(reference "#PWR010")
 					(unit 1)
 				)
 			)
@@ -10532,7 +10564,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "29ebc6ab-c511-46c3-86ab-e3408e4e8fe9")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR013"
 			(at 307.34 100.33 0)
 			(effects
 				(font
@@ -10582,7 +10614,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR012")
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -10597,7 +10629,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "32ec561f-9c8d-400c-905d-3883949c359e")
-		(property "Reference" "#PWR0117"
+		(property "Reference" "#PWR04"
 			(at 129.54 114.3 0)
 			(effects
 				(font
@@ -10647,7 +10679,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR0117")
+					(reference "#PWR04")
 					(unit 1)
 				)
 			)
@@ -11391,7 +11423,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "54e1aa3c-bb9e-4401-804f-f34d76d1e262")
-		(property "Reference" "#PWR04"
+		(property "Reference" "#PWR05"
 			(at 179.07 76.2 0)
 			(effects
 				(font
@@ -11441,7 +11473,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR04")
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -11793,7 +11825,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "90bccfd3-1108-4175-aa7c-78ce4ef50447")
-		(property "Reference" "#PWR0118"
+		(property "Reference" "#PWR014"
 			(at 355.6 105.41 0)
 			(effects
 				(font
@@ -11843,7 +11875,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR0118")
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
@@ -11859,7 +11891,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "91adbd4c-7a0b-48b1-9cd8-0c9c150f73fe")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR012"
 			(at 264.16 166.37 0)
 			(effects
 				(font
@@ -11910,7 +11942,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR011")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -11926,7 +11958,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "91cbc3a4-50a4-4407-9bc7-93208363abf5")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR011"
 			(at 274.32 163.83 0)
 			(effects
 				(font
@@ -11977,7 +12009,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR010")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)
@@ -11992,7 +12024,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9667655d-60df-435d-b82b-b0edada57ff1")
-		(property "Reference" "#PWR08"
+		(property "Reference" "#PWR09"
 			(at 250.19 149.86 0)
 			(effects
 				(font
@@ -12042,7 +12074,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR08")
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -12057,7 +12089,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9a8d956e-664b-4ce6-ae70-ca6964a69f07")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR018"
 			(at 433.07 88.9 0)
 			(effects
 				(font
@@ -12107,7 +12139,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR016")
+					(reference "#PWR018")
 					(unit 1)
 				)
 			)
@@ -12191,7 +12223,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9ff32548-2bef-4928-8513-f5419c1ef938")
-		(property "Reference" "#PWR05"
+		(property "Reference" "#PWR06"
 			(at 182.88 196.85 0)
 			(effects
 				(font
@@ -12241,7 +12273,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR05")
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -12326,7 +12358,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a87a396a-992b-4a18-96ba-09425b9d932a")
-		(property "Reference" "C3"
+		(property "Reference" "C4"
 			(at 134.62 83.8199 0)
 			(effects
 				(font
@@ -12380,7 +12412,7 @@
 		(instances
 			(project "STM32"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "C3")
+					(reference "C4")
 					(unit 1)
 				)
 			)
@@ -12470,7 +12502,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "adf2e76b-d98e-4363-8132-cf54bfaad280")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR017"
 			(at 391.16 59.69 0)
 			(effects
 				(font
@@ -12520,7 +12552,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR015")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -12535,7 +12567,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b296ad6e-5c44-4e3e-a8fc-304f05bb049f")
-		(property "Reference" "#PWR06"
+		(property "Reference" "#PWR07"
 			(at 189.23 63.5 0)
 			(effects
 				(font
@@ -12585,7 +12617,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR06")
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -12600,7 +12632,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "bbfb39e4-2010-47a7-86a6-f2c71167852e")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR016"
 			(at 384.81 199.39 0)
 			(effects
 				(font
@@ -12650,7 +12682,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR014")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -12966,7 +12998,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cc218654-88e4-42fe-a6aa-c040f9b670dc")
-		(property "Reference" "C4"
+		(property "Reference" "C5"
 			(at 148.59 83.8199 0)
 			(effects
 				(font
@@ -13020,7 +13052,7 @@
 		(instances
 			(project ""
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "C4")
+					(reference "C5")
 					(unit 1)
 				)
 			)
@@ -13185,7 +13217,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d2a4b171-5f51-411f-b45c-4dce2b8ca06e")
-		(property "Reference" "#PWR07"
+		(property "Reference" "#PWR08"
 			(at 232.41 88.9 0)
 			(effects
 				(font
@@ -13235,7 +13267,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "#PWR07")
+					(reference "#PWR08")
 					(unit 1)
 				)
 			)
@@ -13250,7 +13282,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d41dde07-3d6c-4bad-b504-1f469b836d61")
-		(property "Reference" "C5"
+		(property "Reference" "C3"
 			(at 136.398 104.902 0)
 			(effects
 				(font
@@ -13304,7 +13336,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "C5")
+					(reference "C3")
 					(unit 1)
 				)
 			)
@@ -13320,7 +13352,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d8af893f-182a-49c3-b384-381eb69fac48")
-		(property "Reference" "C13"
+		(property "Reference" "C14"
 			(at 350.52 83.8199 0)
 			(effects
 				(font
@@ -13374,7 +13406,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "C13")
+					(reference "C14")
 					(unit 1)
 				)
 			)
@@ -13553,7 +13585,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f7f750df-11f7-41e5-9309-9ac1c4d3e250")
-		(property "Reference" "C14"
+		(property "Reference" "C13"
 			(at 345.694 105.156 0)
 			(effects
 				(font
@@ -13607,7 +13639,7 @@
 		(instances
 			(project "Commodore 6"
 				(path "/27ad1105-577c-4f6a-be9a-9e41c9021a88/42b4c9db-c3d3-48b6-9c84-e282be31bb83"
-					(reference "C14")
+					(reference "C13")
 					(unit 1)
 				)
 			)
