@@ -7936,16 +7936,6 @@
 	)
 	(wire
 		(pts
-			(xy 147.32 118.11) (xy 156.21 118.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "991ac1ac-8085-4b59-9da2-157ae3480749")
-	)
-	(wire
-		(pts
 			(xy 332.74 78.74) (xy 346.71 78.74)
 		)
 		(stroke
@@ -7993,6 +7983,16 @@
 			(type default)
 		)
 		(uuid "9e32f201-de8c-4707-b5e3-e98cdeef2722")
+	)
+	(wire
+		(pts
+			(xy 127 135.89) (xy 156.21 135.89)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a25ee65e-7de4-40e9-9985-2560ba28a917")
 	)
 	(wire
 		(pts
@@ -9250,28 +9250,6 @@
 			)
 		)
 	)
-	(global_label "SPI_NSS_RADIO"
-		(shape input)
-		(at 147.32 118.11 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "4f261334-753b-4b5c-a411-aa2325acf223")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 130.0019 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "SPI_MOSI"
 		(shape input)
 		(at 424.18 179.07 0)
@@ -9554,6 +9532,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SPI_NSS_RADIO"
+		(shape input)
+		(at 127 135.89 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "896712e8-3b1c-4610-970d-a022cd0508cd")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 109.6819 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
