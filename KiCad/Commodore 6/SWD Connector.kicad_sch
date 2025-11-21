@@ -4161,8 +4161,8 @@
 		(uuid 49ab432b-0b64-4209-933f-7c7257dbdd77)
 	)
 	(rectangle
-		(start 176.022 92.964)
-		(end 250.698 159.766)
+		(start 174.752 92.456)
+		(end 253.238 159.258)
 		(stroke
 			(width 0)
 			(type default)
@@ -4248,7 +4248,7 @@
 	)
 	(text "Board Connector\n\n"
 		(exclude_from_sim no)
-		(at 191.77 92.456 0)
+		(at 190.5 92.456 0)
 		(effects
 			(font
 				(size 2.54 2.54)
@@ -5608,7 +5608,7 @@
 			)
 		)
 	)
-	(global_label "B"
+	(global_label "M_TRANS_B"
 		(shape input)
 		(at 237.49 124.46 0)
 		(fields_autoplaced yes)
@@ -5620,7 +5620,7 @@
 		)
 		(uuid "1b15d414-b7bf-47e6-aa2f-abbc106a2af7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 241.7452 124.46 0)
+			(at 250.998 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5652,7 +5652,7 @@
 			)
 		)
 	)
-	(global_label "Y"
+	(global_label "M_TRANS_Y"
 		(shape input)
 		(at 237.49 129.54 0)
 		(fields_autoplaced yes)
@@ -5664,7 +5664,7 @@
 		)
 		(uuid "1ca9a371-0639-4bd5-a8fd-31369ffdb2aa")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 241.5638 129.54 0)
+			(at 250.8166 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5740,7 +5740,7 @@
 			)
 		)
 	)
-	(global_label "SDA"
+	(global_label "I2C_SDA"
 		(shape input)
 		(at 190.5 106.68 180)
 		(fields_autoplaced yes)
@@ -5752,7 +5752,7 @@
 		)
 		(uuid "3590f0a7-5822-4a3c-9176-abe1d6e1794b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 183.9467 106.68 0)
+			(at 179.8948 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5762,7 +5762,7 @@
 			)
 		)
 	)
-	(global_label "X"
+	(global_label "M_TRANS_Z"
 		(shape input)
 		(at 190.5 129.54 180)
 		(fields_autoplaced yes)
@@ -5774,7 +5774,7 @@
 		)
 		(uuid "3c8dadac-c2af-4926-a54e-62f2e3c8baac")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 186.3053 129.54 0)
+			(at 177.0525 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6202,7 +6202,7 @@
 			)
 		)
 	)
-	(global_label "A"
+	(global_label "M_TRANS_A"
 		(shape input)
 		(at 190.5 124.46 180)
 		(fields_autoplaced yes)
@@ -6214,7 +6214,7 @@
 		)
 		(uuid "ccdcd853-6637-4a45-978b-992554b15fa9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 186.4262 124.46 0)
+			(at 177.1734 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6356,7 +6356,7 @@
 			)
 		)
 	)
-	(global_label "SCL"
+	(global_label "I2C_SCL"
 		(shape input)
 		(at 237.49 106.68 0)
 		(fields_autoplaced yes)
@@ -6368,7 +6368,7 @@
 		)
 		(uuid "ef9f3d1e-3daa-4e83-b3af-98a5cc2fb40c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 243.9828 106.68 0)
+			(at 248.0347 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
