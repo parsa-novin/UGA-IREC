@@ -7646,7 +7646,7 @@
 	)
 	(wire
 		(pts
-			(xy 339.09 107.95) (xy 349.25 107.95)
+			(xy 339.09 107.95) (xy 355.6 107.95)
 		)
 		(stroke
 			(width 0)
@@ -8603,16 +8603,6 @@
 			(type default)
 		)
 		(uuid "ece50465-a43c-4883-9db1-39709cc2617e")
-	)
-	(wire
-		(pts
-			(xy 349.25 105.41) (xy 349.25 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ee13b709-fdb3-4a2a-8922-31525d25e310")
 	)
 	(wire
 		(pts
@@ -11818,7 +11808,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDD")
-		(at 349.25 105.41 90)
+		(at 355.6 107.95 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11826,7 +11816,7 @@
 		(dnp no)
 		(uuid "90bccfd3-1108-4175-aa7c-78ce4ef50447")
 		(property "Reference" "#PWR014"
-			(at 355.6 105.41 0)
+			(at 361.95 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11835,7 +11825,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 353.06 105.41 0)
+			(at 359.41 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11843,7 +11833,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 349.25 105.41 0)
+			(at 355.6 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11852,7 +11842,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 349.25 105.41 0)
+			(at 355.6 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11861,7 +11851,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 349.25 105.41 0)
+			(at 355.6 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
