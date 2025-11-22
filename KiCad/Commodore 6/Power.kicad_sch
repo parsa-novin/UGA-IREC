@@ -6551,7 +6551,7 @@
 	)
 	(wire
 		(pts
-			(xy 247.65 138.43) (xy 226.06 138.43)
+			(xy 251.46 138.43) (xy 226.06 138.43)
 		)
 		(stroke
 			(width 0)
@@ -6621,7 +6621,7 @@
 	)
 	(wire
 		(pts
-			(xy 267.97 135.89) (xy 273.05 135.89)
+			(xy 267.97 135.89) (xy 274.32 135.89)
 		)
 		(stroke
 			(width 0)
@@ -6891,7 +6891,17 @@
 	)
 	(wire
 		(pts
-			(xy 247.65 119.38) (xy 247.65 138.43)
+			(xy 224.79 127) (xy 220.98 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7eabd586-269c-45b3-a0dd-228f2680a292")
+	)
+	(wire
+		(pts
+			(xy 251.46 119.38) (xy 251.46 138.43)
 		)
 		(stroke
 			(width 0)
@@ -7101,7 +7111,7 @@
 	)
 	(wire
 		(pts
-			(xy 226.06 119.38) (xy 247.65 119.38)
+			(xy 229.87 119.38) (xy 251.46 119.38)
 		)
 		(stroke
 			(width 0)
@@ -7181,7 +7191,7 @@
 	)
 	(wire
 		(pts
-			(xy 267.97 133.35) (xy 273.05 133.35)
+			(xy 267.97 133.35) (xy 274.32 133.35)
 		)
 		(stroke
 			(width 0)
@@ -7191,7 +7201,7 @@
 	)
 	(wire
 		(pts
-			(xy 231.14 127) (xy 234.95 127)
+			(xy 234.95 127) (xy 238.76 127)
 		)
 		(stroke
 			(width 0)
@@ -7469,6 +7479,16 @@
 		)
 		(uuid "fdd94d99-270b-4a99-8dba-098261f6865a")
 	)
+	(label "mosfet_big"
+		(at 222.25 127 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d1b6787a-19fb-4613-bf7a-bec1f57ffcdf")
+	)
 	(global_label "+5V"
 		(shape input)
 		(at 39.37 34.29 180)
@@ -7691,7 +7711,7 @@
 	)
 	(global_label "UART_TX"
 		(shape input)
-		(at 271.78 133.35 0)
+		(at 274.32 133.35 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7701,7 +7721,7 @@
 		)
 		(uuid "7730b3b8-27f9-40f5-a572-93f16d176e7c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 282.5666 133.35 0)
+			(at 285.1066 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7955,7 +7975,7 @@
 	)
 	(global_label "UART_RX"
 		(shape input)
-		(at 273.05 135.89 0)
+		(at 274.32 135.89 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7965,7 +7985,7 @@
 		)
 		(uuid "ccfdc62b-acfe-4215-a378-d58ea74b452c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 284.139 135.89 0)
+			(at 285.409 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7977,7 +7997,7 @@
 	)
 	(global_label "8.4V_evil"
 		(shape input)
-		(at 234.95 127 0)
+		(at 238.76 127 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7987,7 +8007,7 @@
 		)
 		(uuid "d4eb64bb-5f39-4d48-b774-68f46f3ca4f0")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 246.3414 127 0)
+			(at 250.1514 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11712,7 +11732,7 @@
 	)
 	(symbol
 		(lib_id "Simulation_SPICE:PMOS")
-		(at 226.06 124.46 270)
+		(at 229.87 124.46 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11721,7 +11741,7 @@
 		(fields_autoplaced yes)
 		(uuid "fa29c451-22da-48cc-b963-23820b6957c1")
 		(property "Reference" "Q4"
-			(at 226.06 130.81 90)
+			(at 229.87 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11729,7 +11749,7 @@
 			)
 		)
 		(property "Value" "PMOS"
-			(at 226.06 133.35 90)
+			(at 229.87 133.35 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11737,7 +11757,7 @@
 			)
 		)
 		(property "Footprint" "NTR4501NT1G:SOT95P237X111-3N"
-			(at 228.6 129.54 0)
+			(at 232.41 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11746,7 +11766,7 @@
 			)
 		)
 		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
-			(at 213.36 124.46 0)
+			(at 217.17 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11755,7 +11775,7 @@
 			)
 		)
 		(property "Description" "P-MOSFET transistor, drain/source/gate"
-			(at 226.06 124.46 0)
+			(at 229.87 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11764,7 +11784,7 @@
 			)
 		)
 		(property "Sim.Device" "PMOS"
-			(at 208.915 124.46 0)
+			(at 212.725 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11773,7 +11793,7 @@
 			)
 		)
 		(property "Sim.Type" "VDMOS"
-			(at 207.01 124.46 0)
+			(at 210.82 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11782,7 +11802,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=D 2=G 3=S"
-			(at 210.82 124.46 0)
+			(at 214.63 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
