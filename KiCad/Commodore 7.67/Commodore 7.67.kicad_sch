@@ -577,17 +577,17 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 39.37) (xy 111.76 67.31)
+			(xy 185.42 95.25) (xy 106.68 95.25)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "041c7cc4-9c72-4433-b7b9-2aac061b44e2")
+		(uuid "0296f207-d492-4d44-94e1-01b25e2a79ea")
 	)
 	(wire
 		(pts
-			(xy 127 106.68) (xy 123.19 106.68)
+			(xy 224.79 73.66) (xy 224.79 77.47)
 		)
 		(stroke
 			(width 0)
@@ -597,43 +597,23 @@
 	)
 	(wire
 		(pts
-			(xy 123.19 76.2) (xy 166.37 76.2)
+			(xy 185.42 91.44) (xy 109.22 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0ceace8d-3932-4422-8494-5fa3e454823a")
+	)
+	(wire
+		(pts
+			(xy 194.31 77.47) (xy 194.31 68.58)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "0ee189e0-7fb9-4e6f-ba4d-d15d90640151")
-	)
-	(wire
-		(pts
-			(xy 104.14 54.61) (xy 102.87 54.61)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "148bf693-a6e2-4a2a-b365-f8aece800580")
-	)
-	(wire
-		(pts
-			(xy 106.68 39.37) (xy 106.68 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1f2b354b-28d5-41a0-848f-66e1075871c3")
-	)
-	(wire
-		(pts
-			(xy 109.22 39.37) (xy 109.22 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2ca0ace3-f327-49e6-b3fa-4d651aba159e")
 	)
 	(wire
 		(pts
@@ -647,7 +627,7 @@
 	)
 	(wire
 		(pts
-			(xy 104.14 39.37) (xy 104.14 54.61)
+			(xy 104.14 39.37) (xy 104.14 97.79)
 		)
 		(stroke
 			(width 0)
@@ -657,7 +637,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 55.88) (xy 105.41 55.88)
+			(xy 106.68 39.37) (xy 106.68 95.25)
 		)
 		(stroke
 			(width 0)
@@ -667,7 +647,7 @@
 	)
 	(wire
 		(pts
-			(xy 123.19 71.12) (xy 166.37 71.12)
+			(xy 189.23 77.47) (xy 189.23 68.58)
 		)
 		(stroke
 			(width 0)
@@ -677,7 +657,7 @@
 	)
 	(wire
 		(pts
-			(xy 123.19 88.9) (xy 127 88.9)
+			(xy 207.01 77.47) (xy 207.01 73.66)
 		)
 		(stroke
 			(width 0)
@@ -687,13 +667,23 @@
 	)
 	(wire
 		(pts
-			(xy 105.41 55.88) (xy 105.41 67.31)
+			(xy 109.22 91.44) (xy 109.22 39.37)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8d7ff889-2a3e-439e-b4db-a5a1fc873d0c")
+		(uuid "6e017bff-ecf5-4072-a28d-122edec2bfd6")
+	)
+	(wire
+		(pts
+			(xy 185.42 97.79) (xy 104.14 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "84f3c02c-818d-49a6-bb22-9ae410a480af")
 	)
 	(wire
 		(pts
@@ -707,17 +697,27 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 54.61) (xy 102.87 67.31)
+			(xy 111.76 88.9) (xy 111.76 39.37)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "c5eae3d8-9bf6-4e0c-955b-d08ee3f3a97b")
+		(uuid "bd3d88a3-2901-46d9-b836-d036aa662131")
 	)
 	(wire
 		(pts
-			(xy 127 88.9) (xy 127 106.68)
+			(xy 185.42 88.9) (xy 111.76 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e09033cf-4730-4239-b3bd-3f8b69b3ad66")
+	)
+	(wire
+		(pts
+			(xy 207.01 73.66) (xy 224.79 73.66)
 		)
 		(stroke
 			(width 0)
@@ -747,29 +747,29 @@
 	)
 	(hierarchical_label "SX_MOSI"
 		(shape output)
-		(at 109.22 67.31 270)
+		(at 185.42 91.44 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "1e77b5c1-98ce-456f-9202-44ed69b4ec69")
 	)
 	(hierarchical_label "SX_MISO"
 		(shape input)
-		(at 111.76 67.31 270)
+		(at 185.42 88.9 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "56e2045c-1fd1-43af-aff9-baa41a55c53a")
 	)
 	(hierarchical_label "GP1"
 		(shape input)
-		(at 166.37 76.2 0)
+		(at 194.31 68.58 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -780,7 +780,7 @@
 	)
 	(hierarchical_label "CLK_REF"
 		(shape output)
-		(at 123.19 106.68 180)
+		(at 224.79 77.47 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -791,18 +791,18 @@
 	)
 	(hierarchical_label "SX_CS"
 		(shape input)
-		(at 102.87 67.31 270)
+		(at 185.42 97.79 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "8b9d66e4-8d92-470d-a9ff-805b4e03b9bf")
 	)
 	(hierarchical_label "RFIO_RF"
 		(shape bidirectional)
-		(at 123.19 71.12 180)
+		(at 189.23 77.47 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -813,7 +813,7 @@
 	)
 	(hierarchical_label "RFIO_RF"
 		(shape bidirectional)
-		(at 166.37 71.12 0)
+		(at 189.23 68.58 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -824,7 +824,7 @@
 	)
 	(hierarchical_label "GP1"
 		(shape input)
-		(at 123.19 76.2 180)
+		(at 194.31 77.47 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -835,7 +835,7 @@
 	)
 	(hierarchical_label "CLK_REF"
 		(shape output)
-		(at 123.19 88.9 180)
+		(at 207.01 77.47 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -846,12 +846,12 @@
 	)
 	(hierarchical_label "SX_SCK"
 		(shape input)
-		(at 105.41 67.31 270)
+		(at 185.42 95.25 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "f35ec439-0966-4dca-bdb5-18b23b69e8a2")
 	)
@@ -999,7 +999,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "59a96bb4-8963-4146-a905-d66e424d373b")
-		(property "Reference" "J3"
+		(property "Reference" "J1"
 			(at 115.57 30.4799 90)
 			(effects
 				(font
@@ -1106,15 +1106,15 @@
 		(instances
 			(project ""
 				(path "/92fa3f49-0e94-4664-860a-d244369fb976"
-					(reference "J3")
+					(reference "J1")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(sheet
-		(at 95.25 101.6)
-		(size 27.94 15.24)
+		(at 219.71 77.47)
+		(size 15.24 27.94)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -1129,7 +1129,7 @@
 		)
 		(uuid "068aab43-7d3e-4c07-94df-f9ae785d2fce")
 		(property "Sheetname" "Crystal"
-			(at 95.25 100.8884 0)
+			(at 219.71 76.7584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1138,7 +1138,7 @@
 			)
 		)
 		(property "Sheetfile" "Crystal.kicad_sch"
-			(at 95.25 117.4246 0)
+			(at 219.71 105.9946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1197,8 +1197,8 @@
 		)
 	)
 	(sheet
-		(at 166.37 58.42)
-		(size 106.68 100.33)
+		(at 176.53 25.4)
+		(size 100.33 43.18)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -1211,8 +1211,8 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "240451c1-e615-4278-a787-66f461d7f41d")
-		(property "Sheetname" "RF_Frontend"
-			(at 166.37 54.356 0)
+		(property "Sheetname" "2_4GHz_Frontend"
+			(at 176.53 21.336 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1220,8 +1220,8 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "RF_Frontend.kicad_sch"
-			(at 166.116 56.388 0)
+		(property "Sheetfile" "2_4GHz_Frontend.kicad_sch"
+			(at 176.276 23.368 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1238,8 +1238,92 @@
 		)
 	)
 	(sheet
-		(at 80.01 67.31)
-		(size 43.18 24.13)
+		(at 16.51 148.59)
+		(size 140.97 41.91)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "539abe45-7b76-4989-8cbc-fda18f1cdbf0")
+		(property "Sheetname" "1_2GHz_Frontend"
+			(at 16.51 147.8784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "1_2GHz_Frontend.kicad_sch"
+			(at 16.51 191.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 64.135 111.125)
+		(size 52.07 33.02)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "76790cbb-38d2-4bec-9499-cb4badb54925")
+		(property "Sheetname" "SX1781"
+			(at 64.135 110.4134 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "SX1781.kicad_sch"
+			(at 64.135 144.7296 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Commodore 7.67"
+				(path "/92fa3f49-0e94-4664-860a-d244369fb976"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 185.42 77.47)
+		(size 24.13 43.18)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -1254,7 +1338,7 @@
 		)
 		(uuid "e7924f5e-fb39-4d19-9111-29029f4b1022")
 		(property "Sheetname" "SX1281"
-			(at 80.01 66.5984 0)
+			(at 185.42 76.7584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1263,7 +1347,7 @@
 			)
 		)
 		(property "Sheetfile" "SX1281.kicad_sch"
-			(at 80.01 92.0246 0)
+			(at 185.42 121.2346 0)
 			(effects
 				(font
 					(size 1.27 1.27)
