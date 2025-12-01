@@ -905,330 +905,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "RC0402FR:RC0402FR-074K7L"
-			(pin_names
-				(offset 0.254)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 5.715 3.81 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-				)
-			)
-			(property "Value" "RC0402FR-074K7L"
-				(at 6.35 -3.81 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-				)
-			)
-			(property "Footprint" "YAG_R0402_YAG"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "RC0402FR-074K7L"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_locked" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "RC0402FR-074K7L"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "YAG_R0402_YAG YAG_R0402_YAG-M YAG_R0402_YAG-L"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "RC0402FR-074K7L_1_1"
-				(polyline
-					(pts
-						(xy 2.54 0) (xy 3.175 1.27)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.175 1.27) (xy 4.445 -1.27)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 -1.27) (xy 5.715 1.27)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 5.715 1.27) (xy 6.985 -1.27)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 6.985 -1.27) (xy 8.255 1.27)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 8.255 1.27) (xy 9.525 -1.27)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 9.525 -1.27) (xy 10.16 0)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin unspecified line
-					(at 0 0 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin unspecified line
-					(at 12.7 0 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(symbol "RC0402FR-074K7L_1_2"
-				(polyline
-					(pts
-						(xy -1.27 8.255) (xy 1.27 9.525)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.27 5.715) (xy 1.27 6.985)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.27 3.175) (xy 1.27 4.445)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy -1.27 3.175)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 9.525) (xy 0 10.16)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 6.985) (xy -1.27 8.255)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 4.445) (xy -1.27 5.715)
-					)
-					(stroke
-						(width 0.2032)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin unspecified line
-					(at 0 12.7 270)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin unspecified line
-					(at 0 0 90)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "power:GNDD"
 			(power)
 			(pin_numbers
@@ -1354,40 +1030,6 @@
 		(color 0 0 0 0)
 		(uuid "12bf7316-0d33-4cc9-beff-dc1fd8c299cc")
 	)
-	(junction
-		(at 182.88 85.09)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "585221e7-88fc-4d53-a40f-f441c1be722b")
-	)
-	(junction
-		(at 104.14 92.71)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d0283ad2-3c6f-40b4-a60e-ea8d8a77b300")
-	)
-	(junction
-		(at 177.8 85.09)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d3afcb97-aab6-434d-985f-1b4a1f928f25")
-	)
-	(junction
-		(at 97.79 90.17)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "fad8102f-c7ba-42d4-8981-3ffd2f1ee930")
-	)
-	(wire
-		(pts
-			(xy 104.14 57.15) (xy 177.8 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "089e6005-ad56-4eaf-877e-49370cedb3dd")
-	)
 	(wire
 		(pts
 			(xy 109.22 60.96) (xy 109.22 87.63)
@@ -1410,27 +1052,7 @@
 	)
 	(wire
 		(pts
-			(xy 104.14 69.85) (xy 104.14 92.71)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "39691c4e-9693-47ec-8325-42804e261756")
-	)
-	(wire
-		(pts
-			(xy 177.8 85.09) (xy 182.88 85.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "47760a1a-12d0-4b1c-9122-2e669eb1935c")
-	)
-	(wire
-		(pts
-			(xy 175.26 85.09) (xy 177.8 85.09)
+			(xy 175.26 85.09) (xy 185.42 85.09)
 		)
 		(stroke
 			(width 0)
@@ -1450,7 +1072,7 @@
 	)
 	(wire
 		(pts
-			(xy 104.14 92.71) (xy 118.11 92.71)
+			(xy 92.71 92.71) (xy 118.11 92.71)
 		)
 		(stroke
 			(width 0)
@@ -1467,16 +1089,6 @@
 			(type default)
 		)
 		(uuid "82c9eaf9-718b-452c-bed1-7e40f61979dc")
-	)
-	(wire
-		(pts
-			(xy 182.88 85.09) (xy 185.42 85.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8feaf03e-2d38-4fe9-962c-f84d19562b38")
 	)
 	(wire
 		(pts
@@ -1500,47 +1112,7 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 92.71) (xy 104.14 92.71)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "acf8f6b7-76a7-4a4c-9ae3-ccb26eb759db")
-	)
-	(wire
-		(pts
-			(xy 93.98 90.17) (xy 97.79 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b53c746b-33d7-45c5-962c-92c3bcff7d0a")
-	)
-	(wire
-		(pts
-			(xy 97.79 59.69) (xy 97.79 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bcfe0f8c-2834-428f-8cfe-d115a3662a6a")
-	)
-	(wire
-		(pts
-			(xy 177.8 57.15) (xy 177.8 85.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c4fe8f65-0e93-4e87-888b-36a4922359a8")
-	)
-	(wire
-		(pts
-			(xy 97.79 90.17) (xy 118.11 90.17)
+			(xy 93.98 90.17) (xy 118.11 90.17)
 		)
 		(stroke
 			(width 0)
@@ -1570,16 +1142,6 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 46.99) (xy 182.88 85.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d6ce12c0-6e35-402f-87f6-bedb46c6b481")
-	)
-	(wire
-		(pts
 			(xy 162.56 82.55) (xy 167.64 82.55)
 		)
 		(stroke
@@ -1587,16 +1149,6 @@
 			(type default)
 		)
 		(uuid "df9ca3f2-7c73-46a0-b3d3-618dd0a9b9ef")
-	)
-	(wire
-		(pts
-			(xy 97.79 46.99) (xy 182.88 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e3044a4e-d51c-4ad0-b95d-8f9f03a02ce4")
 	)
 	(global_label "I2C-SDA-MAIN"
 		(shape input)
@@ -1775,78 +1327,6 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
 					(reference "C4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "RC0402FR:RC0402FR-074K7L")
-		(at 97.79 46.99 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2e928309-3610-41c0-8bb3-ba746bc961f0")
-		(property "Reference" "R12"
-			(at 100.33 52.0699 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "4.7k"
-			(at 100.33 54.6099 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "YAG_R0402_YAG"
-			(at 97.79 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "RC0402FR-074K7L"
-			(at 97.79 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 97.79 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "07835eae-818a-4dae-9f30-732fd02e4065")
-		)
-		(pin "2"
-			(uuid "92893e3a-5ef9-4b6c-80d0-34454bba25b1")
-		)
-		(instances
-			(project ""
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
-					(reference "R12")
 					(unit 1)
 				)
 			)
@@ -2196,78 +1676,6 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
 					(reference "#PWR015")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "RC0402FR:RC0402FR-074K7L")
-		(at 104.14 57.15 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8f7b3710-44fe-47b7-bf40-bda0ce1ce31c")
-		(property "Reference" "R11"
-			(at 106.68 62.2299 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "4.7k"
-			(at 106.68 64.7699 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "YAG_R0402_YAG"
-			(at 104.14 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "RC0402FR-074K7L"
-			(at 104.14 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 104.14 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ff90f1da-bf2a-48f6-a60f-81af9fb357e0")
-		)
-		(pin "2"
-			(uuid "e073cdbf-8a20-4c2b-a480-13faffb25385")
-		)
-		(instances
-			(project ""
-				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/19f4b4af-23a2-4703-834c-89636fa65de5"
-					(reference "R11")
 					(unit 1)
 				)
 			)
