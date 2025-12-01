@@ -1215,10 +1215,10 @@
 		(uuid "bbe6ea00-24e1-440b-8cfa-5a5cdc37d2d9")
 	)
 	(junction
-		(at 158.75 111.76)
+		(at 166.37 171.45)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "d551beda-427d-49e6-8645-642a60defae5")
+		(uuid "df9140f6-407a-44d9-aeec-a58ad8f2f61a")
 	)
 	(junction
 		(at 53.34 190.5)
@@ -1336,13 +1336,13 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 114.3) (xy 158.75 111.76)
+			(xy 166.37 171.45) (xy 182.88 171.45)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0ffdcfec-f9bf-461a-8442-5573cf99e58b")
+		(uuid "0edc725d-2a48-4743-bde9-98a4bf445f20")
 	)
 	(wire
 		(pts
@@ -1393,6 +1393,16 @@
 			(type default)
 		)
 		(uuid "19f620c8-9b1d-4e6c-9fed-27430ce8fb8c")
+	)
+	(wire
+		(pts
+			(xy 166.37 162.56) (xy 166.37 160.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c1883d8-f48e-48f7-9c3a-626bc2e1c8f9")
 	)
 	(wire
 		(pts
@@ -1636,16 +1646,6 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 114.3) (xy 158.75 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "41da9014-5e0e-48e0-8fe5-e4d5f972f74a")
-	)
-	(wire
-		(pts
 			(xy 100.33 60.96) (xy 109.22 60.96)
 		)
 		(stroke
@@ -1766,7 +1766,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 160.02) (xy 162.56 160.02)
+			(xy 152.4 160.02) (xy 166.37 160.02)
 		)
 		(stroke
 			(width 0)
@@ -1833,16 +1833,6 @@
 			(type default)
 		)
 		(uuid "691d3f91-5a5d-4ca6-8a02-44de446139fb")
-	)
-	(wire
-		(pts
-			(xy 156.21 111.76) (xy 158.75 111.76)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "69858d12-6c83-4228-a7ff-7dd24b84f6e1")
 	)
 	(wire
 		(pts
@@ -2366,6 +2356,16 @@
 	)
 	(wire
 		(pts
+			(xy 166.37 170.18) (xy 166.37 171.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d0a9e94c-d86f-4ba7-bb74-7a6045293a73")
+	)
+	(wire
+		(pts
 			(xy 177.8 142.24) (xy 177.8 138.43)
 		)
 		(stroke
@@ -2396,6 +2396,16 @@
 	)
 	(wire
 		(pts
+			(xy 166.37 171.45) (xy 166.37 172.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d7d32be8-ee44-4642-98df-55f624dea269")
+	)
+	(wire
+		(pts
 			(xy 100.33 40.64) (xy 109.22 40.64)
 		)
 		(stroke
@@ -2416,7 +2426,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 111.76) (xy 165.1 111.76)
+			(xy 156.21 111.76) (xy 165.1 111.76)
 		)
 		(stroke
 			(width 0)
@@ -2684,16 +2694,6 @@
 		)
 		(uuid "3a36fb13-81a6-4841-ac24-5f02165dd82d")
 	)
-	(label "OTG{slash}VAP"
-		(at 80.01 93.98 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "3e3634f2-9988-48aa-b86e-e4590b2b4a9f")
-	)
 	(label "REGN"
 		(at 165.1 96.52 180)
 		(effects
@@ -2954,6 +2954,16 @@
 		)
 		(uuid "dd98588e-0008-4335-bf28-4a1a735d0205")
 	)
+	(label "CELL_BATPRESZ"
+		(at 182.88 171.45 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "e0c64b09-1b01-473a-a2d2-e89d53c9ee93")
+	)
 	(label "HIDRV1"
 		(at 100.33 43.18 0)
 		(effects
@@ -3046,6 +3056,28 @@
 			(justify right)
 		)
 		(uuid "0bca259a-6ab8-4d80-a3b2-fd48f37e587f")
+	)
+	(hierarchical_label "GND"
+		(shape output)
+		(at 166.37 180.34 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "12c593aa-7fe2-4410-a177-a6934b551cbe")
+	)
+	(hierarchical_label "GND"
+		(shape output)
+		(at 80.01 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "28a65c88-851b-4aa3-b41a-90fb2cfce669")
 	)
 	(hierarchical_label "GND"
 		(shape output)
@@ -5236,6 +5268,76 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 166.37 166.37 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ccdf1253-694f-4285-b9d2-e82875c54fa0")
+		(property "Reference" "R30"
+			(at 168.91 165.0999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "60k"
+			(at 168.91 167.6399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 168.148 166.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 166.37 166.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 166.37 166.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9fd69faf-fc0d-4c5d-82fb-bedb5a07294c")
+		)
+		(pin "2"
+			(uuid "07f6264e-bad7-44eb-a79f-5a91ee4e9697")
+		)
+		(instances
+			(project "bustingballscrazystylenolube"
+				(path "/93514605-6b24-46cc-859f-51fd06f5909b/7f3a3102-a634-4703-8b8f-f224a071de32"
+					(reference "R30")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:TestPoint")
 		(at 228.6 63.5 90)
 		(unit 1)
@@ -5703,6 +5805,76 @@
 			(project "bustingballscrazystylenolube"
 				(path "/93514605-6b24-46cc-859f-51fd06f5909b/7f3a3102-a634-4703-8b8f-f224a071de32"
 					(reference "C14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 166.37 176.53 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "eb4e091c-ea96-4a37-aa0d-08968aa21cf1")
+		(property "Reference" "R31"
+			(at 168.91 175.2599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "40k"
+			(at 168.91 177.7999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 168.148 176.53 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 166.37 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 166.37 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b02863d0-fc37-4364-8e8e-bd26003cd319")
+		)
+		(pin "2"
+			(uuid "5b2176cd-1784-46a3-8b32-36fc5405fa7a")
+		)
+		(instances
+			(project "bustingballscrazystylenolube"
+				(path "/93514605-6b24-46cc-859f-51fd06f5909b/7f3a3102-a634-4703-8b8f-f224a071de32"
+					(reference "R31")
 					(unit 1)
 				)
 			)
