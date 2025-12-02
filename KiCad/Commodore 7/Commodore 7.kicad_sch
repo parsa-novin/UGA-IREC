@@ -1863,28 +1863,6 @@
 			)
 		)
 	)
-	(global_label "RDX"
-		(shape input)
-		(at 168.91 120.65 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "b701dd26-2b60-4aac-b0f3-8c540e803491")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 175.6447 120.65 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "3.3v"
 		(shape input)
 		(at 156.21 77.47 180)
@@ -1969,28 +1947,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "TXD"
-		(shape input)
-		(at 168.91 118.11 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "d5e87d80-6811-49d6-a5c3-3a36071dcbb4")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 175.3423 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)
