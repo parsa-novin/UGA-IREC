@@ -1782,6 +1782,28 @@
 			)
 		)
 	)
+	(global_label "GPIO"
+		(shape input)
+		(at 95.25 74.93 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "28db5718-f588-446a-8496-cc6877ab6d5f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 87.7895 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "T"
 		(shape input)
 		(at 95.25 92.71 180)
@@ -1822,6 +1844,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PPS"
+		(shape input)
+		(at 151.13 87.63 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a6e385cc-d507-4394-974a-676df76a0dd6")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 157.8647 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)

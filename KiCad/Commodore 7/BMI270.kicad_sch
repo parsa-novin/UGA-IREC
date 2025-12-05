@@ -1192,6 +1192,16 @@
 	)
 	(wire
 		(pts
+			(xy 119.38 76.2) (xy 144.78 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "57a1398a-1d05-4810-a4be-3bffb823dbee")
+	)
+	(wire
+		(pts
 			(xy 154.94 120.65) (xy 154.94 118.11)
 		)
 		(stroke
@@ -1232,7 +1242,7 @@
 	)
 	(wire
 		(pts
-			(xy 101.6 76.2) (xy 144.78 76.2)
+			(xy 101.6 76.2) (xy 106.68 76.2)
 		)
 		(stroke
 			(width 0)
@@ -2061,6 +2071,76 @@
 			(project "Commodore 7"
 				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/5957d6f3-67b6-46f3-b569-ac79090e2ab1"
 					(reference "R6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "2025-10-06_20-52-39:CRG0805F2K7")
+		(at 106.68 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cc9a879d-6d1d-4d8d-9542-167136abb5a8")
+		(property "Reference" "R8"
+			(at 113.03 69.85 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Value" "2.7K"
+			(at 113.03 72.39 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+			(at 106.68 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1773204&DocType=Data+Sheet&DocLang=English&PartCntxt=1623181-1&DocFormat=pdf"
+			(at 106.68 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 106.68 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "68610e4a-820f-4bbc-bbd6-efd21f88435a")
+		)
+		(pin "2"
+			(uuid "c791d4bd-724a-4c05-aaa3-5c5d622961e0")
+		)
+		(instances
+			(project "Commodore 7"
+				(path "/42cf917d-ec14-4557-b98d-6a3f3b8cf25c/5957d6f3-67b6-46f3-b569-ac79090e2ab1"
+					(reference "R8")
 					(unit 1)
 				)
 			)
