@@ -9,7 +9,7 @@ r2 = 5.5 * inch / 2
 import pandas as pd
 
 # change to your path
-df = pd.read_csv("C:/Users/andre/Downloads/dragCoeff_vs_mach_noNulls.csv")
+zzdf = pd.read_csv("C:/Users/andre/Downloads/dragCoeff_vs_mach_noNulls.csv")
 
 # Weird chatgpt stuff (might be able to remove now but idk plus its not like it really changes much)
 # Remove duplicate Mach numbers (keep the first occurrence)
