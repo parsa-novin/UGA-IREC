@@ -4849,6 +4849,48 @@
 		)
 	)
 	(sheet
+		(at 137.16 173.99)
+		(size 33.02 16.51)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "5c9dde29-c732-426e-b6f2-0733aa54ee5a")
+		(property "Sheetname" "IIM-42653"
+			(at 137.16 173.2784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "IIM-42653.kicad_sch"
+			(at 137.16 191.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "G6"
+				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c"
+					(page "10")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 33.02 128.27)
 		(size 43.18 24.13)
 		(exclude_from_sim no)
@@ -5012,6 +5054,48 @@
 			(project "G6"
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c"
 					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 102.87 149.86)
+		(size 26.67 22.86)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "dd8d0103-050a-4966-97b1-bf15728af484")
+		(property "Sheetname" "STM"
+			(at 102.87 149.1484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "STM.kicad_sch"
+			(at 102.87 173.3046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "G6"
+				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c"
+					(page "11")
 				)
 			)
 		)

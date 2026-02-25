@@ -3191,6 +3191,28 @@
 		)
 		(uuid "f8c60d42-45e8-4018-b043-0bf52e4e5065")
 	)
+	(global_label "SPI-SDO-MAIN"
+		(shape input)
+		(at 73.66 73.66 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "0a5b7244-ed63-4bd5-b8ea-9c53e7842c4c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 56.1604 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "SDA-IIM2"
 		(shape input)
 		(at 229.87 113.03 180)
@@ -3235,7 +3257,7 @@
 			)
 		)
 	)
-	(global_label "SCL-IIM1"
+	(global_label "SPI-SDI-MAIN"
 		(shape input)
 		(at 60.96 71.12 180)
 		(fields_autoplaced yes)
@@ -3247,7 +3269,7 @@
 		)
 		(uuid "14cf70bf-f369-48d6-a524-c2f282c0d3b8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 49.0243 71.12 0)
+			(at 44.1861 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3834,7 +3856,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "CC0603KRXQRQBB104:CC0603N_YAG"
+		(property "Footprint" "CC0603KRXQRQBB104:.1CAP_CC1206_YAG"
 			(at 91.44 107.95 0)
 			(effects
 				(font
@@ -4145,72 +4167,6 @@
 			(project "G6"
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/1d29283e-2ace-44ea-9175-ec7a0e5b2450"
 					(reference "#PWR043")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GNDD")
-		(at 73.66 73.66 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "23723931-6449-465d-85ac-dc2795d6f1b3")
-		(property "Reference" "#PWR035"
-			(at 67.31 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GNDD"
-			(at 70.866 73.66 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 73.66 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 73.66 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 73.66 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "38fd32f3-dca3-4e26-abad-43e38479665d")
-		)
-		(instances
-			(project "G6"
-				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/1d29283e-2ace-44ea-9175-ec7a0e5b2450"
-					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -4693,7 +4649,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "CC0603KRXQRQBB104:CC0603N_YAG"
+		(property "Footprint" "CC0603KRXQRQBB104:.1CAP_CC1206_YAG"
 			(at 82.55 54.61 0)
 			(effects
 				(font
@@ -5204,7 +5160,7 @@
 				)
 			)
 		)
-		(property "Footprint" "C0603C103K4RECTU:CAPC17595_87N_KEM"
+		(property "Footprint" "CC0603KRXQRQBB104:.01YAG_CC1206_YAG"
 			(at 119.38 111.76 0)
 			(effects
 				(font
@@ -5274,7 +5230,7 @@
 				)
 			)
 		)
-		(property "Footprint" "CC0805KK7R7BB225:CAP_CC0805_YAG"
+		(property "Footprint" "CC0603KRXQRQBB104:2.2CAP_CC1206_YAG"
 			(at 87.63 119.38 0)
 			(effects
 				(font
@@ -5723,7 +5679,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "CC0805KK7R7BB225:CAP_CC0805_YAG"
+		(property "Footprint" "CC0603KRXQRQBB104:2.2CAP_CC1206_YAG"
 			(at 68.58 53.34 0)
 			(effects
 				(font
@@ -6132,7 +6088,7 @@
 				)
 			)
 		)
-		(property "Footprint" "C0603C103K4RECTU:CAPC17595_87N_KEM"
+		(property "Footprint" "CC0603KRXQRQBB104:.01YAG_CC1206_YAG"
 			(at 107.95 58.42 0)
 			(effects
 				(font
