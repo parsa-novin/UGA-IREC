@@ -554,6 +554,50 @@
 			(embedded_fonts no)
 		)
 	)
+	(global_label "SPI-SDO-BMI"
+		(shape input)
+		(at 170.18 86.36 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "3fe29ea2-125c-4168-9fbc-71026889966d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 186.5305 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SPI-SDI-BMI"
+		(shape input)
+		(at 119.38 91.44 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "84b4ed60-6ad3-49e0-a686-4656f565d8b7")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 103.7552 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "SPI-SCK-MAIN"
 		(shape input)
 		(at 119.38 88.9 180)
@@ -567,6 +611,160 @@
 		(uuid "91b68ea1-7767-41c0-a7bf-38b4ec11f680")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 101.9409 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CS-MMC"
+		(shape input)
+		(at 170.18 83.82 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9d173c84-e475-4f0b-9347-a6c3fb00a6ef")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 181.3899 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CS-BMI"
+		(shape input)
+		(at 119.38 96.52 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "afb14411-56b0-4311-88e9-339b5a97a9ad")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 109.0167 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SPI-SDI-MMC"
+		(shape input)
+		(at 170.18 81.28 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ca55eac6-6ad7-4b20-b488-bde2a4d4113d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 186.6514 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CS-MS5"
+		(shape input)
+		(at 170.18 93.98 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d596ce67-a324-4d35-99af-7a1fc8f1edd5")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 181.0875 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SPI-SDI-MS5"
+		(shape input)
+		(at 170.18 88.9 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d6cbd7eb-58bf-4e06-bad7-3d6f4eac0629")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 186.349 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SPI-SDO-MS5"
+		(shape input)
+		(at 170.18 99.06 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "dd27f70c-0817-4946-a799-f83eafafd434")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 187.0747 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SPI-SDO-MMC"
+		(shape input)
+		(at 119.38 101.6 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "fa3ecf6c-fe31-4183-90f7-c66fd18dd2e9")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 102.1829 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)

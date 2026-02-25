@@ -1094,7 +1094,7 @@
 		)
 		(uuid "e6147a3e-3faa-4ac3-a872-4b374dbed280")
 	)
-	(global_label "SPI-SDI-MAIN"
+	(global_label "SPI-SDI-MMC"
 		(shape input)
 		(at 88.9 91.44 180)
 		(fields_autoplaced yes)
@@ -1106,7 +1106,7 @@
 		)
 		(uuid "347f77ab-81a8-4da0-892f-87dc138b1221")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.1261 91.44 0)
+			(at 72.4286 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1160,7 +1160,7 @@
 			)
 		)
 	)
-	(global_label "SPI-SDO-MAIN"
+	(global_label "SPI-SDO-MMC"
 		(shape input)
 		(at 114.3 93.98 180)
 		(fields_autoplaced yes)
@@ -1172,7 +1172,7 @@
 		)
 		(uuid "4dbff3ab-a21c-47cc-9274-c83b4bc3e48e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 96.8004 93.98 0)
+			(at 97.1029 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
