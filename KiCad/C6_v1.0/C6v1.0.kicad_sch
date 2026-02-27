@@ -3058,6 +3058,56 @@
 				(justify left)
 			)
 		)
+		(pin "ADC" input
+			(at 190.5 53.34 180)
+			(uuid "143b3616-74cf-4f10-b180-5f2d0cdc18ca")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "EGSE_RX" input
+			(at 190.5 57.15 180)
+			(uuid "24b90b43-8067-46e8-82ad-3e6e9a943cf1")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "EGSE_TX" input
+			(at 190.5 59.69 180)
+			(uuid "ffceed6e-1962-4e51-8f34-04dc7d1ee2d8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "I2C_SCL" input
+			(at 190.5 63.5 180)
+			(uuid "c67e1453-ec82-4685-a6fe-a428d67867b3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "I2C_SDA" input
+			(at 190.5 66.04 180)
+			(uuid "e715b8ee-0a74-4c6e-baba-ca0ec9d8e942")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
 		(instances
 			(project "C6v1.0"
 				(path "/8737aa07-2805-4383-a805-a4fb57529a3e"
