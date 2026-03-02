@@ -1094,28 +1094,6 @@
 		)
 		(uuid "e6147a3e-3faa-4ac3-a872-4b374dbed280")
 	)
-	(global_label "SPI-SDI-MMC"
-		(shape input)
-		(at 88.9 91.44 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "347f77ab-81a8-4da0-892f-87dc138b1221")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.4286 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "3.3v"
 		(shape input)
 		(at 181.61 83.82 0)
@@ -1134,50 +1112,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI-SCK-MAIN"
-		(shape input)
-		(at 90.17 88.9 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "427bfb2c-4249-415a-baea-9ae78732a706")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.7309 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI-SDO-MMC"
-		(shape input)
-		(at 114.3 93.98 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "4dbff3ab-a21c-47cc-9274-c83b4bc3e48e")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 97.1029 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -1226,27 +1160,49 @@
 			)
 		)
 	)
-	(global_label "CS-MMC"
+	(hierarchical_label "SCK-MAIN"
 		(shape input)
-		(at 114.3 86.36 180)
-		(fields_autoplaced yes)
+		(at 90.17 88.9 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "fb4988c3-1b40-419d-a106-dcbf1801dafd")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 103.0901 86.36 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
+		(uuid "2b7de7ce-dfd8-442e-951a-f819988aca67")
+	)
+	(hierarchical_label "MOSI-MMC"
+		(shape input)
+		(at 88.9 91.44 180)
+		(effects
+			(font
+				(size 1.27 1.27)
 			)
+			(justify right)
 		)
+		(uuid "6943a300-d708-4314-aea1-6ed8e3dc8ccd")
+	)
+	(hierarchical_label "MISO-MMC"
+		(shape input)
+		(at 114.3 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9b86c8ce-faad-449e-89f5-e5685e83b898")
+	)
+	(hierarchical_label "CS-MMC"
+		(shape input)
+		(at 114.3 86.36 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "bc40b880-ca10-489b-b60b-8c15f1206ed3")
 	)
 	(symbol
 		(lib_id "2025-10-06_20-59-07:CC0805MKX7R7BB106")

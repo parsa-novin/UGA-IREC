@@ -557,93 +557,49 @@
 			)
 		)
 	)
-	(global_label "SPI-SCK-MAIN"
-		(shape input)
-		(at 110.49 90.17 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "191a070d-759d-4d3c-85d3-4d69f260571f")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 93.0509 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "CS-MS5"
-		(shape input)
-		(at 128.27 82.55 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "85e9285e-2656-4335-936b-1042bfe89d80")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 117.3625 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI-SDI-MS5"
-		(shape input)
-		(at 110.49 95.25 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "cb403f7c-b923-43a4-8e84-0403d59924e3")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 94.321 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI-SDO-MS5"
+	(hierarchical_label "MISO-MS5"
 		(shape input)
 		(at 158.75 87.63 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "cbb641d7-2040-4609-b819-42af676d6350")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 175.6447 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
+		(uuid "38147c9b-9295-49ab-ac2d-45f16e2ce901")
+	)
+	(hierarchical_label "MOSI-MS5"
+		(shape input)
+		(at 110.49 95.25 180)
+		(effects
+			(font
+				(size 1.27 1.27)
 			)
+			(justify right)
 		)
+		(uuid "99922a5b-9be8-4784-9daa-dbbecdb7f5a5")
+	)
+	(hierarchical_label "CS-MS5"
+		(shape input)
+		(at 128.27 82.55 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d7ea4099-9091-497a-96d1-543083a96c78")
+	)
+	(hierarchical_label "SCK-MAIN"
+		(shape input)
+		(at 110.49 90.17 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "dedcb070-37f2-438d-aceb-ae849c430228")
 	)
 	(symbol
 		(lib_id "Device:C")

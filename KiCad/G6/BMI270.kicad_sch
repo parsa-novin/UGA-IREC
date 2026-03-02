@@ -944,72 +944,6 @@
 		)
 		(uuid "f1baf919-1475-4bd1-8098-53d4aa9faae1")
 	)
-	(global_label "SPI-SCK-MAIN"
-		(shape input)
-		(at 115.57 109.22 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "007c3fdd-f444-4aeb-a6e0-63adc1d404bf")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 98.1309 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI-SDO-BMI"
-		(shape input)
-		(at 140.97 114.3 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "1f7b5ab4-c3c5-4826-906a-a26618a16afd")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 124.6195 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "CS-BMI"
-		(shape input)
-		(at 138.43 104.14 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "3028c169-6b11-486d-9e04-a95c7c2440ea")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 128.0667 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "INT1-BMI"
 		(shape input)
 		(at 171.45 119.38 0)
@@ -1076,28 +1010,6 @@
 			)
 		)
 	)
-	(global_label "SPI-SDI-BMI"
-		(shape input)
-		(at 115.57 111.76 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "86d9c6a6-958f-409b-adc2-d25352021ced")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 99.9452 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "3.3v"
 		(shape input)
 		(at 175.26 97.79 270)
@@ -1119,6 +1031,50 @@
 				(hide yes)
 			)
 		)
+	)
+	(hierarchical_label "CS-BMI"
+		(shape input)
+		(at 138.43 104.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "30f6ecbd-11a7-4e93-87fd-80984774c7ac")
+	)
+	(hierarchical_label "MISO-BMI"
+		(shape input)
+		(at 140.97 114.3 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "6733e83b-ad43-4c8e-a291-8d5d5c46b61c")
+	)
+	(hierarchical_label "SCK-MAIN"
+		(shape input)
+		(at 115.57 109.22 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "7bc20f56-ed37-4d02-a523-af705a7073de")
+	)
+	(hierarchical_label "MOSI-BMI"
+		(shape input)
+		(at 115.57 111.76 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e8667d90-9269-4216-a604-96d073f9821c")
 	)
 	(symbol
 		(lib_id "2025-10-06_19-12-57:CC0603KRX7R7BB104")
