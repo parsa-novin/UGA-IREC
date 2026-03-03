@@ -944,50 +944,6 @@
 		)
 		(uuid "f1baf919-1475-4bd1-8098-53d4aa9faae1")
 	)
-	(global_label "INT1-BMI"
-		(shape input)
-		(at 171.45 119.38 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "384c946d-d487-463f-baa9-cebc30c8ff47")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 183.4462 119.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "INT2-BMI"
-		(shape input)
-		(at 171.45 121.92 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "3b21a8ef-6734-49da-b9a2-ca3dab790612")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 183.4462 121.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "3.3v"
 		(shape input)
 		(at 204.47 92.71 90)

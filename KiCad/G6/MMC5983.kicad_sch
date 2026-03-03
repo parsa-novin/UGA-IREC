@@ -1116,28 +1116,6 @@
 			)
 		)
 	)
-	(global_label "INT-MMC"
-		(shape input)
-		(at 154.94 91.44 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "7cb0fd84-9f01-430c-8f66-c3b59417dd4b")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 166.5733 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "3.3v"
 		(shape input)
 		(at 163.83 81.28 0)
