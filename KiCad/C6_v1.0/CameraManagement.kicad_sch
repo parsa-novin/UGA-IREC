@@ -3343,16 +3343,6 @@
 	)
 	(wire
 		(pts
-			(xy 40.64 53.34) (xy 43.18 53.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b09c09af-57aa-4de6-85e4-7f632cbec07b")
-	)
-	(wire
-		(pts
 			(xy 256.54 60.96) (xy 259.08 60.96)
 		)
 		(stroke
@@ -3742,6 +3732,16 @@
 		(uuid "13062086-4948-4af4-9a88-ac990b29eb3d")
 	)
 	(label "1V8*"
+		(at 259.08 60.96 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "15e8a736-5ca9-4bd7-a11c-983ca262b435")
+	)
+	(label "1V8*"
 		(at 173.99 25.4 0)
 		(effects
 			(font
@@ -3750,16 +3750,6 @@
 			(justify left bottom)
 		)
 		(uuid "19f5a781-71f4-48a8-a9e3-22ce63b97ec1")
-	)
-	(label "CAM_D4"
-		(at 40.64 53.34 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "1a810087-c354-4257-9676-0c73c8bb451b")
 	)
 	(label "CAM_D1"
 		(at 49.53 133.35 180)
@@ -3771,7 +3761,7 @@
 		)
 		(uuid "1c66c9b9-545f-4b59-8aff-ac93290a582d")
 	)
-	(label "CAM_D0"
+	(label "CAM_D2"
 		(at 40.64 33.02 180)
 		(effects
 			(font
@@ -3911,7 +3901,7 @@
 		)
 		(uuid "48fb597b-af4a-41a0-a091-6d7ac2c74baf")
 	)
-	(label "CAM_D1"
+	(label "CAM_D3"
 		(at 40.64 40.64 180)
 		(effects
 			(font
@@ -3971,7 +3961,7 @@
 		)
 		(uuid "5197f798-ff27-44a8-9643-1c82d64fa8c6")
 	)
-	(label "CAM_D2"
+	(label "CAM_D4"
 		(at 40.64 43.18 180)
 		(effects
 			(font
@@ -4181,7 +4171,7 @@
 		)
 		(uuid "b120c3f7-b8b5-4b20-863b-66c16fbff868")
 	)
-	(label "CAM_D3"
+	(label "CAM_D5"
 		(at 40.64 50.8 180)
 		(effects
 			(font
@@ -4201,7 +4191,7 @@
 		)
 		(uuid "b9a79a23-f7f6-4edd-9e70-a804ca372a37")
 	)
-	(label "CAM_D7"
+	(label "CAM_PCLK"
 		(at 106.68 43.18 0)
 		(effects
 			(font
@@ -4221,7 +4211,7 @@
 		)
 		(uuid "ce566300-8f3b-44df-ab9f-d002ce146b66")
 	)
-	(label "CAM_PCLK"
+	(label "CAM_D0"
 		(at 106.68 40.64 0)
 		(effects
 			(font
@@ -4240,6 +4230,16 @@
 			(justify left bottom)
 		)
 		(uuid "d67fe3fd-f107-47c9-b9cc-645bee7b6a7d")
+	)
+	(label "CAM_D1"
+		(at 106.68 33.02 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e7860210-54a1-4393-a732-274364f8a396")
 	)
 	(label "CAM_D6"
 		(at 106.68 99.06 0)
@@ -4261,7 +4261,7 @@
 		)
 		(uuid "f19f0202-ce89-4b2d-9609-91d4ffb6b1d8")
 	)
-	(label "CAM_D5"
+	(label "CAM_D7"
 		(at 106.68 53.34 0)
 		(effects
 			(font
@@ -4380,7 +4380,7 @@
 		)
 		(uuid "3355b3cf-cb9c-42e6-94a9-ccd11a4c156f")
 	)
-	(hierarchical_label "GND"
+	(hierarchical_label "OV_D1"
 		(shape output)
 		(at 106.68 35.56 0)
 		(effects
@@ -4413,7 +4413,7 @@
 		)
 		(uuid "39618b95-a144-4ecd-8fdc-061a65e5d472")
 	)
-	(hierarchical_label "OV_D5"
+	(hierarchical_label "OV_D7"
 		(shape input)
 		(at 106.68 55.88 0)
 		(effects
@@ -4435,7 +4435,7 @@
 		)
 		(uuid "4099aec0-228b-4760-897b-967b9e7b6132")
 	)
-	(hierarchical_label "OV_D0"
+	(hierarchical_label "OV_D2"
 		(shape input)
 		(at 40.64 35.56 180)
 		(effects
@@ -4446,18 +4446,7 @@
 		)
 		(uuid "45d04674-807e-4ccb-9647-8f4972dd2e26")
 	)
-	(hierarchical_label "1V8"
-		(shape input)
-		(at 259.08 60.96 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "4c31ae49-bc22-4e97-9f08-31a56f4ac733")
-	)
-	(hierarchical_label "OV_D4"
+	(hierarchical_label "GND"
 		(shape input)
 		(at 40.64 55.88 180)
 		(effects
@@ -4479,7 +4468,7 @@
 		)
 		(uuid "5db4f383-cad6-4dc5-8978-2ba3b2879760")
 	)
-	(hierarchical_label "OV_PCLK"
+	(hierarchical_label "OV_D0"
 		(shape input)
 		(at 106.68 38.1 0)
 		(effects
@@ -4534,7 +4523,7 @@
 		)
 		(uuid "8036e1e1-9c27-46be-9819-5b700701056f")
 	)
-	(hierarchical_label "OV_D2"
+	(hierarchical_label "OV_D4"
 		(shape input)
 		(at 40.64 45.72 180)
 		(effects
@@ -4589,7 +4578,7 @@
 		)
 		(uuid "92ccdcaf-b691-4bf1-9591-05f82d2673dc")
 	)
-	(hierarchical_label "OV_D7"
+	(hierarchical_label "OV_PCLK"
 		(shape input)
 		(at 106.68 45.72 0)
 		(effects
@@ -4732,7 +4721,7 @@
 		)
 		(uuid "c5b2693d-6704-49e4-b142-7fbb13532943")
 	)
-	(hierarchical_label "OV_D3"
+	(hierarchical_label "OV_D5"
 		(shape input)
 		(at 40.64 48.26 180)
 		(effects
@@ -4765,7 +4754,7 @@
 		)
 		(uuid "d572df1a-278b-4d3a-8126-5df294a6e366")
 	)
-	(hierarchical_label "OV_D1"
+	(hierarchical_label "OV_D3"
 		(shape input)
 		(at 40.64 38.1 180)
 		(effects
@@ -4892,7 +4881,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 168.6052 35.56 0)
 			(effects
 				(font
@@ -5125,7 +5114,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 196.5452 106.68 0)
 			(effects
 				(font
@@ -5195,7 +5184,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 104.4448 20.32 0)
 			(effects
 				(font
@@ -5262,7 +5251,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
 			(at 277.368 46.99 90)
 			(effects
 				(font
@@ -5332,7 +5321,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric_Pad0.64x0.40mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 178.7652 35.56 0)
 			(effects
 				(font
@@ -5597,7 +5586,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 171.1452 106.68 0)
 			(effects
 				(font
@@ -5667,7 +5656,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 104.4448 71.12 0)
 			(effects
 				(font
@@ -5734,7 +5723,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
 			(at 237.998 102.87 90)
 			(effects
 				(font
@@ -5938,7 +5927,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 246.38 95.5548 0)
 			(effects
 				(font
@@ -6338,7 +6327,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 274.0152 68.58 0)
 			(effects
 				(font
@@ -6521,7 +6510,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
 			(at 201.93 98.298 90)
 			(effects
 				(font
