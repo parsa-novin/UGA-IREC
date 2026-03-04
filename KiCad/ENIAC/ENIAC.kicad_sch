@@ -577,16 +577,6 @@
 	)
 	(wire
 		(pts
-			(xy 209.55 74.93) (xy 209.55 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "134fd217-48d1-4d1d-83d1-9204013c0a99")
-	)
-	(wire
-		(pts
 			(xy 104.14 44.45) (xy 72.39 44.45)
 		)
 		(stroke
@@ -617,16 +607,6 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 71.12) (xy 227.33 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "341bf929-c07c-47f5-bc29-2fe11c3f9004")
-	)
-	(wire
-		(pts
 			(xy 111.76 88.9) (xy 111.76 36.83)
 		)
 		(stroke
@@ -634,16 +614,6 @@
 			(type default)
 		)
 		(uuid "3dcb3cbf-bd58-47bd-9e9e-4762edeadbf0")
-	)
-	(wire
-		(pts
-			(xy 209.55 71.12) (xy 227.33 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "492b8853-0eb7-4825-b716-11e76ecd29b3")
 	)
 	(wire
 		(pts
@@ -717,6 +687,26 @@
 	)
 	(wire
 		(pts
+			(xy 77.47 138.43) (xy 77.47 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b906e07d-d076-4c5b-b092-a0abc6f1ff56")
+	)
+	(wire
+		(pts
+			(xy 72.39 138.43) (xy 72.39 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cec5d4cb-3839-44be-a3db-00794ed5436a")
+	)
+	(wire
+		(pts
 			(xy 114.3 86.36) (xy 114.3 36.83)
 		)
 		(stroke
@@ -745,6 +735,56 @@
 		)
 		(uuid "ece7a772-c60d-4b80-92de-73566f68f0d2")
 	)
+	(label "RFIO_RF"
+		(at 72.39 138.43 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "36571e29-fe76-4841-9aa5-3d46f3ca1c8d")
+	)
+	(label "GP1"
+		(at 196.85 66.04 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "39f0edc1-bee7-45ef-9f5c-027db7834448")
+	)
+	(label "GP1"
+		(at 77.47 138.43 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7d9f53c5-c6c9-409e-b591-b997fcdd749d")
+	)
+	(label "GP1"
+		(at 196.85 66.04 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a530baf6-ae28-4e90-a65c-5ff9d4d4aae0")
+	)
+	(label "RFIO_RF"
+		(at 191.77 66.04 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c46dcb89-7758-4aae-b79d-814f3606b3a1")
+	)
 	(hierarchical_label "SX_MOSI"
 		(shape output)
 		(at 187.96 88.9 0)
@@ -755,17 +795,6 @@
 			(justify left)
 		)
 		(uuid "0a6d1d60-7347-4eed-8f1b-7a0de9a39e4e")
-	)
-	(hierarchical_label "CLK_REF"
-		(shape output)
-		(at 209.55 74.93 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "34b2551f-136f-4442-b703-9fb4078f1451")
 	)
 	(hierarchical_label "SX_MISO"
 		(shape input)
@@ -800,17 +829,6 @@
 		)
 		(uuid "6dbd7df1-d340-4040-a692-8a9e5f3646bf")
 	)
-	(hierarchical_label "CLK_REF"
-		(shape output)
-		(at 227.33 74.93 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "702dc40e-f0c8-4eab-9da7-08bc9c8bfd1d")
-	)
 	(hierarchical_label "RFIO_RF"
 		(shape bidirectional)
 		(at 191.77 74.93 270)
@@ -832,28 +850,6 @@
 			(justify left)
 		)
 		(uuid "b1bec88a-2a2d-4f6c-b0fb-acd4faad4ec5")
-	)
-	(hierarchical_label "GP1"
-		(shape input)
-		(at 196.85 66.04 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "bf281e66-3a66-42a6-8e00-fe98a947570f")
-	)
-	(hierarchical_label "RFIO_RF"
-		(shape bidirectional)
-		(at 191.77 66.04 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "cca6bb77-d7b7-4b62-8b12-78f58bcc4e39")
 	)
 	(symbol
 		(lib_id "power:+5V")
@@ -1113,47 +1109,6 @@
 		)
 	)
 	(sheet
-		(at 179.07 22.86)
-		(size 100.33 43.18)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "2f0344a5-d48a-40dd-a673-679718fd0693")
-		(property "Sheetname" "2_4GHz_Frontend"
-			(at 179.07 18.796 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "2_4GHz_Frontend.kicad_sch"
-			(at 178.816 20.828 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "ENIAC"
-				(path "/028e33f3-2d21-4744-a260-423608f4c0b7"
-					(page "3")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 26.035 22.86)
 		(size 33.655 67.31)
 		(exclude_from_sim no)
@@ -1196,48 +1151,6 @@
 		)
 	)
 	(sheet
-		(at 222.25 74.93)
-		(size 15.24 27.94)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "c420beeb-f026-4398-a862-6d9098bb813e")
-		(property "Sheetname" "Crystal"
-			(at 222.25 74.2184 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "Crystal.kicad_sch"
-			(at 222.25 103.4546 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "ENIAC"
-				(path "/028e33f3-2d21-4744-a260-423608f4c0b7"
-					(page "4")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 19.05 146.05)
 		(size 140.97 41.91)
 		(exclude_from_sim no)
@@ -1269,6 +1182,26 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(pin "RFIO" input
+			(at 72.39 146.05 90)
+			(uuid "edc655c6-0572-4b64-a129-30c73672475c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "GP1" input
+			(at 77.47 146.05 90)
+			(uuid "3205c46b-fc92-4d39-8e10-0d3b2112be4a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 			)
 		)
 		(instances

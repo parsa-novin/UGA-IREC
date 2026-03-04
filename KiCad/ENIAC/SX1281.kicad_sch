@@ -3481,4 +3481,46 @@
 			)
 		)
 	)
+	(sheet
+		(at 88.9 123.19)
+		(size 15.24 27.94)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7a58fad9-9294-4550-91e9-f8758bb6cceb")
+		(property "Sheetname" "Crystal"
+			(at 88.9 122.4784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Crystal.kicad_sch"
+			(at 88.9 151.7146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "ENIAC"
+				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/d2a65d20-6114-460a-836d-d801263d62de"
+					(page "3")
+				)
+			)
+		)
+	)
 )

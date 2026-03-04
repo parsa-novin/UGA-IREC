@@ -5659,6 +5659,17 @@
 		)
 		(uuid "374f5571-1bbe-4049-ad26-62f7d86a9640")
 	)
+	(hierarchical_label "GND"
+		(shape output)
+		(at 233.68 104.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "390ca072-ea4e-43c1-b376-0cd9cc766cb3")
+	)
 	(hierarchical_label "EGSE_TX"
 		(shape input)
 		(at 222.25 81.28 180)
@@ -5834,6 +5845,17 @@
 			(justify left)
 		)
 		(uuid "d108f683-8b6d-46d8-85bf-ecffc8512fa7")
+	)
+	(hierarchical_label "GND"
+		(shape output)
+		(at 233.68 101.6 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "da01fbf5-da6e-4d8c-b717-17c87307687d")
 	)
 	(hierarchical_label "3V3"
 		(shape output)
