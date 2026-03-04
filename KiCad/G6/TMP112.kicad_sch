@@ -683,23 +683,13 @@
 	)
 	(wire
 		(pts
-			(xy 123.19 60.96) (xy 123.19 67.31)
+			(xy 124.46 60.96) (xy 124.46 67.31)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "9e120aab-3c11-4cbc-b40c-c209c77dfe33")
-	)
-	(wire
-		(pts
-			(xy 124.46 60.96) (xy 123.19 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d1482057-4833-4cc4-9b62-620ec97b4ff8")
 	)
 	(wire
 		(pts
@@ -778,7 +768,7 @@
 	)
 	(hierarchical_label "MISO-TMP"
 		(shape input)
-		(at 123.19 67.31 180)
+		(at 124.46 67.31 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -797,7 +787,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "14597ee9-ad44-41a4-9e90-f38dbf067e81")
-		(property "Reference" "#PWR067"
+		(property "Reference" "#PWR038"
 			(at 129.54 58.42 0)
 			(effects
 				(font
@@ -848,7 +838,7 @@
 		(instances
 			(project ""
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/beede330-7b7f-4f2e-b993-f0acc6d326f9"
-					(reference "#PWR067")
+					(reference "#PWR038")
 					(unit 1)
 				)
 			)
@@ -864,7 +854,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "333fac3e-bbb7-41ad-ac76-5e3f06186bff")
-		(property "Reference" "C19"
+		(property "Reference" "C7"
 			(at 186.69 46.9899 0)
 			(effects
 				(font
@@ -918,7 +908,7 @@
 		(instances
 			(project ""
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/beede330-7b7f-4f2e-b993-f0acc6d326f9"
-					(reference "C19")
+					(reference "C7")
 					(unit 1)
 				)
 			)
@@ -934,7 +924,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "61b46f77-e78c-4bfc-bbf2-65e4aa600926")
-		(property "Reference" "R6"
+		(property "Reference" "R3"
 			(at 116.84 53.34 90)
 			(effects
 				(font
@@ -986,7 +976,7 @@
 		(instances
 			(project ""
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/beede330-7b7f-4f2e-b993-f0acc6d326f9"
-					(reference "R6")
+					(reference "R3")
 					(unit 1)
 				)
 			)
@@ -1002,7 +992,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6aba6b92-2744-433a-a5ee-e6e75559fdd7")
-		(property "Reference" "U15"
+		(property "Reference" "U8"
 			(at 156.21 45.72 0)
 			(effects
 				(font
@@ -1068,7 +1058,7 @@
 		(instances
 			(project ""
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/beede330-7b7f-4f2e-b993-f0acc6d326f9"
-					(reference "U15")
+					(reference "U8")
 					(unit 1)
 				)
 			)
@@ -1084,7 +1074,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8624e294-7559-494f-935d-21f3dc4fe6ba")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR039"
 			(at 182.88 38.1 0)
 			(effects
 				(font
@@ -1134,7 +1124,7 @@
 		(instances
 			(project ""
 				(path "/99017594-210d-4d15-87a7-3152ef0d7b7c/beede330-7b7f-4f2e-b993-f0acc6d326f9"
-					(reference "#PWR023")
+					(reference "#PWR039")
 					(unit 1)
 				)
 			)
