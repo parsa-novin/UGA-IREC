@@ -1793,6 +1793,17 @@
 		)
 		(uuid "383ca680-fcb1-44b1-9519-5eeb792dd5bd")
 	)
+	(hierarchical_label "RX"
+		(shape input)
+		(at 105.41 97.79 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "44293831-7ac4-42f3-b444-8cd8d8506dab")
+	)
 	(hierarchical_label "CS-IIM2"
 		(shape input)
 		(at 176.53 80.01 0)
@@ -1924,6 +1935,17 @@
 			(justify right)
 		)
 		(uuid "cb720888-1797-4453-b49f-7c5254e2d08f")
+	)
+	(hierarchical_label "TX"
+		(shape input)
+		(at 105.41 95.25 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d16f1cf1-b9f4-422f-b383-2def043363a7")
 	)
 	(hierarchical_label "MISO-MS5"
 		(shape input)
