@@ -5,6 +5,282 @@
 	(uuid "377f902e-62e2-4547-8ebd-8f0fa2c481bd")
 	(paper "A4")
 	(lib_symbols
+		(symbol "ABM11-142-27.120MHZ-T3:ABM11-142-27.120MHZ-T3"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Y2"
+				(at 0 10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "ABM11-142-27.120MHZ-T3"
+				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "ABM11-142-27.120MHZ-T3:XTAL_ABM11-142-27.120MHZ-T3"
+				(at 0 0.254 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "PARTREV" "06.19.15"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MANUFACTURER" "Abracon"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MAXIMUM_PACKAGE_HEIGHT" "0.59 mm"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "STANDARD" "Manufacturer Recommendations"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(symbol "ABM11-142-27.120MHZ-T3_0_0"
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -2.54 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -5.08 -7.62)
+					(end 5.08 5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.3368 2.54) (xy -2.3368 -2.54)
+					)
+					(stroke
+						(width 0.4064)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.397 2.54) (xy -1.397 -2.54)
+					)
+					(stroke
+						(width 0.4064)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.397 2.54) (xy 1.397 2.54)
+					)
+					(stroke
+						(width 0.4064)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.397 2.54) (xy 1.397 -2.54)
+					)
+					(stroke
+						(width 0.4064)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.397 -2.54) (xy -1.397 -2.54)
+					)
+					(stroke
+						(width 0.4064)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.3368 2.54) (xy 2.3368 -2.54)
+					)
+					(stroke
+						(width 0.4064)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 0) (xy 5.08 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -7.62 1.27 0)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -7.62 -3.81 0)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 1.27 180)
+					(length 2.54)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+			)
+			(symbol "ABM11-142-27.120MHZ-T3_1_0"
+				(pin power_in line
+					(at 7.62 -3.81 180)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:C_Small"
 			(pin_numbers
 				(hide yes)
@@ -1466,6 +1742,26 @@
 	)
 	(wire
 		(pts
+			(xy 101.6 104.14) (xy 118.11 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "547cc463-cc64-44e5-a9c2-02e04a2c502c")
+	)
+	(wire
+		(pts
+			(xy 111.76 106.68) (xy 118.11 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "57bbd2ec-1c6f-420f-9019-fa522d03ac65")
+	)
+	(wire
+		(pts
 			(xy 175.26 66.04) (xy 175.26 68.58)
 		)
 		(stroke
@@ -1553,6 +1849,16 @@
 			(type default)
 		)
 		(uuid "6da852ff-2b9d-46ac-b133-fcf012c73288")
+	)
+	(wire
+		(pts
+			(xy 101.6 121.92) (xy 101.6 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6e5212cd-afe2-4925-a7ce-49e3d9bbe673")
 	)
 	(wire
 		(pts
@@ -1646,6 +1952,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 106.68) (xy 111.76 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85e2b3af-bbc4-439c-9b7a-2896dcf1324a")
+	)
+	(wire
+		(pts
 			(xy 158.75 86.36) (xy 168.91 86.36)
 		)
 		(stroke
@@ -1716,6 +2032,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 121.92) (xy 101.6 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bf8d8c1a-1d01-4c2f-8f2b-dc3d054e2fb0")
+	)
+	(wire
+		(pts
 			(xy 191.77 68.58) (xy 194.31 68.58)
 		)
 		(stroke
@@ -1783,6 +2109,16 @@
 			(type default)
 		)
 		(uuid "e86b9740-6a5c-452a-82f7-91f8f7671eac")
+	)
+	(wire
+		(pts
+			(xy 101.6 105.41) (xy 101.6 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e87f3f9e-672d-4a1b-bf2c-6b74022627c3")
 	)
 	(wire
 		(pts
@@ -3010,6 +3346,72 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 96.52 105.41 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "95100d89-2eb3-4c08-aae2-23fac1898577")
+		(property "Reference" "#PWR098"
+			(at 96.52 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 96.52 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "74dd2315-669b-42a1-9398-7304d3c9e37b")
+		)
+		(instances
+			(project "ENIAC"
+				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/d2a65d20-6114-460a-836d-d801263d62de"
+					(reference "#PWR098")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 166.37 68.58 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3346,6 +3748,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 96.52 120.65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e86dc610-be16-4e8e-9a3d-f17e583526b0")
+		(property "Reference" "#PWR099"
+			(at 96.52 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 96.52 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5f4deb51-2149-46cb-927c-e0b540970320")
+		)
+		(instances
+			(project "ENIAC"
+				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/d2a65d20-6114-460a-836d-d801263d62de"
+					(reference "#PWR099")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C_Small")
 		(at 186.69 58.42 90)
 		(unit 1)
@@ -3481,44 +3949,118 @@
 			)
 		)
 	)
-	(sheet
-		(at 88.9 123.19)
-		(size 15.24 27.94)
+	(symbol
+		(lib_id "ABM11-142-27.120MHZ-T3:ABM11-142-27.120MHZ-T3")
+		(at 100.33 113.03 270)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "7a58fad9-9294-4550-91e9-f8758bb6cceb")
-		(property "Sheetname" "Crystal"
-			(at 88.9 122.4784 0)
+		(uuid "faef1388-2cc5-4f15-ba13-fb3ef6a2e686")
+		(property "Reference" "Y2"
+			(at 84.074 125.476 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left bottom)
+				(justify left)
 			)
 		)
-		(property "Sheetfile" "Crystal.kicad_sch"
-			(at 88.9 151.7146 0)
+		(property "Value" "ABM11-142-27.120MHZ-T3"
+			(at 84.074 128.016 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left top)
+				(justify left)
 			)
+		)
+		(property "Footprint" "ABM11-142-27.120MHZ-T3:XTAL_ABM11-142-27.120MHZ-T3"
+			(at 100.584 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 100.33 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 100.33 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "06.19.15"
+			(at 100.33 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Abracon"
+			(at 100.33 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "0.59 mm"
+			(at 100.33 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 100.33 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "e03caec0-299d-4cef-a52a-850e2ed8e5e4")
+		)
+		(pin "1"
+			(uuid "b9e351f5-fd79-4e3a-8d42-e9305296154e")
+		)
+		(pin "3"
+			(uuid "49c46ce3-4289-4b62-b2eb-90d6c9c49609")
+		)
+		(pin "4"
+			(uuid "7775f5bb-9c9b-40c5-974a-c73a0d51c02e")
 		)
 		(instances
-			(project "ENIAC"
+			(project ""
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/d2a65d20-6114-460a-836d-d801263d62de"
-					(page "3")
+					(reference "Y2")
+					(unit 1)
 				)
 			)
 		)
