@@ -828,17 +828,6 @@
 		)
 		(uuid "0660ac56-5147-40a5-adc2-495b7411063f")
 	)
-	(hierarchical_label "SX_MOSI"
-		(shape output)
-		(at 187.96 96.52 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "0a6d1d60-7347-4eed-8f1b-7a0de9a39e4e")
-	)
 	(hierarchical_label "SX_SCK"
 		(shape input)
 		(at 109.22 146.05 270)
@@ -849,61 +838,6 @@
 			(justify right)
 		)
 		(uuid "13a895a3-8787-4021-9ef1-a01fe5fddf2f")
-	)
-	(hierarchical_label "SX_MISO"
-		(shape input)
-		(at 187.96 86.36 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "5a755fe9-6b3b-43ed-8e5d-a692946ce4bf")
-	)
-	(hierarchical_label "GP1"
-		(shape input)
-		(at 196.85 74.93 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "6051d8be-d876-4864-9a6a-eb567f6fecae")
-	)
-	(hierarchical_label "SX_CS"
-		(shape input)
-		(at 187.96 88.9 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6dbd7df1-d340-4040-a692-8a9e5f3646bf")
-	)
-	(hierarchical_label "RFIO_RF"
-		(shape bidirectional)
-		(at 191.77 74.93 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "853246b5-d95e-4bab-a3aa-2f8cdb6e1d1b")
-	)
-	(hierarchical_label "SX_SCK"
-		(shape input)
-		(at 187.96 99.06 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "b1bec88a-2a2d-4f6c-b0fb-acd4faad4ec5")
 	)
 	(symbol
 		(lib_id "power:+5V")
@@ -1067,7 +1001,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "B6B-XH-A:JST_B6B-XH-A"
+		(property "Footprint" "Connector_JST:JST_EH_S6B-EH_1x06_P2.50mm_Horizontal"
 			(at 106.68 29.21 0)
 			(effects
 				(font
@@ -1298,6 +1232,66 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(pin "SX_MOSI" output
+			(at 187.96 96.52 180)
+			(uuid "c91d4beb-24de-4baf-a185-cde2b1b3ca1c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SX_MISO" output
+			(at 187.96 86.36 180)
+			(uuid "67c7e5ab-c59a-406c-bfb6-ffb304f57a1a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GP1" input
+			(at 196.85 74.93 90)
+			(uuid "c3cbe1ef-fe96-42dc-bab6-7516dde43b11")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "RFIO" input
+			(at 191.77 74.93 90)
+			(uuid "5cdfad91-aba1-41fc-895a-648c35ad9632")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SX_CS" output
+			(at 187.96 88.9 180)
+			(uuid "19acc26d-98dc-4523-b4d0-c1d88920d501")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SX_SCK" output
+			(at 187.96 99.06 180)
+			(uuid "45319f7f-74b6-43d4-914b-cb430e6dbf05")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 		(instances

@@ -2324,6 +2324,16 @@
 		)
 		(uuid "ea56ad20-578b-4ce3-b97b-3db08797c6e1")
 	)
+	(label "coax"
+		(at 224.79 82.55 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "089c270f-7f3f-4657-889b-3333396e26dc")
+	)
 	(label "ANT_RF"
 		(at 115.57 77.47 0)
 		(effects
@@ -2333,6 +2343,16 @@
 			(justify left bottom)
 		)
 		(uuid "11b1700e-f0e8-4f93-bf2a-2ebade241816")
+	)
+	(label "lpf in"
+		(at 182.88 100.33 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "12df40ba-385f-4674-a037-d2f5eff9b266")
 	)
 	(label "ANT_BPF"
 		(at 147.32 100.33 180)
@@ -2353,6 +2373,16 @@
 			(justify left bottom)
 		)
 		(uuid "64f06143-a71b-497f-a13d-129dbcd2d69e")
+	)
+	(label "lpf out"
+		(at 199.39 71.12 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "81039901-daec-4ac0-807c-53046d21a513")
 	)
 	(label "ANT_RF"
 		(at 50.8 114.3 180)
@@ -2407,7 +2437,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "02758f54-9af3-42a7-9ee9-acca1715d13f")
-		(property "Reference" "L9"
+		(property "Reference" "L13"
 			(at 170.18 95.25 90)
 			(effects
 				(font
@@ -2415,7 +2445,7 @@
 				)
 			)
 		)
-		(property "Value" "?"
+		(property "Value" "0"
 			(at 170.18 97.79 90)
 			(effects
 				(font
@@ -2423,7 +2453,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Inductor_SMD:L_0603_1608Metric"
 			(at 170.18 100.33 0)
 			(effects
 				(font
@@ -2459,7 +2489,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "L9")
+					(reference "L13")
 					(unit 1)
 				)
 			)
@@ -2475,7 +2505,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0970ec04-6064-4e0b-95c7-109f79ea4c40")
-		(property "Reference" "FL2"
+		(property "Reference" "FL4"
 			(at 80.01 104.14 0)
 			(effects
 				(font
@@ -2491,7 +2521,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SMD5_SAW-B7520_QUA"
+		(property "Footprint" "AFS14A04_1575_42_T3:FIL_AFS14A04-1575.42-T3"
 			(at 54.61 114.3 0)
 			(effects
 				(font
@@ -2538,7 +2568,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "FL2")
+					(reference "FL4")
 					(unit 1)
 				)
 			)
@@ -2553,7 +2583,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "0cc955b2-9eb7-4cad-a05d-c75642b384fd")
-		(property "Reference" "C40"
+		(property "Reference" "C76"
 			(at 49.53 67.31 90)
 			(effects
 				(font
@@ -2561,7 +2591,7 @@
 				)
 			)
 		)
-		(property "Value" "?"
+		(property "Value" "47pF"
 			(at 49.53 69.85 90)
 			(effects
 				(font
@@ -2569,7 +2599,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 53.34 73.9648 0)
 			(effects
 				(font
@@ -2605,7 +2635,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "C40")
+					(reference "C76")
 					(unit 1)
 				)
 			)
@@ -2621,7 +2651,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "17a657d8-66e5-4c52-a101-277f6cd9ebb1")
-		(property "Reference" "#PWR022"
+		(property "Reference" "#PWR0134"
 			(at 105.41 107.95 0)
 			(effects
 				(font
@@ -2671,7 +2701,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR022")
+					(reference "#PWR0134")
 					(unit 1)
 				)
 			)
@@ -2687,7 +2717,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "247fd42d-9475-4c12-95c8-a48a4ef57b16")
-		(property "Reference" "L8"
+		(property "Reference" "L12"
 			(at 57.15 69.85 90)
 			(effects
 				(font
@@ -2695,7 +2725,7 @@
 				)
 			)
 		)
-		(property "Value" "?"
+		(property "Value" "JP"
 			(at 57.15 72.39 90)
 			(effects
 				(font
@@ -2703,7 +2733,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Inductor_SMD:L_0603_1608Metric"
 			(at 57.15 74.93 0)
 			(effects
 				(font
@@ -2739,7 +2769,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "L8")
+					(reference "L12")
 					(unit 1)
 				)
 			)
@@ -2755,7 +2785,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "28c4b710-1df5-4396-8a2b-836ae7d9e57e")
-		(property "Reference" "C45"
+		(property "Reference" "C81"
 			(at 223.52 90.1635 0)
 			(effects
 				(font
@@ -2773,7 +2803,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 220.98 91.44 0)
 			(effects
 				(font
@@ -2809,7 +2839,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "C45")
+					(reference "C81")
 					(unit 1)
 				)
 			)
@@ -2825,7 +2855,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "32f3e92d-0405-491b-a8c8-623087a8a395")
-		(property "Reference" "J5"
+		(property "Reference" "J3"
 			(at 250.19 81.5731 0)
 			(effects
 				(font
@@ -2843,7 +2873,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_Coaxial:SMA_Molex_73251-1153_EdgeMount_Horizontal"
 			(at 246.38 82.55 0)
 			(effects
 				(font
@@ -2879,7 +2909,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "J5")
+					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -2895,7 +2925,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4b6443d1-7ca3-47c8-9a4c-639bcb0c7c80")
-		(property "Reference" "#PWR03"
+		(property "Reference" "#PWR0133"
 			(at 53.34 124.46 0)
 			(effects
 				(font
@@ -2945,7 +2975,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR03")
+					(reference "#PWR0133")
 					(unit 1)
 				)
 			)
@@ -2961,7 +2991,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "51df6242-0c59-45c6-a187-8efb84171184")
-		(property "Reference" "#PWR076"
+		(property "Reference" "#PWR0140"
 			(at 246.38 99.06 0)
 			(effects
 				(font
@@ -3011,7 +3041,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR076")
+					(reference "#PWR0140")
 					(unit 1)
 				)
 			)
@@ -3027,7 +3057,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5d819091-55ea-4b17-8af1-5316173c524f")
-		(property "Reference" "#PWR074"
+		(property "Reference" "#PWR0137"
 			(at 160.02 81.28 0)
 			(effects
 				(font
@@ -3078,7 +3108,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR074")
+					(reference "#PWR0137")
 					(unit 1)
 				)
 			)
@@ -3094,7 +3124,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6dee06db-f7f5-48ec-998d-993e8d33cc08")
-		(property "Reference" "#PWR021"
+		(property "Reference" "#PWR0135"
 			(at 105.41 125.73 0)
 			(effects
 				(font
@@ -3144,7 +3174,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR021")
+					(reference "#PWR0135")
 					(unit 1)
 				)
 			)
@@ -3236,7 +3266,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "85254119-3fed-4034-8113-f6fc73aba5af")
-		(property "Reference" "U1"
+		(property "Reference" "U14"
 			(at 90.17 64.77 0)
 			(effects
 				(font
@@ -3252,7 +3282,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SC-70-6_PSM"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6_Handsoldering"
 			(at 64.77 74.93 0)
 			(effects
 				(font
@@ -3302,7 +3332,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "U1")
+					(reference "U14")
 					(unit 1)
 				)
 			)
@@ -3318,7 +3348,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "afa49d36-6bec-4f8f-9f8a-a67d767ad43d")
-		(property "Reference" "C43"
+		(property "Reference" "C79"
 			(at 214.63 90.1635 0)
 			(effects
 				(font
@@ -3336,7 +3366,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 212.09 91.44 0)
 			(effects
 				(font
@@ -3372,7 +3402,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "C43")
+					(reference "C79")
 					(unit 1)
 				)
 			)
@@ -3388,7 +3418,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b0861534-b351-4823-8c95-9e5cef912d0d")
-		(property "Reference" "C41"
+		(property "Reference" "C77"
 			(at 160.02 105.4035 0)
 			(effects
 				(font
@@ -3397,7 +3427,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "?"
+		(property "Value" "NC"
 			(at 160.02 107.9435 0)
 			(effects
 				(font
@@ -3406,7 +3436,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 157.48 106.68 0)
 			(effects
 				(font
@@ -3442,7 +3472,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "C41")
+					(reference "C77")
 					(unit 1)
 				)
 			)
@@ -3458,7 +3488,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b0d611cc-db5e-47c6-91a7-c1403448c5d0")
-		(property "Reference" "C42"
+		(property "Reference" "C78"
 			(at 185.42 105.4035 0)
 			(effects
 				(font
@@ -3467,7 +3497,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "?"
+		(property "Value" "NC"
 			(at 185.42 107.9435 0)
 			(effects
 				(font
@@ -3476,7 +3506,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 182.88 106.68 0)
 			(effects
 				(font
@@ -3512,7 +3542,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "C42")
+					(reference "C78")
 					(unit 1)
 				)
 			)
@@ -3528,7 +3558,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b7003030-313e-449f-8ede-6ee5bbaba974")
-		(property "Reference" "#PWR071"
+		(property "Reference" "#PWR0136"
 			(at 115.57 74.93 0)
 			(effects
 				(font
@@ -3578,7 +3608,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR071")
+					(reference "#PWR0136")
 					(unit 1)
 				)
 			)
@@ -3594,7 +3624,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c6a2bc0c-c675-45bc-8fed-8ac671ab150a")
-		(property "Reference" "D2"
+		(property "Reference" "D1"
 			(at 232.41 90.1699 90)
 			(effects
 				(font
@@ -3648,7 +3678,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "D2")
+					(reference "D1")
 					(unit 1)
 				)
 			)
@@ -3664,7 +3694,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cfcf7577-8de2-4a92-a9b0-90ce340ba56a")
-		(property "Reference" "C44"
+		(property "Reference" "C80"
 			(at 217.1763 76.2 90)
 			(effects
 				(font
@@ -3672,7 +3702,7 @@
 				)
 			)
 		)
-		(property "Value" "?"
+		(property "Value" "47pF"
 			(at 217.1763 78.74 90)
 			(effects
 				(font
@@ -3680,7 +3710,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 217.17 82.55 0)
 			(effects
 				(font
@@ -3716,7 +3746,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "C44")
+					(reference "C80")
 					(unit 1)
 				)
 			)
@@ -3732,7 +3762,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e44bdb15-351a-4606-81fd-1fb309094f77")
-		(property "Reference" "#PWR075"
+		(property "Reference" "#PWR0139"
 			(at 220.98 107.95 0)
 			(effects
 				(font
@@ -3782,7 +3812,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR075")
+					(reference "#PWR0139")
 					(unit 1)
 				)
 			)
@@ -3798,7 +3828,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f8ac81f2-6035-43f3-b1d4-ebd420679d80")
-		(property "Reference" "#PWR073"
+		(property "Reference" "#PWR0138"
 			(at 170.18 121.92 0)
 			(effects
 				(font
@@ -3848,7 +3878,7 @@
 		(instances
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR073")
+					(reference "#PWR0138")
 					(unit 1)
 				)
 			)
