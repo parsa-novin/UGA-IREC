@@ -3140,7 +3140,7 @@
 		)
 		(uuid "9c80a94e-1978-4b0c-a4f7-171a7f4e85d0")
 	)
-	(label "VCCBIAS"
+	(label "VCCBYPASS"
 		(at 231.14 137.16 0)
 		(effects
 			(font
@@ -3260,7 +3260,7 @@
 		)
 		(uuid "e9af59ad-9f29-4aac-886f-6cbc66f0def4")
 	)
-	(label "BYPASS"
+	(label "VCCBYPASS"
 		(at 179.07 119.38 0)
 		(effects
 			(font
@@ -3678,7 +3678,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "3.3VD"
+		(property "Value" "+3.3VD"
 			(at 130.302 177.8 90)
 			(effects
 				(font

@@ -38,8 +38,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 0.0,
-          "height": 0.6096,
-          "width": 0.254
+          "height": 0.25,
+          "width": 0.7
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -695,6 +695,22 @@
       {
         "netclass": "3.6",
         "pattern": "/1_2GHz_Frontend/RX_path/LO-"
+      },
+      {
+        "netclass": "2.4",
+        "pattern": "/1_2GHz_Frontend/RX_path/OUT_p"
+      },
+      {
+        "netclass": "2.4",
+        "pattern": "/1_2GHz_Frontend/RX_path/bal_out_p"
+      },
+      {
+        "netclass": "2.4",
+        "pattern": "/1_2GHz_Frontend/RX_path/bal_out_n"
+      },
+      {
+        "netclass": "2.4",
+        "pattern": "/1_2GHz_Frontend/RX_path/OUT_n"
       }
     ]
   },
