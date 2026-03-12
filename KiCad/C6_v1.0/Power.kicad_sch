@@ -4508,14 +4508,14 @@
 		(uuid "050bfd54-e3e8-4ca2-8800-2113b999597a")
 	)
 	(label "VOUT"
-		(at 251.46 85.09 0)
+		(at 251.46 87.63 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "4c94b091-9658-4116-861f-467b85708fd4")
+		(uuid "3e8c0364-721e-4d26-85f0-d2e5f3f34416")
 	)
 	(label "VOUT"
 		(at 217.17 125.73 0)
@@ -4565,7 +4565,18 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "c760a0e9-e4b7-46b0-b3ea-d90ea16d1696")
+		(uuid "fc6e906f-7669-413c-a4bd-3189516cff74")
+	)
+	(hierarchical_label "GND"
+		(shape output)
+		(at 251.46 85.09 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "02a38c13-3ee4-46b3-b984-baac043d26fd")
 	)
 	(hierarchical_label "5V"
 		(shape output)
@@ -4599,17 +4610,6 @@
 			(justify left)
 		)
 		(uuid "1923b393-6906-4755-89bb-3c0d64073a30")
-	)
-	(hierarchical_label "GND"
-		(shape output)
-		(at 251.46 87.63 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "1bf1486f-abdf-42bb-884d-4c15f0caa1c6")
 	)
 	(hierarchical_label "GND"
 		(shape output)
@@ -4679,17 +4679,6 @@
 	)
 	(hierarchical_label "GND"
 		(shape output)
-		(at 238.76 87.63 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "432a92df-716a-4145-860c-825d9add1e2a")
-	)
-	(hierarchical_label "GND"
-		(shape output)
 		(at 198.12 35.56 180)
 		(effects
 			(font
@@ -4709,17 +4698,6 @@
 			(justify right)
 		)
 		(uuid "62326c07-c778-4776-8877-7e936802c127")
-	)
-	(hierarchical_label "EGSE_RX"
-		(shape input)
-		(at 238.76 90.17 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "6946bdd7-8f53-4070-92a3-f766eb910043")
 	)
 	(hierarchical_label "1V8"
 		(shape output)
@@ -4756,6 +4734,17 @@
 	)
 	(hierarchical_label "GND"
 		(shape output)
+		(at 238.76 90.17 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "85cf5a6e-6f35-4ebd-9916-f6edc02cca53")
+	)
+	(hierarchical_label "GND"
+		(shape output)
 		(at 29.21 67.31 270)
 		(effects
 			(font
@@ -4775,6 +4764,17 @@
 			(justify left)
 		)
 		(uuid "9a02d7d5-646c-41a5-9151-356ab943106b")
+	)
+	(hierarchical_label "EGSE_RX"
+		(shape input)
+		(at 238.76 87.63 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9b32270e-9250-446d-a15a-7043cc8c2869")
 	)
 	(hierarchical_label "ADC"
 		(shape output)

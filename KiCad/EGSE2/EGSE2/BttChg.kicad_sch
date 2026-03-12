@@ -1893,16 +1893,6 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 25.4) (xy 236.22 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "569ba2ad-4877-4b2a-b53c-d1fd30b44c0f")
-	)
-	(wire
-		(pts
 			(xy 156.21 101.6) (xy 165.1 101.6)
 		)
 		(stroke
@@ -3225,6 +3215,17 @@
 		)
 		(uuid "12c593aa-7fe2-4410-a177-a6934b551cbe")
 	)
+	(hierarchical_label "PPHV"
+		(shape input)
+		(at 228.6 24.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "18bdd92a-95f1-4fcf-804d-ef0dcf65a951")
+	)
 	(hierarchical_label "GND"
 		(shape output)
 		(at 80.01 93.98 180)
@@ -3345,17 +3346,6 @@
 			(justify left)
 		)
 		(uuid "8cc97e40-8120-4903-9e9b-e1ab787afc49")
-	)
-	(hierarchical_label "PPHV"
-		(shape input)
-		(at 236.22 25.4 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "9bebe3f6-138b-45a5-b620-474deb5f0139")
 	)
 	(hierarchical_label "GND"
 		(shape output)
@@ -3838,71 +3828,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 228.6 25.4 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3187f909-1f93-40bd-bc77-f710bea3a075")
-		(property "Reference" "PPHV1"
-			(at 225.298 20.32 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "PPHV"
-			(at 225.298 22.86 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_1.0x1.0mm"
-			(at 228.6 20.32 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 228.6 20.32 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point"
-			(at 228.6 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a2960696-dd8e-4687-9687-67851e1797a1")
-		)
-		(instances
-			(project "bustingballscrazystylenolube"
-				(path "/93514605-6b24-46cc-859f-51fd06f5909b/7f3a3102-a634-4703-8b8f-f224a071de32"
-					(reference "PPHV1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 60.96 166.37 0)
 		(unit 1)
@@ -4270,7 +4195,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder"
 			(at 74.6252 170.18 0)
 			(effects
 				(font
@@ -4618,7 +4543,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder"
 			(at 74.6252 186.69 0)
 			(effects
 				(font
@@ -4655,6 +4580,71 @@
 			(project "EGSE2"
 				(path "/93514605-6b24-46cc-859f-51fd06f5909b/7f3a3102-a634-4703-8b8f-f224a071de32"
 					(reference "C29")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 228.6 24.13 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "79da78e1-ff80-4451-bc3d-12ade47a6804")
+		(property "Reference" "TP3"
+			(at 225.298 19.05 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 225.298 21.59 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Keystone_5019_Miniature"
+			(at 228.6 19.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 228.6 19.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 228.6 24.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0c27f8f0-f492-4bf2-b433-b0d0d258a1c4")
+		)
+		(instances
+			(project "EGSE2"
+				(path "/93514605-6b24-46cc-859f-51fd06f5909b/7f3a3102-a634-4703-8b8f-f224a071de32"
+					(reference "TP3")
 					(unit 1)
 				)
 			)
