@@ -817,28 +817,6 @@
 		)
 		(uuid "c46dcb89-7758-4aae-b79d-814f3606b3a1")
 	)
-	(hierarchical_label "SX_MOSI"
-		(shape output)
-		(at 111.76 146.05 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "0660ac56-5147-40a5-adc2-495b7411063f")
-	)
-	(hierarchical_label "SX_SCK"
-		(shape input)
-		(at 109.22 146.05 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "13a895a3-8787-4021-9ef1-a01fe5fddf2f")
-	)
 	(symbol
 		(lib_id "power:+5V")
 		(at 72.39 44.45 90)
@@ -1185,6 +1163,26 @@
 		(pin "GP1" input
 			(at 77.47 146.05 90)
 			(uuid "3205c46b-fc92-4d39-8e10-0d3b2112be4a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SX_MOSI" output
+			(at 111.76 146.05 90)
+			(uuid "0e43581b-2e26-485d-9ee2-709b18e648c3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SX_SCK" input
+			(at 109.22 146.05 90)
+			(uuid "b7242fa9-fd08-41b7-a2e9-e4cddc6634e5")
 			(effects
 				(font
 					(size 1.27 1.27)

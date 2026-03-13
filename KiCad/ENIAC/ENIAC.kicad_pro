@@ -38,8 +38,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 0.0,
-          "height": 0.25,
-          "width": 0.7
+          "height": 2.29,
+          "width": 5.08
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -711,6 +711,30 @@
       {
         "netclass": "2.4",
         "pattern": "/1_2GHz_Frontend/RX_path/OUT_n"
+      },
+      {
+        "netclass": "1.2",
+        "pattern": "/1_2GHz_Frontend/RX_path/in_bal_p"
+      },
+      {
+        "netclass": "1.2",
+        "pattern": "/1_2GHz_Frontend/RX_path/in_bal_n"
+      },
+      {
+        "netclass": "1.2",
+        "pattern": "/1_2GHz_Frontend/RX_path/IN_p"
+      },
+      {
+        "netclass": "1.2",
+        "pattern": "/1_2GHz_Frontend/RX_path/IN_n"
+      },
+      {
+        "netclass": "1.2",
+        "pattern": "/1_2GHz_Frontend/ANT_switch/hatred"
+      },
+      {
+        "netclass": "1.2",
+        "pattern": "/1_2GHz_Frontend/ANT_switch/stipd'"
       }
     ]
   },
