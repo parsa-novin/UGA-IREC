@@ -3789,6 +3789,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 115.57 45.72 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "74587811-a780-4e02-b2eb-e531925dc655")
+		(property "Reference" "#PWR0138"
+			(at 115.57 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 115.57 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 115.57 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 115.57 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 115.57 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c06999ef-b896-46b7-b291-58a65cc8c6e0")
+		)
+		(instances
+			(project ""
+				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
+					(reference "#PWR0138")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "RF_Filter:LFCN-1325")
 		(at 182.88 81.28 270)
 		(unit 1)
@@ -4023,7 +4089,7 @@
 				)
 			)
 		)
-		(property "Value" "4259-63"
+		(property "Value" "AS215-92"
 			(at 90.17 41.91 0)
 			(effects
 				(font
@@ -4359,72 +4425,6 @@
 			(project "ENIAC"
 				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
 					(reference "C78")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3VA")
-		(at 115.57 45.72 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b7003030-313e-449f-8ede-6ee5bbaba974")
-		(property "Reference" "#PWR0138"
-			(at 115.57 49.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3.3VA"
-			(at 115.57 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 115.57 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 115.57 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3VA\""
-			(at 115.57 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "364cef24-a55a-4296-832e-2ff7ac8ee666")
-		)
-		(instances
-			(project "ENIAC"
-				(path "/028e33f3-2d21-4744-a260-423608f4c0b7/cea77956-cbc5-4ddc-8ead-a341e8686604/c3720c13-f22a-4d2b-8cbe-8c286dd367c1"
-					(reference "#PWR0138")
 					(unit 1)
 				)
 			)
