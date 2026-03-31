@@ -20,40 +20,40 @@ from rocketpy import GenericSurface
 
 BASE_DIR = Path(__file__).resolve().parent
 
-DEFAULT_BASE_DRAG_CSV = BASE_DIR / "HELP.csv"
+DEFAULT_BASE_DRAG_CSV = BASE_DIR / "Deployment_Fits_Output" / "Deployment_80deg_CdFit.csv"
 DEFAULT_MOTOR_FILE = BASE_DIR / "m3400.eng"
 DEFAULT_AOA_DIR = BASE_DIR / "AoA_Fits_Output"
 
 ROCKET_RADIUS = 0.078359
-ROCKET_MASS = 23.243
+ROCKET_MASS = 18.7
 ROCKET_INERTIA = (7.15, 7.15, 0.095)
-ROCKET_COM_NO_MOTOR = 1.255014
+ROCKET_COM_NO_MOTOR = 1.1633
 ROCKET_COORD_SYS = "nose_to_tail"
 
-NOSE_LENGTH = 0.762
-TAIL_TOP_RADIUS = 0.156718 / 2
-TAIL_BOTTOM_RADIUS = 0.1143 / 2
-TAIL_LENGTH = 0.127
-TAIL_POSITION = 2.0828
+NOSE_LENGTH = 0.7625
+TAIL_TOP_RADIUS = 0.157 / 2
+TAIL_BOTTOM_RADIUS = 0.12 / 2
+TAIL_LENGTH = 0.112
+TAIL_POSITION = 2.1467
 
 FIN_COUNT = 3
 FIN_ROOT_CHORD = 0.2032
-FIN_TIP_CHORD = 0.2032 / 2
+FIN_TIP_CHORD = 0.095
 FIN_SPAN = 0.1778
-FIN_POSITION = 1.8796
+FIN_POSITION = 1.9445
 
-MOTOR_POSITION = 2.1971
+MOTOR_POSITION = 2.262
 AOA_SURFACE_POSITION = 0.762
 
 REF_AREA = np.pi * (ROCKET_RADIUS ** 2)
 REF_LEN = 2 * ROCKET_RADIUS
 
-DEFAULT_LATITUDE = 31.02403
-DEFAULT_LONGITUDE = -103.66157
-DEFAULT_ELEVATION = 918.060648
+DEFAULT_LATITUDE = 34.62906
+DEFAULT_LONGITUDE = -86.31311
+DEFAULT_ELEVATION = 182.32
 
 OPEN_METEO_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
-WIND_DATE_STR = "2025-06-09"
+WIND_DATE_STR = "2025-03-28"
 
 
 # ============================================================
@@ -134,6 +134,7 @@ def load_base_drag_curve(csv_path):
 
 # ============================================================
 # AOA DRAG MODEL
+# (USED ONLY FOR MONTE CARLO WHEN --use-aoa-drag IS ENABLED)
 # ============================================================
 
 class AoADragModel:
@@ -275,7 +276,7 @@ def fetch_june9_2025_wind_data(latitude, longitude):
         "end_date": WIND_DATE_STR,
         "hourly": "wind_speed_10m,wind_direction_10m",
         "wind_speed_unit": "ms",
-        "timezone": "UTC",
+        "timezone": "auto",
     }
 
     url = OPEN_METEO_ARCHIVE_URL + "?" + urllib.parse.urlencode(params)
@@ -328,7 +329,7 @@ def meteorological_to_uv(speed_mps, direction_from_deg):
 
 def select_api_row(wind_df, api_hour):
     if api_hour is None:
-        api_hour = 12
+        api_hour = 14
 
     if api_hour < 0 or api_hour >= len(wind_df):
         raise ValueError(f"--api-hour must be between 0 and {len(wind_df) - 1}")
@@ -390,9 +391,9 @@ def show_geometry(rocket):
 
 def build_environment_from_api_row(args, api_row):
     env = rocketpy.Environment(
-        latitude=args.latitude,
-        longitude=args.longitude,
-        elevation=args.elevation,
+        latitude=31.02403,
+        longitude=-103.66157,
+        elevation=198.73
     )
 
     dt = pd.to_datetime(api_row["time_utc"])
@@ -506,35 +507,30 @@ def get_peak_angular_metrics(flight):
 # RUN MODES
 # ============================================================
 
-def run_preview(args, drag_table, aoa_model):
-    use_aoa_for_display = (args.mode == "compare") or args.use_aoa_drag
-
+def run_preview(args, drag_table):
     rocket = build_rocket(
         drag_table=drag_table,
         motor_file=args.motor_file,
-        use_aoa_drag=use_aoa_for_display,
-        aoa_model=aoa_model,
+        use_aoa_drag=False,
+        aoa_model=None,
     )
     show_geometry(rocket)
 
 
-def run_single(args, drag_table, aoa_model, wind_df):
-    if args.use_aoa_drag and aoa_model is not None:
-        aoa_model.clear_log()
-
+def run_single(args, drag_table, wind_df):
     api_row = select_api_row(wind_df, args.api_hour)
 
     wind_speed = float(api_row["wind_speed_mps"])
     wind_from_deg = float(api_row["wind_direction_from_deg"])
-    heading_deg = wind_from_deg  # point into the wind
+    heading_deg = wind_from_deg
 
     env = build_environment_from_api_row(args, api_row)
 
     rocket = build_rocket(
         drag_table=drag_table,
         motor_file=args.motor_file,
-        use_aoa_drag=args.use_aoa_drag,
-        aoa_model=aoa_model,
+        use_aoa_drag=False,
+        aoa_model=None,
     )
 
     flight = rocketpy.Flight(
@@ -552,105 +548,6 @@ def run_single(args, drag_table, aoa_model, wind_df):
     for k, v in metrics.items():
         print(f"{k}: {v}")
 
-    if args.use_aoa_drag and aoa_model is not None:
-        aoa_log_df = aoa_model.log_df()
-        print(f"\nAoA evaluation count: {len(aoa_log_df)}")
-
-        if not aoa_log_df.empty:
-            print("\nFirst few AoA evaluations used in the simulation:")
-            print(aoa_log_df[["eval_index", "abs_alpha_deg", "mach", "cd_total", "cd0", "cd_used"]].head(15))
-
-            aoa_log_df.to_csv(args.aoa_log_csv, index=False)
-            print(f"\nSaved AoA log to: {args.aoa_log_csv}")
-
-            plot_aoa_sim_log(aoa_log_df, title="AoA Drag Usage During Single Flight")
-
-
-def run_compare(args, drag_table, aoa_model, wind_df):
-    api_row = select_api_row(wind_df, args.api_hour)
-
-    wind_from_deg = float(api_row["wind_direction_from_deg"])
-    heading_deg = wind_from_deg
-
-    env_off = build_environment_from_api_row(args, api_row)
-    rocket_off = build_rocket(
-        drag_table=drag_table,
-        motor_file=args.motor_file,
-        use_aoa_drag=False,
-        aoa_model=None,
-    )
-
-    flight_off = rocketpy.Flight(
-        rocket=rocket_off,
-        environment=env_off,
-        rail_length=args.rail_length,
-        inclination=args.inclination,
-        heading=heading_deg,
-    )
-
-    print("\n===== FLIGHT INFO: AoA OFF =====")
-    flight_off.info()
-    metrics_off = get_peak_angular_metrics(flight_off)
-
-    aoa_model.clear_log()
-
-    env_on = build_environment_from_api_row(args, api_row)
-    rocket_on = build_rocket(
-        drag_table=drag_table,
-        motor_file=args.motor_file,
-        use_aoa_drag=True,
-        aoa_model=aoa_model,
-    )
-
-    flight_on = rocketpy.Flight(
-        rocket=rocket_on,
-        environment=env_on,
-        rail_length=args.rail_length,
-        inclination=args.inclination,
-        heading=heading_deg,
-    )
-
-    print("\n===== FLIGHT INFO: AoA ON =====")
-    flight_on.info()
-    metrics_on = get_peak_angular_metrics(flight_on)
-
-    compare_df = pd.DataFrame([
-        {
-            "case": "AoA OFF",
-            "time_utc": api_row["time_utc"],
-            "wind_speed_mps": api_row["wind_speed_mps"],
-            "wind_direction_from_deg": wind_from_deg,
-            "heading_deg_used": heading_deg,
-            "inclination_deg_used": args.inclination,
-            **metrics_off
-        },
-        {
-            "case": "AoA ON",
-            "time_utc": api_row["time_utc"],
-            "wind_speed_mps": api_row["wind_speed_mps"],
-            "wind_direction_from_deg": wind_from_deg,
-            "heading_deg_used": heading_deg,
-            "inclination_deg_used": args.inclination,
-            **metrics_on
-        },
-    ])
-
-    print(compare_df)
-    compare_df.to_csv(args.compare_csv, index=False)
-    print(f"\nSaved comparison to: {args.compare_csv}")
-
-    aoa_log_df = aoa_model.log_df()
-    print(f"\nAoA evaluation count (ON case): {len(aoa_log_df)}")
-
-    if not aoa_log_df.empty:
-        print("\nFirst few AoA evaluations used in the ON simulation:")
-        print(aoa_log_df[["eval_index", "abs_alpha_deg", "mach", "cd_total", "cd0", "cd_used"]].head(15))
-
-        aoa_log_df.to_csv(args.aoa_log_csv, index=False)
-        print(f"Saved AoA log to: {args.aoa_log_csv}")
-
-        plot_aoa_sim_log(aoa_log_df, title="AoA Drag Usage During Compare Flight (AoA ON)")
-
 
 def run_monte_carlo(args, drag_table, aoa_model, wind_df):
     rng = np.random.default_rng(args.seed)
@@ -666,7 +563,7 @@ def run_monte_carlo(args, drag_table, aoa_model, wind_df):
 
         wind_speed = float(api_row["wind_speed_mps"])
         wind_from_deg = float(api_row["wind_direction_from_deg"])
-        heading_run = wind_from_deg  # point into the wind
+        heading_run = wind_from_deg
 
         try:
             if args.use_aoa_drag and aoa_model is not None:
@@ -759,7 +656,7 @@ def run_monte_carlo(args, drag_table, aoa_model, wind_df):
         plt.grid(True)
         plt.show()
 
-    if worst_aoa_log_df is not None and not worst_aoa_log_df.empty:
+    if args.use_aoa_drag and worst_aoa_log_df is not None and not worst_aoa_log_df.empty:
         worst_aoa_log_df.to_csv(args.worst_aoa_log_csv, index=False)
         print(f"Saved worst-case AoA log to: {args.worst_aoa_log_csv}")
         plot_aoa_sim_log(worst_aoa_log_df, title="AoA Drag Usage During Worst-Case Monte Carlo Flight")
@@ -772,15 +669,20 @@ def run_monte_carlo(args, drag_table, aoa_model, wind_df):
 def build_parser():
     parser = argparse.ArgumentParser(
         description=(
-            "RocketPy launcher with optional AoA-based drag and June 9, 2025 "
-            "archived wind data. Heading always points into the wind."
+            "RocketPy launcher using Deployment_0deg_CdFit.csv as the normal "
+            "Mach drag table. Optional AoA-based custom drag is used only in "
+            "Monte Carlo when --use-aoa-drag is enabled."
         )
     )
 
     subparsers = parser.add_subparsers(dest="mode", required=True)
 
     def add_common_arguments(p):
-        p.add_argument("--drag-csv", default=str(DEFAULT_BASE_DRAG_CSV), help="Base Mach-only drag CSV")
+        p.add_argument(
+            "--drag-csv",
+            default=str(DEFAULT_BASE_DRAG_CSV),
+            help="Base Mach-only drag CSV (default: Deployment_0deg_CdFit.csv)"
+        )
         p.add_argument("--motor-file", default=str(DEFAULT_MOTOR_FILE), help=".eng motor file")
 
         p.add_argument("--latitude", type=float, default=DEFAULT_LATITUDE)
@@ -790,16 +692,6 @@ def build_parser():
         p.add_argument("--rail-length", type=float, default=5.5)
         p.add_argument("--inclination", type=float, default=89.0)
 
-        p.add_argument("--use-aoa-drag", action="store_true", help="Enable AoA-based delta drag")
-        p.add_argument("--aoa-dir", default=str(DEFAULT_AOA_DIR), help="Directory containing AoA drag CSVs")
-        p.add_argument(
-            "--aoa-files",
-            nargs="+",
-            default=None,
-            help="AoA drag CSV filenames; if omitted, auto-discover from --aoa-dir"
-        )
-
-        p.add_argument("--aoa-log-csv", default="aoa_log.csv")
         p.add_argument(
             "--api-hour",
             type=int,
@@ -813,12 +705,18 @@ def build_parser():
     single = subparsers.add_parser("single", help="Run one flight using June 9 2025 API wind")
     add_common_arguments(single)
 
-    compare = subparsers.add_parser("compare", help="Run one flight with AoA OFF vs ON")
-    add_common_arguments(compare)
-    compare.add_argument("--compare-csv", default="single_flight_aoa_compare.csv")
-
     mc = subparsers.add_parser("montecarlo", help="Run Monte Carlo using sampled API wind hours")
     add_common_arguments(mc)
+
+    mc.add_argument("--use-aoa-drag", action="store_true", help="Enable AoA-based delta drag for Monte Carlo only")
+    mc.add_argument("--aoa-dir", default=str(DEFAULT_AOA_DIR), help="Directory containing AoA drag CSVs")
+    mc.add_argument(
+        "--aoa-files",
+        nargs="+",
+        default=None,
+        help="AoA drag CSV filenames; if omitted, auto-discover from --aoa-dir"
+    )
+    mc.add_argument("--aoa-log-csv", default="aoa_log.csv")
     mc.add_argument("--runs", type=int, default=500)
     mc.add_argument("--seed", type=int, default=12345)
     mc.add_argument("--inclination-min", type=float, default=87.5)
@@ -840,7 +738,7 @@ def main():
     drag_table = load_base_drag_curve(args.drag_csv)
 
     aoa_model = None
-    if args.mode == "compare" or args.use_aoa_drag:
+    if args.mode == "montecarlo" and args.use_aoa_drag:
         aoa_files = args.aoa_files
         if aoa_files is None:
             aoa_files = find_aoa_csv_files(args.aoa_dir)
@@ -859,21 +757,18 @@ def main():
     print("Saved API wind table to: june9_2025_api_wind.csv")
     print(wind_df)
 
-    display_use_aoa_drag = (args.mode == "compare") or args.use_aoa_drag
     display_rocket = build_rocket(
         drag_table=drag_table,
         motor_file=args.motor_file,
-        use_aoa_drag=display_use_aoa_drag,
-        aoa_model=aoa_model,
+        use_aoa_drag=False,
+        aoa_model=None,
     )
     show_geometry(display_rocket)
 
     if args.mode == "preview":
         return
     elif args.mode == "single":
-        run_single(args, drag_table, aoa_model, wind_df)
-    elif args.mode == "compare":
-        run_compare(args, drag_table, aoa_model, wind_df)
+        run_single(args, drag_table, wind_df)
     elif args.mode == "montecarlo":
         run_monte_carlo(args, drag_table, aoa_model, wind_df)
     else:

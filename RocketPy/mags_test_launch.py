@@ -20,40 +20,40 @@ from rocketpy import GenericSurface
 
 BASE_DIR = Path(__file__).resolve().parent
 
-DEFAULT_BASE_DRAG_CSV = BASE_DIR / "Deployment_Fits_Output" / "Deployment_0deg_CdFit.csv"
-DEFAULT_MOTOR_FILE = BASE_DIR / "m3400.eng"
+DEFAULT_BASE_DRAG_CSV = BASE_DIR / "Deployment_Fits_Output" / "Deployment_80deg_CdFit.csv"
+DEFAULT_MOTOR_FILE = BASE_DIR / "m2050x.eng"
 DEFAULT_AOA_DIR = BASE_DIR / "AoA_Fits_Output"
 
 ROCKET_RADIUS = 0.078359
-ROCKET_MASS = 23.243
+ROCKET_MASS = 18.7
 ROCKET_INERTIA = (7.15, 7.15, 0.095)
-ROCKET_COM_NO_MOTOR = 1.255014
+ROCKET_COM_NO_MOTOR = 1.1633
 ROCKET_COORD_SYS = "nose_to_tail"
 
-NOSE_LENGTH = 0.762
-TAIL_TOP_RADIUS = 0.156718 / 2
-TAIL_BOTTOM_RADIUS = 0.1143 / 2
-TAIL_LENGTH = 0.127
-TAIL_POSITION = 2.0828
+NOSE_LENGTH = 0.7625
+TAIL_TOP_RADIUS = 0.157 / 2
+TAIL_BOTTOM_RADIUS = 0.12 / 2
+TAIL_LENGTH = 0.112
+TAIL_POSITION = 2.1467
 
 FIN_COUNT = 3
 FIN_ROOT_CHORD = 0.2032
-FIN_TIP_CHORD = 0.2032 / 2
+FIN_TIP_CHORD = 0.095
 FIN_SPAN = 0.1778
-FIN_POSITION = 1.8796
+FIN_POSITION = 1.9445
 
-MOTOR_POSITION = 2.1971
+MOTOR_POSITION = 2.262
 AOA_SURFACE_POSITION = 0.762
 
 REF_AREA = np.pi * (ROCKET_RADIUS ** 2)
 REF_LEN = 2 * ROCKET_RADIUS
 
-DEFAULT_LATITUDE = 31.02403
-DEFAULT_LONGITUDE = -103.66157
-DEFAULT_ELEVATION = 918.060648
+DEFAULT_LATITUDE = 34.62906
+DEFAULT_LONGITUDE = -86.31311
+DEFAULT_ELEVATION = 182.32
 
 OPEN_METEO_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
-WIND_DATE_STR = "2025-06-09"
+WIND_DATE_STR = "2025-03-28"
 
 
 # ============================================================
@@ -276,7 +276,7 @@ def fetch_june9_2025_wind_data(latitude, longitude):
         "end_date": WIND_DATE_STR,
         "hourly": "wind_speed_10m,wind_direction_10m",
         "wind_speed_unit": "ms",
-        "timezone": "UTC",
+        "timezone": "auto",
     }
 
     url = OPEN_METEO_ARCHIVE_URL + "?" + urllib.parse.urlencode(params)
@@ -329,7 +329,7 @@ def meteorological_to_uv(speed_mps, direction_from_deg):
 
 def select_api_row(wind_df, api_hour):
     if api_hour is None:
-        api_hour = 12
+        api_hour = 14
 
     if api_hour < 0 or api_hour >= len(wind_df):
         raise ValueError(f"--api-hour must be between 0 and {len(wind_df) - 1}")
@@ -543,6 +543,7 @@ def run_single(args, drag_table, wind_df):
 
     print("\nSINGLE FLIGHT RESULTS")
     flight.info()
+    flight.all_info()
 
     metrics = get_peak_angular_metrics(flight)
     for k, v in metrics.items():

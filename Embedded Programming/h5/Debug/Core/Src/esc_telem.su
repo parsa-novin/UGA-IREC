@@ -1,0 +1,12 @@
+../Core/Src/esc_telem.c:37:16:CalcCRC	24	static
+../Core/Src/esc_telem.c:45:13:DecodePacket	16	static
+../Core/Src/esc_telem.c:61:6:ESC_Telem_RxCpltCallback	8	static
+../Core/Src/esc_telem.c:67:6:ESC_Telem_Init	8	static
+../Core/Src/esc_telem.c:77:6:ESC_Telem_Task	8	static
+../Core/Src/esc_telem.c:86:10:ESC_Telem_GetTemp_C	4	static
+../Core/Src/esc_telem.c:87:10:ESC_Telem_GetVoltage_mV	4	static
+../Core/Src/esc_telem.c:88:10:ESC_Telem_GetCurrent_mA	4	static
+../Core/Src/esc_telem.c:89:10:ESC_Telem_GetConsumption_mAh	4	static
+../Core/Src/esc_telem.c:90:10:ESC_Telem_GetERPM	4	static
+../Core/Src/esc_telem.c:91:10:ESC_Telem_IsValid	4	static
+../Core/Src/esc_telem.c:92:10:ESC_Telem_GetCRCErrors	4	static
