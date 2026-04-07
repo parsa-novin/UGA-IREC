@@ -1,0 +1,10 @@
+../Core/Src/magnetometer.c:55:20:cs_assert	16	static
+../Core/Src/magnetometer.c:60:20:cs_deassert	16	static
+../Core/Src/magnetometer.c:65:13:mmc_write_reg	40	static
+../Core/Src/magnetometer.c:74:16:mmc_read_reg	40	static
+../Core/Src/magnetometer.c:85:13:mmc_read_burst	128	dynamic
+../Core/Src/magnetometer.c:102:6:MMC_set	16	static
+../Core/Src/magnetometer.c:108:6:MMC_reset	16	static
+../Core/Src/magnetometer.c:114:6:MMC_init	16	static
+../Core/Src/magnetometer.c:126:6:MMC_getMag	56	static
+../Core/Src/magnetometer.c:150:7:MMC_getTemp	32	static
