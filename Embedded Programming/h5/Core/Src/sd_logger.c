@@ -3,6 +3,7 @@
 #include "encoder_app.h"
 #include "esc_telem.h"
 #include "main.h"
+#include "sdmmc.h"
 #include "usart.h"
 #include "fatfs.h"
 
@@ -10,20 +11,23 @@
 #include <string.h>
 #include <stdarg.h>
 
-/* Calculate log period from configured rate */
+/* Log rate: one line every LOG_PERIOD_MS milliseconds */
 #define LOG_PERIOD_MS  (1000U / SD_LOG_RATE_HZ)
 
-static volatile uint8_t s_isLogging = 0;
-static uint32_t s_lastLogTime = 0;
-static uint32_t s_logStartTime = 0;
+static volatile uint8_t s_isLogging    = 0;
+static uint32_t         s_lastLogTime  = 0;
+static uint32_t         s_logStartTime = 0;
 
 #ifdef FATFS_MIDDLEWARE_ENABLED
-static FATFS s_fs;
-static FIL s_logFile;
-static volatile uint8_t s_sdMounted = 0;
+static FATFS   s_fs;
+static FIL     s_logFile;
+static uint8_t s_sdMounted = 0;
 #endif
 
-/* For printing log data */
+/* =========================================================================
+ * Private helpers
+ * ========================================================================= */
+
 static void Logger_Print(const char *fmt, ...)
 {
     char buf[256];
@@ -34,32 +38,59 @@ static void Logger_Print(const char *fmt, ...)
 
     if (len > 0)
     {
-        if (len > (int)sizeof(buf))
-            len = (int)sizeof(buf);
+        if (len > (int)sizeof(buf)) len = (int)sizeof(buf);
+        HAL_UART_Transmit(&huart1, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
         HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
     }
 }
 
+/* =========================================================================
+ * Public API
+ * ========================================================================= */
+
+/*
+ * SD_Logger_Init
+ *
+ * Initialises the SDMMC hardware (if not already done) and attempts to mount
+ * the FAT filesystem.  Safe to call with no card inserted — returns 0 and
+ * prints a message but does not hang or call Error_Handler().
+ *
+ * Called from ESC_App_Init() after the ESC arm hold, so the PWM neutral
+ * signal is already stable before any SD card delay occurs.
+ */
 uint8_t SD_Logger_Init(void)
 {
-#ifdef FATFS_MIDDLEWARE_ENABLED
-    /* Mount SD card */
-    FRESULT res = f_mount(&s_fs, SDPath, 1);
+    /*
+     * Initialise SDMMC hardware here rather than in main() so that a missing
+     * or slow-to-respond card does not delay the PWM neutral output.
+     * MX_SDMMC1_SD_Init() is safe to call multiple times — HAL checks the
+     * peripheral state and skips re-init if already done.
+     */
+    MX_SDMMC1_SD_Init();
 
+    if (!SDMMC_IsHwReady())
+    {
+        Logger_Print("SD card not detected (HAL_SD_Init failed).\r\n");
+        Logger_Print("Logging to UART only.\r\n");
+        return 0;
+    }
+
+#ifdef FATFS_MIDDLEWARE_ENABLED
+    FRESULT res = f_mount(&s_fs, SDPath, 1);
     if (res != FR_OK)
     {
         s_sdMounted = 0;
-        Logger_Print("SD mount failed (error %d)\r\n", res);
+        Logger_Print("SD mount failed (FatFS error %d). Logging to UART only.\r\n", res);
         return 0;
     }
 
     s_sdMounted = 1;
-    Logger_Print("SD card mounted successfully.\r\n");
+    Logger_Print("SD card mounted.\r\n");
     return 1;
 #else
-    Logger_Print("SD logging disabled (FatFS middleware not enabled)\r\n");
-    Logger_Print("Data will be logged to UART only.\r\n");
-    Logger_Print("To enable SD: Add FatFS middleware in STM32CubeMX\r\n");
+    Logger_Print("SD logging disabled (FatFS middleware not enabled).\r\n");
+    Logger_Print("To enable: add FatFS middleware in STM32CubeMX and define "
+                 "FATFS_MIDDLEWARE_ENABLED.\r\n");
     return 0;
 #endif
 }
@@ -67,60 +98,60 @@ uint8_t SD_Logger_Init(void)
 void SD_Logger_Start(void)
 {
 #ifdef FATFS_MIDDLEWARE_ENABLED
+    /* Re-attempt mount if not already mounted */
     if (!s_sdMounted)
     {
-        /* Try to mount again */
         if (!SD_Logger_Init())
         {
-            Logger_Print("SD card not available - logging to UART only\r\n");
+            Logger_Print("SD unavailable — logging to UART only.\r\n");
         }
     }
 
     if (s_sdMounted)
     {
-        /* Create/open log file */
         FRESULT res = f_open(&s_logFile, SD_LOG_FILENAME, FA_CREATE_ALWAYS | FA_WRITE);
-
         if (res != FR_OK)
         {
-            Logger_Print("SD file open failed (error %d) - logging to UART only\r\n", res);
+            Logger_Print("SD file open failed (error %d) — logging to UART only.\r\n", res);
             s_sdMounted = 0;
         }
         else
         {
-            /* Write CSV header */
-            const char *header = "Time_s,Position_um,Temp_C,Voltage_mV,Current_mA,Consumption_mAh,eRPM\r\n";
-            UINT bytesWritten;
-            f_write(&s_logFile, header, strlen(header), &bytesWritten);
+            const char *header =
+                "Time_s,Position_um,Temp_C,Voltage_mV,Current_mA,"
+                "Consumption_mAh,eRPM\r\n";
+            UINT written;
+            f_write(&s_logFile, header, strlen(header), &written);
             f_sync(&s_logFile);
-            Logger_Print("SD logging started to %s\r\n", SD_LOG_FILENAME);
+            Logger_Print("SD logging started: %s\r\n", SD_LOG_FILENAME);
         }
     }
 #endif
 
-    /* Print header to UART as well */
     Logger_Print("\r\n=== Logging Started ===\r\n");
-    Logger_Print("Time_s,Position_um,Temp_C,Voltage_mV,Current_mA,Consumption_mAh,eRPM\r\n");
+    Logger_Print("Time_s,Position_um,Temp_C,Voltage_mV,Current_mA,"
+                 "Consumption_mAh,eRPM\r\n");
 
-    s_isLogging = 1;
+    s_isLogging    = 1;
     s_logStartTime = HAL_GetTick();
-    s_lastLogTime = s_logStartTime;
+    s_lastLogTime  = s_logStartTime;
 }
 
 void SD_Logger_Stop(void)
 {
-    if (s_isLogging)
-    {
+    if (!s_isLogging)
+        return;
+
 #ifdef FATFS_MIDDLEWARE_ENABLED
-        if (s_sdMounted)
-        {
-            f_close(&s_logFile);
-            Logger_Print("\r\nSD logging stopped.\r\n");
-        }
-#endif
-        Logger_Print("\r\n=== Logging Stopped ===\r\n");
-        s_isLogging = 0;
+    if (s_sdMounted)
+    {
+        f_close(&s_logFile);
+        Logger_Print("SD file closed.\r\n");
     }
+#endif
+
+    Logger_Print("=== Logging Stopped ===\r\n");
+    s_isLogging = 0;
 }
 
 uint8_t SD_Logger_Is_Active(void)
@@ -134,30 +165,21 @@ void SD_Logger_Task(void)
         return;
 
     uint32_t now = HAL_GetTick();
-
-    /* Check if it's time to log */
     if ((now - s_lastLogTime) < LOG_PERIOD_MS)
         return;
 
     s_lastLogTime = now;
 
-    /* Calculate elapsed time in seconds */
-    uint32_t elapsed_ms = now - s_logStartTime;
-    float time_s = (float)elapsed_ms / 1000.0f;
-
-    /* Get encoder position */
-    int32_t position_um = Encoder_GetPosition_um();
-
-    /* Get telemetry data */
-    uint8_t temp_c = ESC_Telem_GetTemp_C();
-    uint32_t voltage_mV = ESC_Telem_GetVoltage_mV();
-    uint32_t current_mA = ESC_Telem_GetCurrent_mA();
+    float    time_s          = (float)(now - s_logStartTime) / 1000.0f;
+    int32_t  position_um     = Encoder_GetPosition_um();
+    uint8_t  temp_c          = ESC_Telem_GetTemp_C();
+    uint32_t voltage_mV      = ESC_Telem_GetVoltage_mV();
+    uint32_t current_mA      = ESC_Telem_GetCurrent_mA();
     uint32_t consumption_mAh = ESC_Telem_GetConsumption_mAh();
-    uint32_t erpm = ESC_Telem_GetERPM();
+    uint32_t erpm            = ESC_Telem_GetERPM();
 
-    /* Format log line */
-    char logLine[128];
-    snprintf(logLine, sizeof(logLine),
+    char line[128];
+    snprintf(line, sizeof(line),
              "%.3f,%ld,%u,%lu,%lu,%lu,%lu\r\n",
              time_s,
              (long)position_um,
@@ -168,13 +190,11 @@ void SD_Logger_Task(void)
              (unsigned long)erpm);
 
 #ifdef FATFS_MIDDLEWARE_ENABLED
-    /* Write to SD card if available */
     if (s_sdMounted)
     {
-        UINT bytesWritten;
-        f_write(&s_logFile, logLine, strlen(logLine), &bytesWritten);
+        UINT written;
+        f_write(&s_logFile, line, strlen(line), &written);
 
-        /* Sync periodically (every 5 samples) */
         static uint8_t sync_counter = 0;
         if (++sync_counter >= 5)
         {
@@ -184,6 +204,5 @@ void SD_Logger_Task(void)
     }
 #endif
 
-    /* Always write to UART */
-    Logger_Print("%s", logLine);
+    Logger_Print("%s", line);
 }

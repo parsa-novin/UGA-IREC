@@ -36,7 +36,8 @@ Core/Src/sd_logger.o: ../Core/Src/sd_logger.c ../Core/Inc/sd_logger.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h \
- ../Core/Inc/usart.h ../Core/Inc/main.h ../Core/Inc/fatfs.h
+ ../Core/Inc/sdmmc.h ../Core/Inc/main.h ../Core/Inc/usart.h \
+ ../Core/Inc/fatfs.h
 ../Core/Inc/sd_logger.h:
 ../Core/Inc/airbrake_config.h:
 ../Core/Inc/encoder_app.h:
@@ -77,6 +78,7 @@ Core/Src/sd_logger.o: ../Core/Src/sd_logger.c ../Core/Inc/sd_logger.h \
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h:
-../Core/Inc/usart.h:
+../Core/Inc/sdmmc.h:
 ../Core/Inc/main.h:
+../Core/Inc/usart.h:
 ../Core/Inc/fatfs.h:

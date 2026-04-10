@@ -36,8 +36,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h \
  ../Core/Inc/icache.h ../Core/Inc/main.h ../Core/Inc/sdmmc.h \
  ../Core/Inc/spi.h ../Core/Inc/tim.h ../Core/Inc/usart.h \
- ../Core/Inc/gpio.h ../Core/Inc/fatfs.h ../Core/Inc/esc_app.h \
- ../Core/Inc/encoder_app.h
+ ../Core/Inc/gpio.h ../Core/Inc/esc_app.h ../Core/Inc/encoder_app.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h:
 ../Core/Inc/stm32h5xx_hal_conf.h:
@@ -81,6 +80,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/tim.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/gpio.h:
-../Core/Inc/fatfs.h:
 ../Core/Inc/esc_app.h:
 ../Core/Inc/encoder_app.h:
