@@ -11,15 +11,24 @@
  *
  * Pin assignments (for reference):
  *   PB1      TIM3_CH4   PWM signal to ESC
- *   PA9/PA10 USART1     Console TX/RX (primary)
- *   PA2/PA3  USART2     Console TX/RX (secondary / debug)
- *   PA0/PA1  UART4      Passthrough / external console
+ *   PA9/PA10 USART1     Aggregate packet TX / optional command RX
+ *   PA2/PA3  USART2     Aggregate packet TX / optional command RX
+ *   PA0/PA1  UART4      RS422 upstream packet RX / debug TX
  *   PB5/PB6  UART5      ESC serial telemetry RX (AM32 auto-telem)
+ *   PB10/12/14/15 SPI2  Camera control (master)
+ *
+ * Camera SPI2 commands (sent as single ASCII bytes to the RunCam STM32H7):
+ *   'R' — start recording
+ *   'S' — stop  recording
+ *   'O' — power on
+ *   'Z' — power off
+ *   'C' — request current reading (follow-up: read 4-byte IEEE-754 float, mA)
  */
 
 #include "esc_app.h"
 
 #include "main.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "esc_telem.h"
@@ -28,6 +37,7 @@
 #include "airbrake_deploy.h"
 #include "encoder_homing.h"
 #include "encoder_app.h"
+#include "flight_trigger.h"
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -41,30 +51,61 @@
  * Constants
  * ========================================================================= */
 
-#define PWM_MIN_US          1000
-#define PWM_MAX_US          2000
-#define PWM_NEUTRAL_US      1500
+#define PWM_MIN_US              1000
+#define PWM_MAX_US              2000
+#define PWM_NEUTRAL_US          1500
 
-#define NEUTRAL_MIN_US      1300
-#define NEUTRAL_MAX_US      1700
+#define NEUTRAL_MIN_US          1300
+#define NEUTRAL_MAX_US          1700
 
-#define CREEP_OFFSET_US     80
+#define CREEP_OFFSET_US         80
 
 /*
  * Time to hold neutral PWM after startup before allowing motion commands.
  * Covers the ESC's full boot sequence + AM32 neutral-detection window.
  */
-#define ESC_ARM_HOLD_MS     5000U
+#define ESC_ARM_HOLD_MS         5000U
 
-#define RX_BUF_LEN          64U
+#define RX_BUF_LEN              64U
+#define UPSTREAM_HEADER         0xAA55u
+#define AGGREGATE_HEADER        0xA55Au
+#define PACKET_TX_TIMEOUT       20U
+#define UART_POLL_BURST_MAX     64U
+#define TELEMETRY_TX_PERIOD_MS  200U  /* 5 Hz */
+#define FALLBACK_TX_PERIOD_MS   200U
+#define UART4_DEBUG_TX_PERIOD_MS 500U
+/* Camera SPI2 constants */
+#define SPI_TX_TIMEOUT_MS       50U
+#define CAMERA_CURRENT_DELAY_MS 3U
+
+#define SPI_CMD_CAMERA_START    ((uint8_t)'R')
+#define SPI_CMD_CAMERA_STOP     ((uint8_t)'S')
+#define SPI_CMD_CAMERA_ON       ((uint8_t)'O')
+#define SPI_CMD_CAMERA_OFF      ((uint8_t)'Z')
+#define SPI_CMD_CAMERA_CURR     ((uint8_t)'C')
+
+/*
+ * SensorPacket_t is defined in esc_app.h so it is visible to sd_logger.c
+ * and any other consumer.  The _Static_assert lives there too.
+ * AggregatePacket_t is internal to this file only.
+ */
+typedef struct __attribute__((packed))
+{
+    uint16_t       header;
+    SensorPacket_t upstream;
+    uint8_t        esc_valid;
+    uint8_t        esc_temp_c;
+    uint32_t       esc_voltage_mV;
+    uint32_t       esc_current_mA;
+    uint32_t       esc_consumption_mAh;
+    uint32_t       esc_erpm;
+    int32_t        encoder_position_um;
+    uint8_t        checksum;
+} AggregatePacket_t;
 
 /* =========================================================================
  * Static state
  * ========================================================================= */
-
-static uint8_t s_rx1Byte;
-static uint8_t s_rx2Byte;
-static uint8_t s_rx4Byte;
 
 static char              s_rxLine1[RX_BUF_LEN];
 static char              s_rxLine2[RX_BUF_LEN];
@@ -73,6 +114,42 @@ static volatile uint32_t s_rxIdx2 = 0U;
 
 static int32_t s_neutralUs      = PWM_NEUTRAL_US;
 static int32_t s_currentPulseUs = PWM_NEUTRAL_US;
+
+static uint8_t                 s_upstreamRxBuf[UPSTREAM_PACKET_LEN];
+static volatile uint32_t       s_upstreamRxIdx         = 0U;
+static volatile SensorPacket_t s_upstreamPacket;
+static volatile uint8_t        s_upstreamPacketValid   = 0U;
+static volatile uint32_t       s_upstreamPacketVersion = 0U;
+static uint32_t                s_lastForwardedVersion  = 0U;
+static uint32_t                s_lastTelemetryTxMs     = 0U;
+static uint32_t                s_lastFallbackTxMs      = 0U;
+static uint32_t                s_lastUart4DebugTxMs    = 0U;
+static uint8_t                 s_headerFirstByte       = 0U;
+static volatile uint32_t       s_uart4RxCount          = 0U;
+static volatile uint32_t       s_uart4ErrorCount       = 0U;
+static volatile uint32_t       s_uart4OreCount         = 0U;
+static volatile uint32_t       s_uart4FeCount          = 0U;
+static volatile uint32_t       s_uart4NeCount          = 0U;
+static volatile uint32_t       s_uart4PeCount          = 0U;
+static volatile uint32_t       s_uart4RtofCount        = 0U;
+static volatile uint32_t       s_uart4CmfCount         = 0U;
+static volatile uint32_t       s_uart4EobfCount        = 0U;
+static volatile uint32_t       s_uart4LastIsr          = 0U;
+static volatile uint32_t       s_uart4LastErrorCode    = 0U;
+static volatile uint32_t       s_uart4LastCr1          = 0U;
+static volatile uint32_t       s_uart4LastCr2          = 0U;
+static volatile uint32_t       s_uart4LastCr3          = 0U;
+static uint8_t                 s_uart4Preview[16];
+static uint32_t                s_uart4PreviewCount     = 0U;
+static uint16_t                s_lastCandidateHeader   = 0U;
+static uint8_t                 s_lastCandidateChecksum = 0U;
+static uint8_t                 s_lastComputedChecksum  = 0U;
+static uint8_t                 s_lastCandidateValid    = 0U;
+
+static void Upstream_EnableIrqRx(void);
+static void Upstream_EnsureIrqRxEnabled(void);
+static void Upstream_PollRx(void);
+static void __attribute__((unused)) Uart4_DebugPrintTask(void);
 
 /* =========================================================================
  * Private helpers — arithmetic
@@ -121,21 +198,325 @@ static void str_to_upper(char *s)
  * Private helpers — output
  * ========================================================================= */
 
-static void App_Print(const char *fmt, ...)
+
+static uint8_t PacketChecksum(const uint8_t *start, const uint8_t *end)
 {
-    char buf[160];
-    va_list args;
-    va_start(args, fmt);
-    int len = vsnprintf(buf, sizeof(buf), fmt, args);
-    va_end(args);
+    uint8_t xorv = 0U;
 
-    if (len <= 0) return;
-    if (len > (int)sizeof(buf)) len = (int)sizeof(buf);
+    while (start < end)
+    {
+        xorv ^= *start;
+        start++;
+    }
 
-    HAL_UART_Transmit(&huart1, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
-    HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
-    HAL_UART_Transmit(&huart4, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
+    return xorv;
 }
+
+static uint8_t SensorPacket_IsValid(const SensorPacket_t *packet)
+{
+    const uint8_t *raw = (const uint8_t *)packet;
+
+    if ((packet->header != UPSTREAM_HEADER) && (packet->header != (uint16_t)0x55AAu))
+        return 0U;
+
+    return (uint8_t)(PacketChecksum(raw + sizeof(packet->header),
+                                    raw + sizeof(*packet) - sizeof(packet->checksum))
+                     == packet->checksum);
+}
+
+
+/* =========================================================================
+ * Private helpers — camera SPI2
+ * ========================================================================= */
+
+/**
+  * @brief  Transmit a single command byte to the camera over SPI2.
+  * @param  cmd  One of SPI_CMD_CAMERA_*.
+  * @retval true on success, false on HAL error or timeout.
+  */
+static bool Camera_SendSpiByte(uint8_t cmd)
+{
+    return (HAL_SPI_Transmit(&hspi2, &cmd, 1U, SPI_TX_TIMEOUT_MS) == HAL_OK);
+}
+
+/**
+  * @brief  Send 'C' to the camera and read back the 4-byte current float.
+  *
+  * Two-phase protocol:
+  *   1. Transmit 'C' — camera reads INA219 and loads its TX FIFO.
+  *   2. Wait CAMERA_CURRENT_DELAY_MS for the I2C read to complete.
+  *   3. Clock 4 dummy bytes out to receive the IEEE-754 float (mA).
+  *
+  * The float is in the camera's native (little-endian) byte order.
+  * Both this board and the RunCam STM32 are Cortex-M little-endian,
+  * so no byte-swap is needed.
+  *
+  * @param  current_mA  Output: current in milliamps.
+  * @retval true on success, false on any SPI error or null pointer.
+  */
+static bool Camera_ReadCurrent_mA(float *current_mA)
+{
+    uint8_t cmd         = SPI_CMD_CAMERA_CURR;
+    uint8_t tx_dummy[4] = {0U, 0U, 0U, 0U};
+    uint8_t rx_bytes[4] = {0U, 0U, 0U, 0U};
+    float   value;
+
+    if (current_mA == NULL)
+        return false;
+
+    /* Phase 1: send the command byte */
+    if (HAL_SPI_Transmit(&hspi2, &cmd, 1U, SPI_TX_TIMEOUT_MS) != HAL_OK)
+        return false;
+
+    /* Phase 2: allow the camera time to read the INA219 over I2C */
+    HAL_Delay(CAMERA_CURRENT_DELAY_MS);
+
+    /* Phase 3: clock out 4 dummy bytes to receive the float response */
+    if (HAL_SPI_TransmitReceive(&hspi2,
+                                 tx_dummy, rx_bytes,
+                                 4U, SPI_TX_TIMEOUT_MS) != HAL_OK)
+        return false;
+
+    memcpy(&value, rx_bytes, sizeof(value));
+    *current_mA = value;
+    return true;
+}
+
+/* =========================================================================
+ * Private helpers — upstream packet
+ * ========================================================================= */
+
+static void Upstream_ProcessByte(uint8_t byte)
+{
+    if (s_upstreamRxIdx == 0U)
+    {
+        /* Accept either header byte order: 55 AA or AA 55 */
+        if ((byte != 0x55U) && (byte != 0xAAU))
+            return;
+
+        s_uart4PreviewCount = 0U;
+        s_headerFirstByte = byte;
+    }
+    else if (s_upstreamRxIdx == 1U)
+    {
+        uint8_t expected = (s_headerFirstByte == 0x55U) ? 0xAAU : 0x55U;
+        if (byte != expected)
+        {
+            if ((byte == 0x55U) || (byte == 0xAAU))
+            {
+                s_upstreamRxIdx    = 1U;
+                s_upstreamRxBuf[0] = byte;
+                s_headerFirstByte  = byte;
+                }
+            else
+            {
+                s_upstreamRxIdx = 0U;
+            }
+            return;
+        }
+    }
+
+    s_upstreamRxBuf[s_upstreamRxIdx++] = byte;
+
+    if (s_uart4PreviewCount < sizeof(s_uart4Preview))
+    {
+        s_uart4Preview[s_uart4PreviewCount++] = byte;
+    }
+
+    if (s_upstreamRxIdx >= UPSTREAM_PACKET_LEN)
+    {
+        SensorPacket_t candidate;
+        const uint8_t *raw = (const uint8_t *)&candidate;
+
+        memcpy(&candidate, s_upstreamRxBuf, sizeof(candidate));
+        s_lastCandidateHeader   = candidate.header;
+        s_lastCandidateChecksum = candidate.checksum;
+        s_lastComputedChecksum  = PacketChecksum(raw + sizeof(candidate.header),
+                                                 raw + sizeof(candidate) - sizeof(candidate.checksum));
+        s_lastCandidateValid    = (uint8_t)(s_lastComputedChecksum == s_lastCandidateChecksum);
+
+        if (SensorPacket_IsValid(&candidate))
+        {
+            /* Normalize header representation regardless of wire byte order. */
+            candidate.header        = UPSTREAM_HEADER;
+            s_upstreamPacket        = candidate;
+            s_upstreamPacketValid   = 1U;
+            s_upstreamPacketVersion++;
+        }
+        else
+        {
+            (void)0;
+        }
+
+        s_upstreamRxIdx = 0U;
+    }
+}
+
+static void Upstream_EnableIrqRx(void)
+{
+    s_upstreamRxIdx   = 0U;
+    s_headerFirstByte = 0U;
+    __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_OREF | UART_CLEAR_NEF | UART_CLEAR_FEF |
+                                  UART_CLEAR_PEF | UART_CLEAR_IDLEF | UART_CLEAR_RTOF |
+                                  UART_CLEAR_CMF | USART_ICR_EOBCF);
+    CLEAR_BIT(huart4.Instance->CR3, USART_CR3_RXFTIE);
+    CLEAR_BIT(huart4.Instance->CR1, USART_CR1_RTOIE | USART_CR1_EOBIE | USART_CR1_CMIE | USART_CR1_MME | USART_CR1_PEIE);
+    CLEAR_BIT(huart4.Instance->CR2, USART_CR2_RTOEN | USART_CR2_ADDM7);
+    SET_BIT(huart4.Instance->CR1, USART_CR1_RXNEIE_RXFNEIE);
+    SET_BIT(huart4.Instance->CR3, USART_CR3_EIE);
+}
+
+static void Upstream_EnsureIrqRxEnabled(void)
+{
+    uint32_t cr1 = huart4.Instance->CR1;
+    uint32_t cr2 = huart4.Instance->CR2;
+    uint32_t cr3 = huart4.Instance->CR3;
+
+    if (((cr1 & (USART_CR1_UE | USART_CR1_RE | USART_CR1_RXNEIE_RXFNEIE))
+          != (USART_CR1_UE | USART_CR1_RE | USART_CR1_RXNEIE_RXFNEIE)) ||
+        ((cr2 & (USART_CR2_RTOEN | USART_CR2_ADDM7)) != 0U) ||
+        ((cr3 & USART_CR3_EIE) == 0U) ||
+        ((cr3 & USART_CR3_RXFTIE) != 0U))
+    {
+        Upstream_EnableIrqRx();
+    }
+}
+
+static void Upstream_PollRx(void)
+{
+    uint32_t guard = 0U;
+
+    while ((__HAL_UART_GET_FLAG(&huart4, USART_ISR_RXNE_RXFNE)) != 0U)
+    {
+        uint8_t byte = (uint8_t)(huart4.Instance->RDR & 0xFFU);
+        s_uart4RxCount++;
+        Upstream_ProcessByte(byte);
+
+        if (++guard >= UART_POLL_BURST_MAX)
+            break;
+    }
+}
+
+static void __attribute__((unused)) Uart4_DebugPrintTask(void)
+{
+    char     line[512];
+    char     preview[64];
+    int      len;
+    int      previewLen = 0;
+    uint32_t now = HAL_GetTick();
+    uint32_t cr1 = huart4.Instance->CR1;
+    uint32_t cr2 = huart4.Instance->CR2;
+    uint32_t cr3 = huart4.Instance->CR3;
+    uint32_t isr = huart4.Instance->ISR;
+    uint32_t i;
+
+    if ((now - s_lastUart4DebugTxMs) < UART4_DEBUG_TX_PERIOD_MS)
+        return;
+
+    s_lastUart4DebugTxMs = now;
+
+    for (i = 0U; (i < s_uart4PreviewCount) && (i < 16U); i++)
+    {
+        int wrote = snprintf(&preview[previewLen], sizeof(preview) - (size_t)previewLen,
+                             "%02X%s", s_uart4Preview[i], ((i + 1U) < s_uart4PreviewCount) ? " " : "");
+        if ((wrote <= 0) || ((size_t)wrote >= (sizeof(preview) - (size_t)previewLen)))
+            break;
+        previewLen += wrote;
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "UART4 rx=%lu idx=%lu valid=%lu ver=%lu last_ok=%u hdr=0x%04X rx_ck=0x%02X calc_ck=0x%02X err=%lu ore=%lu fe=%lu ne=%lu pe=%lu cr1=0x%08lX cr2=0x%08lX cr3=0x%08lX isr=0x%08lX raw=%s\r\n",
+                   (unsigned long)s_uart4RxCount,
+                   (unsigned long)s_upstreamRxIdx,
+                   (unsigned long)s_upstreamPacketValid,
+                   (unsigned long)s_upstreamPacketVersion,
+                   (unsigned int)s_lastCandidateValid,
+                   (unsigned int)s_lastCandidateHeader,
+                   (unsigned int)s_lastCandidateChecksum,
+                   (unsigned int)s_lastComputedChecksum,
+                   (unsigned long)s_uart4ErrorCount,
+                   (unsigned long)s_uart4OreCount,
+                   (unsigned long)s_uart4FeCount,
+                   (unsigned long)s_uart4NeCount,
+                   (unsigned long)s_uart4PeCount,
+                   (unsigned long)cr1,
+                   (unsigned long)cr2,
+                   (unsigned long)cr3,
+                   (unsigned long)isr,
+                   (previewLen > 0) ? preview : "--");
+
+    if (len <= 0)
+        return;
+
+    if (len >= (int)sizeof(line))
+        len = (int)sizeof(line) - 1;
+
+    HAL_UART_Transmit(&huart2, (uint8_t *)line, (uint16_t)len, PACKET_TX_TIMEOUT);
+}
+
+static void FillAggregatePacket(AggregatePacket_t *packet, const SensorPacket_t *upstream)
+{
+    packet->header              = AGGREGATE_HEADER;
+    packet->upstream            = *upstream;
+    packet->esc_valid           = ESC_Telem_IsValid();
+    packet->esc_temp_c          = ESC_Telem_GetTemp_C();
+    packet->esc_voltage_mV      = ESC_Telem_GetVoltage_mV();
+    packet->esc_current_mA      = ESC_Telem_GetCurrent_mA();
+    packet->esc_consumption_mAh = ESC_Telem_GetConsumption_mAh();
+    packet->esc_erpm            = ESC_Telem_GetERPM();
+    packet->encoder_position_um = Encoder_GetPosition_um();
+    packet->checksum            = PacketChecksum(((const uint8_t *)packet) + sizeof(packet->header),
+                                                ((const uint8_t *)packet) + sizeof(*packet) - sizeof(packet->checksum));
+}
+
+static void ForwardAggregatePacketIfReady(void)
+{
+    AggregatePacket_t packet;
+    SensorPacket_t    upstream;
+    uint32_t          now = HAL_GetTick();
+
+    if (!s_upstreamPacketValid)
+        return;
+
+    if ((now - s_lastTelemetryTxMs) < TELEMETRY_TX_PERIOD_MS)
+        return;
+
+    if (s_upstreamPacketVersion == s_lastForwardedVersion)
+        return;
+
+    __disable_irq();
+    upstream = s_upstreamPacket;
+    __enable_irq();
+
+    FillAggregatePacket(&packet, &upstream);
+    HAL_UART_Transmit(&huart1, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+    HAL_UART_Transmit(&huart2, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+
+    s_lastForwardedVersion = s_upstreamPacketVersion;
+    s_lastTelemetryTxMs    = now;
+}
+
+static void ForwardFallbackPacketToUsart2IfNeeded(void)
+{
+    AggregatePacket_t packet;
+    uint32_t          now = HAL_GetTick();
+
+    if (s_upstreamPacketValid)
+        return;
+
+    if ((now - s_lastFallbackTxMs) < FALLBACK_TX_PERIOD_MS)
+        return;
+
+    memset(&packet, 0, sizeof(packet));
+    packet.header   = AGGREGATE_HEADER;
+    packet.checksum = PacketChecksum(((const uint8_t *)&packet) + sizeof(packet.header),
+                                     ((const uint8_t *)&packet) + sizeof(packet) - sizeof(packet.checksum));
+
+    HAL_UART_Transmit(&huart1, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+    HAL_UART_Transmit(&huart2, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+    s_lastFallbackTxMs = now;
+}
+
 
 /* =========================================================================
  * Private helpers — PWM
@@ -148,15 +529,57 @@ static void PWM_Set(int32_t pulseUs)
     __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, (uint32_t)pulseUs);
 }
 
+/* Forward declaration: used by polling helper below. */
+static void ProcessConsoleByte(char c, char *buf, volatile uint32_t *idx);
+
 /* =========================================================================
- * Private helpers — UART RX
+ * Private helpers — UART polling RX
  * ========================================================================= */
 
-static void StartUartRxITs(void)
+static void PollUartInputs(void)
 {
-    HAL_UART_Receive_IT(&huart1, &s_rx1Byte, 1);
-    HAL_UART_Receive_IT(&huart2, &s_rx2Byte, 1);
-    HAL_UART_Receive_IT(&huart4, &s_rx4Byte, 1);
+    uint8_t  byte;
+    uint32_t i;
+
+    /* Optional console commands on USART1 */
+    for (i = 0U; i < UART_POLL_BURST_MAX; i++)
+    {
+        if (!__HAL_UART_GET_FLAG(&huart1, USART_ISR_RXNE_RXFNE))
+            break;
+
+        byte = (uint8_t)(huart1.Instance->RDR & 0xFFU);
+
+        if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_ORE))
+            __HAL_UART_CLEAR_OREFLAG(&huart1);
+        if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_FE))
+            __HAL_UART_CLEAR_FEFLAG(&huart1);
+        if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_NE))
+            __HAL_UART_CLEAR_NEFLAG(&huart1);
+        if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_PE))
+            __HAL_UART_CLEAR_PEFLAG(&huart1);
+
+        ProcessConsoleByte((char)byte, s_rxLine1, &s_rxIdx1);
+    }
+
+    /* Optional console commands on USART2 */
+    for (i = 0U; i < UART_POLL_BURST_MAX; i++)
+    {
+        if (!__HAL_UART_GET_FLAG(&huart2, USART_ISR_RXNE_RXFNE))
+            break;
+
+        byte = (uint8_t)(huart2.Instance->RDR & 0xFFU);
+
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_ORE))
+            __HAL_UART_CLEAR_OREFLAG(&huart2);
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_FE))
+            __HAL_UART_CLEAR_FEFLAG(&huart2);
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_NE))
+            __HAL_UART_CLEAR_NEFLAG(&huart2);
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_PE))
+            __HAL_UART_CLEAR_PEFLAG(&huart2);
+
+        ProcessConsoleByte((char)byte, s_rxLine2, &s_rxIdx2);
+    }
 }
 
 /* =========================================================================
@@ -189,16 +612,9 @@ static void HandleCommand(char *cmd)
     if (strcmp(upper, "H") == 0)
     {
         if (Airbrake_Is_Sequence_Active())
-        {
-            App_Print("Cannot home: deployment sequence is active.\r\n");
             return;
-        }
         if (Encoder_Homing_Is_Active())
-        {
-            App_Print("Homing already in progress.\r\n");
             return;
-        }
-        App_Print("\r\n*** HOMING SEQUENCE INITIATED ***\r\n");
         Encoder_Homing_Start();
         return;
     }
@@ -207,25 +623,65 @@ static void HandleCommand(char *cmd)
     if (strcmp(upper, "67") == 0)
     {
         if (Encoder_Homing_Is_Active())
-        {
-            App_Print("Cannot deploy: homing sequence is active.\r\n");
             return;
-        }
         if (Airbrake_Is_Sequence_Active())
-        {
-            App_Print("Deployment already in progress.\r\n");
             return;
-        }
-        App_Print("\r\n*** DEPLOYMENT SEQUENCE INITIATED ***\r\n");
         SD_Logger_Start();
         Airbrake_Start_Sequence();
         return;
     }
 
-    /* ── All other commands: block during active sequences ──────────────── */
-    if (Airbrake_Is_Sequence_Active() || Encoder_Homing_Is_Active())
+    /* ── UP — go to max deployment (70 deg) ────────────────────────────── */
+    if (strcmp(upper, "UP") == 0)
     {
-        App_Print("Sequence active — motion commands ignored.\r\n");
+        if (Encoder_Homing_Is_Active())
+            return;
+        if (Airbrake_Is_Sequence_Active())
+            return;
+        Airbrake_GoToMax();
+        return;
+    }
+
+    /* ── DOWN — go to zero position (0 deg) ────────────────────────────── */
+    if (strcmp(upper, "DOWN") == 0)
+    {
+        if (Encoder_Homing_Is_Active())
+            return;
+        if (Airbrake_Is_Sequence_Active())
+            return;
+        Airbrake_GoToZero();
+        return;
+    }
+
+    /* ── Camera commands ─────────────────────────────────────────────────── */
+    if (strcmp(upper, "CAMSTART") == 0)
+    {
+        Camera_SendSpiByte(SPI_CMD_CAMERA_START);
+        return;
+    }
+
+    if (strcmp(upper, "CAMSTOP") == 0)
+    {
+        Camera_SendSpiByte(SPI_CMD_CAMERA_STOP);
+        return;
+    }
+
+    if (strcmp(upper, "CAMON") == 0)
+    {
+        Camera_SendSpiByte(SPI_CMD_CAMERA_ON);
+        return;
+    }
+
+    if (strcmp(upper, "CAMOFF") == 0)
+    {
+        Camera_SendSpiByte(SPI_CMD_CAMERA_OFF);
+        return;
+    }
+
+    if (strcmp(upper, "CAMCURR") == 0)
+    {
+        float camera_current_mA = 0.0f;
+        Camera_ReadCurrent_mA(&camera_current_mA);
         return;
     }
 
@@ -238,7 +694,6 @@ static void HandleCommand(char *cmd)
         {
             s_neutralUs = clamp_i32((int32_t)strtol(val, NULL, 10),
                                     NEUTRAL_MIN_US, NEUTRAL_MAX_US);
-            App_Print("NEUTRAL set to %ld us\r\n", (long)s_neutralUs);
             PWM_Set(s_neutralUs);
             return;
         }
@@ -248,7 +703,6 @@ static void HandleCommand(char *cmd)
     if (strcmp(upper, "O") == 0)
     {
         Encoder_Reset();
-        App_Print("Encoder position set to 0\r\n");
         return;
     }
 
@@ -257,7 +711,6 @@ static void HandleCommand(char *cmd)
     {
         int32_t pulse = clamp_i32((int32_t)strtol(cmd + 1, NULL, 10),
                                   PWM_MIN_US, PWM_MAX_US);
-        App_Print("PULSE %ld us\r\n", (long)pulse);
         PWM_Set(pulse);
         return;
     }
@@ -265,26 +718,28 @@ static void HandleCommand(char *cmd)
     /* ── F — slow forward jog ───────────────────────────────────────────── */
     if (strcmp(upper, "F") == 0)
     {
-        int32_t pulse = s_neutralUs + CREEP_OFFSET_US;
-        App_Print("JOG forward (%ld us)\r\n", (long)pulse);
-        PWM_Set(pulse);
+        PWM_Set(s_neutralUs + CREEP_OFFSET_US);
         return;
     }
 
     /* ── B — slow reverse jog ───────────────────────────────────────────── */
     if (strcmp(upper, "B") == 0)
     {
-        int32_t pulse = s_neutralUs - CREEP_OFFSET_US;
-        App_Print("JOG reverse (%ld us)\r\n", (long)pulse);
-        PWM_Set(pulse);
+        PWM_Set(s_neutralUs - CREEP_OFFSET_US);
         return;
     }
 
     /* ── S / STOP ───────────────────────────────────────────────────────── */
     if (strcmp(upper, "S") == 0 || strcmp(upper, "STOP") == 0)
     {
-        App_Print("STOP (neutral = %ld us)\r\n", (long)s_neutralUs);
         PWM_Set(s_neutralUs);
+        return;
+    }
+
+    /* ── RESET — software reset via NVIC ───────────────────────────────────── */
+    if (strcmp(upper, "RESET") == 0)
+    {
+        NVIC_SystemReset();
         return;
     }
 
@@ -295,23 +750,9 @@ static void HandleCommand(char *cmd)
         int32_t pulse = (pct >= 0)
             ? map_i32(pct,  0, 100, s_neutralUs, PWM_MAX_US)
             : map_i32(pct, -100, 0, PWM_MIN_US,  s_neutralUs);
-        App_Print("THROTTLE %ld%% -> %ld us\r\n", (long)pct, (long)pulse);
         PWM_Set(pulse);
         return;
     }
-
-    /* ── Unknown ────────────────────────────────────────────────────────── */
-    App_Print("Unknown command. Available commands:\r\n");
-    App_Print("  F              slow forward jog\r\n");
-    App_Print("  B              slow reverse jog\r\n");
-    App_Print("  S / STOP       stop motor\r\n");
-    App_Print("  -100..100      percentage throttle\r\n");
-    App_Print("  N<us>          direct pulse width (e.g. N1500)\r\n");
-    App_Print("  NEUTRAL <us>   set neutral trim (%d-%d us)\r\n",
-              NEUTRAL_MIN_US, NEUTRAL_MAX_US);
-    App_Print("  O              zero encoder position\r\n");
-    App_Print("  67             start deployment sequence + SD logging\r\n");
-    App_Print("  H              start encoder homing sequence\r\n");
 }
 
 /*
@@ -324,8 +765,18 @@ static void HandleCommand(char *cmd)
  */
 static void ProcessConsoleByte(char c, char *buf, volatile uint32_t *idx)
 {
-    /* Feed every character to the mid-stream sequence detector */
-    Command_Sequence_Process_Char(c);
+    /* Single-letter operator commands execute immediately (no newline needed). */
+    if (*idx == 0U)
+    {
+        char uc = (char)toupper((unsigned char)c);
+
+        if (uc == 'F' || uc == 'B' || uc == 'S' || uc == 'O' || uc == 'H')
+        {
+            char cmd[2] = {uc, '\0'};
+            HandleCommand(cmd);
+            return;
+        }
+    }
 
     if (c == '\r' || c == '\n')
     {
@@ -374,6 +825,34 @@ int32_t ESC_App_GetNeutralUs(void)
 }
 
 /* =========================================================================
+ * Public API — sensor data
+ * ========================================================================= */
+
+/**
+  * @brief  Copy the most recent validated upstream sensor packet.
+  *
+  * Disables interrupts briefly to prevent a torn read of the volatile
+  * s_upstreamPacket field, which is written in IRQ context by
+  * Upstream_ProcessByte().
+  *
+  * @param  out  Caller-supplied buffer; must not be NULL.
+  * @retval 1 if at least one valid packet has been received, 0 otherwise.
+  */
+uint8_t ESC_App_GetLatestSensorPacket(SensorPacket_t *out)
+{
+    if (out == NULL)
+        return 0U;
+
+    __disable_irq();
+    uint8_t valid = s_upstreamPacketValid;
+    if (valid)
+        *out = s_upstreamPacket;   /* interrupt-locked struct copy */
+    __enable_irq();
+
+    return valid;
+}
+
+/* =========================================================================
  * Public API — init / task
  * ========================================================================= */
 
@@ -386,71 +865,42 @@ void ESC_App_Init(void)
     PWM_Set(PWM_NEUTRAL_US);
 
     /* ── Step 2: UARTs + telemetry ──────────────────────────────────────── */
-    StartUartRxITs();
+    Upstream_EnableIrqRx();
     ESC_Telem_Init();
 
-    /* ── Step 3: Banner ─────────────────────────────────────────────────── */
-    App_Print("\r\n");
-    App_Print("=========================================\r\n");
-    App_Print("  AM32 Bidirectional ESC Controller\r\n");
-    App_Print("=========================================\r\n");
-    App_Print("PWM    : PB1 (TIM3_CH4), neutral = %ld us\r\n", (long)s_neutralUs);
-    App_Print("Console: USART1 (PA9/PA10), USART2 (PA2/PA3)\r\n");
-    App_Print("Telem  : UART5 RX (PB5)\r\n\r\n");
+    /* ── Step 3: ESC arm hold ───────────────────────────────────────────── */
+    HAL_Delay(ESC_ARM_HOLD_MS);
 
-    /* ── Step 4: ESC arm hold ───────────────────────────────────────────── */
-    App_Print("Waiting for ESC to power on and arm (%lu s)...",
-              (unsigned long)(ESC_ARM_HOLD_MS / 1000U));
-
-    uint32_t arm_start   = HAL_GetTick();
-    uint32_t last_dot_at = 0U;
-
-    while ((HAL_GetTick() - arm_start) < ESC_ARM_HOLD_MS)
-    {
-        uint32_t elapsed = HAL_GetTick() - arm_start;
-        if (elapsed - last_dot_at >= 1000U)
-        {
-            App_Print(".");
-            last_dot_at += 1000U;
-        }
-        HAL_Delay(50U);
-    }
-    App_Print("\r\nESC armed and ready.\r\n\r\n");
-
-    /* ── Step 5: Application modules ────────────────────────────────────── */
+    /* ── Step 4: Application modules ────────────────────────────────────── */
     Command_Sequence_Init();
     Airbrake_Deploy_Init();
     Encoder_Homing_Init();
     Encoder_App_Init();
-
-    if (SD_Logger_Init())
-        App_Print("SD card mounted.\r\n");
-    else
-        App_Print("SD card not available — logging to UART only.\r\n");
-
-    App_Print("\r\nCommands: F  B  S  -100..100  N<us>  NEUTRAL <us>  O  67  H\r\n\r\n");
+    HAL_TIM_Base_Start_IT(&htim4);
+    SD_Logger_Init();
+    Flight_Trigger_Init();
 }
 
 void ESC_App_Task(void)
 {
     /* Service all background state machines every loop iteration */
+    Upstream_EnsureIrqRxEnabled();
+    Upstream_PollRx();
+    PollUartInputs();
     ESC_Telem_Task();
     Encoder_App_Task();
     Encoder_Homing_Task();
     Airbrake_Deploy_Task();
     SD_Logger_Task();
+    Flight_Trigger_Task();
+    ForwardAggregatePacketIfReady();
+    ForwardFallbackPacketToUsart2IfNeeded();
 
-    /*
-     * Check mid-stream trigger flags (set when H or 67 arrive without \n).
-     * When the Python tool sends a full line, HandleCommand() has already
-     * acted and these flags will be clear — the checks below are a no-op.
-     */
     if (Command_Sequence_Check_Deploy_Trigger())
     {
         Command_Sequence_Clear_Deploy_Trigger();
         if (!Encoder_Homing_Is_Active() && !Airbrake_Is_Sequence_Active())
         {
-            App_Print("\r\n*** DEPLOYMENT SEQUENCE INITIATED ***\r\n");
             SD_Logger_Start();
             Airbrake_Start_Sequence();
         }
@@ -460,10 +910,7 @@ void ESC_App_Task(void)
     {
         Command_Sequence_Clear_Homing_Trigger();
         if (!Airbrake_Is_Sequence_Active() && !Encoder_Homing_Is_Active())
-        {
-            App_Print("\r\n*** HOMING SEQUENCE INITIATED ***\r\n");
             Encoder_Homing_Start();
-        }
     }
 }
 
@@ -471,46 +918,78 @@ void ESC_App_Task(void)
  * UART interrupt callbacks
  * ========================================================================= */
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void ESC_App_Uart4IrqHandler(void)
 {
-    if (huart->Instance == UART4)
+    uint32_t isr = huart4.Instance->ISR;
+
+    s_uart4LastIsr = isr;
+    s_uart4LastCr1 = huart4.Instance->CR1;
+    s_uart4LastCr2 = huart4.Instance->CR2;
+    s_uart4LastCr3 = huart4.Instance->CR3;
+    s_uart4LastErrorCode = 0U;
+
+    while ((__HAL_UART_GET_FLAG(&huart4, USART_ISR_RXNE_RXFNE)) != 0U)
     {
-        HAL_UART_Transmit(&huart1, &s_rx4Byte, 1, HAL_MAX_DELAY);
-        HAL_UART_Transmit(&huart2, &s_rx4Byte, 1, HAL_MAX_DELAY);
-        HAL_UART_Receive_IT(&huart4, &s_rx4Byte, 1);
-        return;
+        uint8_t byte = (uint8_t)(huart4.Instance->RDR & 0xFFU);
+        s_uart4RxCount++;
+        Upstream_ProcessByte(byte);
     }
 
-    if (huart->Instance == UART5)
+    if ((isr & USART_ISR_ORE) != 0U)
     {
-        ESC_Telem_RxCpltCallback();
-        return;
+        s_uart4ErrorCount++;
+        s_uart4OreCount++;
+        s_uart4LastErrorCode |= HAL_UART_ERROR_ORE;
+        s_upstreamRxIdx = 0U;
+        s_headerFirstByte = 0U;
+        __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_OREF);
     }
 
-    if (huart->Instance == USART1)
+    if ((isr & USART_ISR_FE) != 0U)
     {
-        HAL_UART_Transmit(&huart1, &s_rx1Byte, 1, HAL_MAX_DELAY);
-        ProcessConsoleByte((char)s_rx1Byte, s_rxLine1, &s_rxIdx1);
-        HAL_UART_Receive_IT(&huart1, &s_rx1Byte, 1);
-        return;
+        s_uart4ErrorCount++;
+        s_uart4FeCount++;
+        s_uart4LastErrorCode |= HAL_UART_ERROR_FE;
+        s_upstreamRxIdx = 0U;
+        s_headerFirstByte = 0U;
+        __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_FEF);
     }
 
-    if (huart->Instance == USART2)
+    if ((isr & USART_ISR_NE) != 0U)
     {
-        ProcessConsoleByte((char)s_rx2Byte, s_rxLine2, &s_rxIdx2);
-        HAL_UART_Receive_IT(&huart2, &s_rx2Byte, 1);
-        return;
+        s_uart4ErrorCount++;
+        s_uart4NeCount++;
+        s_uart4LastErrorCode |= HAL_UART_ERROR_NE;
+        __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_NEF);
+    }
+
+    if ((isr & USART_ISR_PE) != 0U)
+    {
+        s_uart4ErrorCount++;
+        s_uart4PeCount++;
+        s_uart4LastErrorCode |= HAL_UART_ERROR_PE;
+        __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_PEF);
+    }
+
+    if ((isr & USART_ISR_RTOF) != 0U)
+    {
+        s_uart4ErrorCount++;
+        s_uart4RtofCount++;
+        __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_RTOF);
+    }
+
+    if ((isr & USART_ISR_CMF) != 0U)
+    {
+        s_uart4ErrorCount++;
+        s_uart4CmfCount++;
+        __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_CMF);
+    }
+
+    if ((isr & USART_ISR_EOBF) != 0U)
+    {
+        s_uart4ErrorCount++;
+        s_uart4EobfCount++;
+        huart4.Instance->ICR = USART_ICR_EOBCF;
     }
 }
 
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-        HAL_UART_Receive_IT(&huart1, &s_rx1Byte, 1);
-    else if (huart->Instance == USART2)
-        HAL_UART_Receive_IT(&huart2, &s_rx2Byte, 1);
-    else if (huart->Instance == UART4)
-        HAL_UART_Receive_IT(&huart4, &s_rx4Byte, 1);
-    else if (huart->Instance == UART5)
-        ESC_Telem_Init();
-}

@@ -8,19 +8,16 @@
 #include <stdarg.h>
 
 /*
- * IMPORTANT SCALE NOTE
- * --------------------
- * Encoder_GetPosition_um() is misnamed in this project.
- * The returned value is NOT true micrometres.
+ * SCALE NOTE
+ * ----------
+ * Encoder_GetPosition_um() returns true micrometres (µm).
  *
- * In this code we treat that value as an internal position unit where:
- *
- *   1,000,000 position_units = 1.000000 mm
+ *   1,000 µm = 1.000 mm
  *
  * Therefore:
- *   47.5 mm = 47,500,000 position_units
+ *   47.5 mm = 47,500 µm
  *
- * All targets, tolerances, and prints below use that same internal scale.
+ * All targets, tolerances, and prints below use µm.
  */
 
 /* Motor-control helpers expected from esc_app.c */
@@ -41,7 +38,9 @@ typedef enum
     DEPLOY_HOLD_15,
     DEPLOY_MOVE_ZERO,
     DEPLOY_LOCK_ZERO,
-    DEPLOY_DONE
+    DEPLOY_DONE,
+    DEPLOY_JOG_UP,    /* go to max deployment (70 deg) and hold */
+    DEPLOY_JOG_DOWN   /* go to zero position (0 deg) and hold   */
 } DeployState_t;
 
 static volatile DeployState_t s_deployState = DEPLOY_IDLE;
@@ -49,24 +48,20 @@ static volatile uint32_t s_stateStartTimeMs = 0;
 
 /* ----------------------- user-tunable settings ----------------------- */
 
-/* Internal scale: 1,000,000 units = 1 mm */
-#define POSITION_UNITS_PER_MM             1000000L
+/* Internal scale: 1,000 µm = 1 mm */
+#define POSITION_UNITS_PER_MM             1000L
 
-/* Full deploy displacement = 47.5 mm */
-#define FULL_DEPLOY_DISPLACEMENT_UNITS    47500000L
+/* Transfer-function domain used by the airbrake model */
+#define MAX_DISPLACEMENT_MM               40.0f
+#define FULL_DEPLOY_ANGLE_DEG             70.0f
+#define TRANSFER_SOLVE_ITERS              24U
 
-/*
- * If 47.5 mm corresponds to 80 deg, leave this at 80.0f.
- * If 47.5 mm corresponds to 70 deg, change to 70.0f.
- */
-#define FULL_DEPLOY_ANGLE_DEG             80.0f
+#define DEPLOY_START_DELAY_MS             200U //THIS
 
-#define DEPLOY_START_DELAY_MS             2800U //THIS should be 2800U
+#define DEPLOY_MOVE_PERCENT               50
 
-#define DEPLOY_MOVE_PERCENT               80
-
-/* 0.5 mm tolerance => 500,000 internal units */
-#define DEPLOY_POSITION_TOL_UNITS         500000L
+/* 0.5 mm tolerance => 500 µm */
+#define DEPLOY_POSITION_TOL_UNITS         500L
 
 #define DEPLOY_MOVE_TIMEOUT_MS            6000U
 
@@ -92,7 +87,6 @@ static void Deploy_Print(const char *fmt, ...)
             len = (int)sizeof(buf);
 
         HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
-        HAL_UART_Transmit(&huart1, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
     }
 }
 
@@ -101,13 +95,24 @@ static int32_t abs_i32(int32_t x)
     return (x < 0) ? -x : x;
 }
 
+static float FlapAngle_From_Displacement_mm(float displacement_mm)
+{
+    if (displacement_mm < 0.0f)
+        displacement_mm = 0.0f;
+
+    return (-0.000513f * displacement_mm * displacement_mm * displacement_mm)
+         + (0.010615f * displacement_mm * displacement_mm)
+         + (2.3199f * displacement_mm)
+         - 0.4986f;
+}
+
 static void Print_Units_As_mm(const char *label, int32_t pos_units)
 {
     int32_t abs_units = abs_i32(pos_units);
     uint32_t mm_whole = (uint32_t)(abs_units / POSITION_UNITS_PER_MM);
     uint32_t mm_frac  = (uint32_t)(abs_units % POSITION_UNITS_PER_MM);
 
-    Deploy_Print("%s%s%lu.%06lu mm (%ld units)\r\n",
+    Deploy_Print("%s%s%lu.%03lu mm (%ld units)\r\n",
                  label,
                  (pos_units < 0) ? "-" : "",
                  (unsigned long)mm_whole,
@@ -116,32 +121,36 @@ static void Print_Units_As_mm(const char *label, int32_t pos_units)
 }
 
 /*
- * Linear angle -> displacement mapping using the INTERNAL POSITION UNITS:
- *
- *   0 deg                   -> 0 units
- *   FULL_DEPLOY_ANGLE_DEG   -> 47,500,000 units
+ * Invert the measured displacement->angle transfer function numerically so
+ * deploy targets stay aligned with the new airbrake geometry model.
  */
 int32_t Airbrake_Angle_To_Position_um(float angle_deg)
 {
-    /* Keep function name for compatibility with existing headers/callers. */
+    float lo_mm;
+    float hi_mm;
+    uint32_t i;
 
     if (angle_deg <= 0.0f)
         return 0;
 
     if (angle_deg >= FULL_DEPLOY_ANGLE_DEG)
-        return FULL_DEPLOY_DISPLACEMENT_UNITS;
+        angle_deg = FULL_DEPLOY_ANGLE_DEG;
 
+    lo_mm = 0.0f;
+    hi_mm = MAX_DISPLACEMENT_MM;
+
+    for (i = 0U; i < TRANSFER_SOLVE_ITERS; i++)
     {
-        float pos_units =
-            (angle_deg / FULL_DEPLOY_ANGLE_DEG) * (float)FULL_DEPLOY_DISPLACEMENT_UNITS;
+        float mid_mm = 0.5f * (lo_mm + hi_mm);
+        float mid_deg = FlapAngle_From_Displacement_mm(mid_mm);
 
-        if (pos_units < 0.0f)
-            pos_units = 0.0f;
-        if (pos_units > (float)FULL_DEPLOY_DISPLACEMENT_UNITS)
-            pos_units = (float)FULL_DEPLOY_DISPLACEMENT_UNITS;
-
-        return (int32_t)(pos_units + 0.5f);
+        if (mid_deg < angle_deg)
+            lo_mm = mid_mm;
+        else
+            hi_mm = mid_mm;
     }
+
+    return (int32_t)((0.5f * (lo_mm + hi_mm)) * (float)POSITION_UNITS_PER_MM + 0.5f);
 }
 
 static uint8_t MoveTowardTarget(int32_t target_units)
@@ -173,17 +182,36 @@ void Airbrake_Deploy_Init(void)
     s_stateStartTimeMs = 0;
 }
 
+void Airbrake_GoToMax(void)
+{
+    if (s_deployState != DEPLOY_IDLE && s_deployState != DEPLOY_DONE)
+        return;
+    Deploy_Print("Moving to max deploy (70 deg).\r\n");
+    s_deployState      = DEPLOY_JOG_UP;
+    s_stateStartTimeMs = HAL_GetTick();
+}
+
+void Airbrake_GoToZero(void)
+{
+    if (s_deployState != DEPLOY_IDLE && s_deployState != DEPLOY_DONE)
+        return;
+    Deploy_Print("Moving to 0 deg (home).\r\n");
+    s_deployState      = DEPLOY_JOG_DOWN;
+    s_stateStartTimeMs = HAL_GetTick();
+}
+
 void Airbrake_Start_Sequence(void)
 {
     if (s_deployState == DEPLOY_IDLE || s_deployState == DEPLOY_DONE)
     {
+        int32_t full_units  = Airbrake_Angle_To_Position_um(FULL_DEPLOY_ANGLE_DEG);
         int32_t pos60_units = Airbrake_Angle_To_Position_um(60.0f);
         int32_t pos40_units = Airbrake_Angle_To_Position_um(40.0f);
         int32_t pos15_units = Airbrake_Angle_To_Position_um(15.0f);
 
         Deploy_Print("\r\n=== Starting Deploy Sequence ===\r\n");
         Deploy_Print("Assuming current position is 0 deg.\r\n");
-        Print_Units_As_mm("Full deploy target : ", FULL_DEPLOY_DISPLACEMENT_UNITS);
+        Print_Units_As_mm("Full deploy target : ", full_units);
         Print_Units_As_mm("60 deg target      : ", pos60_units);
         Print_Units_As_mm("40 deg target      : ", pos40_units);
         Print_Units_As_mm("15 deg target      : ", pos15_units);
@@ -204,7 +232,7 @@ void Airbrake_Deploy_Task(void)
     uint32_t now = HAL_GetTick();
     uint32_t elapsed = now - s_stateStartTimeMs;
 
-    const int32_t target_full_units = FULL_DEPLOY_DISPLACEMENT_UNITS;
+    const int32_t target_full_units = Airbrake_Angle_To_Position_um(FULL_DEPLOY_ANGLE_DEG);
     const int32_t target_60_units   = Airbrake_Angle_To_Position_um(60.0f);
     const int32_t target_40_units   = Airbrake_Angle_To_Position_um(40.0f);
     const int32_t target_15_units   = Airbrake_Angle_To_Position_um(15.0f);
@@ -354,6 +382,38 @@ void Airbrake_Deploy_Task(void)
             {
                 Deploy_Print("Deploy sequence complete. Locked at 0 deg.\r\n\r\n");
                 s_deployState = DEPLOY_DONE;
+            }
+            break;
+
+        case DEPLOY_JOG_UP:
+            if (MoveTowardTarget(target_full_units))
+            {
+                Print_Units_As_mm("Reached max deploy: ", target_full_units);
+                ESC_App_StopMotor();
+                s_deployState = DEPLOY_IDLE;
+            }
+            else if (elapsed >= DEPLOY_MOVE_TIMEOUT_MS)
+            {
+                ESC_App_StopMotor();
+                Print_Units_As_mm("Timeout jogging up. Current pos = ",
+                                  Encoder_GetPosition_um());
+                s_deployState = DEPLOY_IDLE;
+            }
+            break;
+
+        case DEPLOY_JOG_DOWN:
+            if (MoveTowardTarget(target_zero_units))
+            {
+                Deploy_Print("Reached 0 deg.\r\n");
+                ESC_App_StopMotor();
+                s_deployState = DEPLOY_IDLE;
+            }
+            else if (elapsed >= DEPLOY_MOVE_TIMEOUT_MS)
+            {
+                ESC_App_StopMotor();
+                Print_Units_As_mm("Timeout jogging down. Current pos = ",
+                                  Encoder_GetPosition_um());
+                s_deployState = DEPLOY_IDLE;
             }
             break;
 

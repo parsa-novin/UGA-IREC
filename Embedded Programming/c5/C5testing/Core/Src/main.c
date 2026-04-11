@@ -236,6 +236,7 @@ int main(void)
       pkt.checksum = packet_checksum(&pkt);
 
       HAL_UART_Transmit(&huart1, (uint8_t *)&pkt, sizeof(pkt), UART_TX_TIMEOUT);
+      HAL_Delay(20);
   }
     /* USER CODE END WHILE */
 

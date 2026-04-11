@@ -74,17 +74,17 @@ extern void ESC_App_StopMotor(void);
  * ========================================================================= */
 
 /* Motor speed during homing — low enough to stall cleanly without slamming */
-#define HOMING_SPEED_PCT            20
+#define HOMING_SPEED_PCT            8
 
 /*
  * Rolling-average stall threshold (mA).
  * Set this above the motor's free-running current at HOMING_SPEED_PCT but
  * below its locked-rotor current.  Because transient spikes are averaged
  * out, you can set this lower than you would for an instantaneous threshold
- * without false triggers.  Start at 1800 mA and lower if genuine stalls
+ * without false triggers.  Start around 1200 mA and lower if genuine stalls
  * are not detected; raise if free-running motion trips the detector.
  */
-#define HOMING_STALL_AVG_MA         10000U
+#define HOMING_STALL_AVG_MA         1200U
 
 /*
  * Rolling average window — number of samples in the circular buffer.
@@ -92,14 +92,14 @@ extern void ESC_App_StopMotor(void);
  * Only samples collected after the inrush ignore window count, so the
  * effective window at the start of a move is shorter until the buffer fills.
  */
-#define CURRENT_AVG_SAMPLES         32U
+#define CURRENT_AVG_SAMPLES         8U
 
 /*
  * Inrush ignore window (ms).
  * No samples are collected during this period after a move starts.
  * Prevents the start-up current spike from poisoning the rolling average.
  */
-#define HOMING_CURRENT_IGNORE_MS    200U
+#define HOMING_CURRENT_IGNORE_MS    50U
 
 /*
  * Stall confirmation window (ms).
@@ -107,7 +107,7 @@ extern void ESC_App_StopMotor(void);
  * for this long before a stall is declared.  Guards against a brief burst
  * of high-current samples pushing the average above the threshold.
  */
-#define HOMING_STALL_CONFIRM_MS     150U
+#define HOMING_STALL_CONFIRM_MS     75U
 
 /* Settle time after hitting an end-stop before starting the next move (ms) */
 #define HOMING_SETTLE_MS            800U
@@ -115,8 +115,8 @@ extern void ESC_App_StopMotor(void);
 /* Overall per-move timeout (ms) */
 #define HOMING_MOVE_TIMEOUT_MS      8000U
 
-/* Return-to-zero tolerance in internal position units (~0.05 mm) */
-#define HOMING_ZERO_TOL_UNITS       50000L
+/* Return-to-zero tolerance in µm (0.05 mm = 50 µm) */
+#define HOMING_ZERO_TOL_UNITS       50L
 
 /* =========================================================================
  * Rolling current average — circular buffer
@@ -182,6 +182,7 @@ static uint32_t      s_stateEnterMs  = 0;
 static uint32_t      s_stallOnsetMs  = 0;
 static uint8_t       s_stallTracking = 0;
 static int32_t       s_rangeUnits    = 0;
+static uint32_t      s_lastTelemPacketsOk = 0;
 
 /* =========================================================================
  * Private helpers
@@ -197,7 +198,6 @@ static void Homing_Print(const char *fmt, ...)
     if (len > 0)
     {
         if (len > (int)sizeof(buf)) len = (int)sizeof(buf);
-        HAL_UART_Transmit(&huart1, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
         HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
     }
 }
@@ -211,6 +211,7 @@ static void EnterState(HomingState_t next)
     s_stateEnterMs  = HAL_GetTick();
     s_stallTracking = 0;
     s_stallOnsetMs  = 0;
+    s_lastTelemPacketsOk = ESC_Telem_GetPacketsOk();
     CurrentAvg_Reset();
 }
 
@@ -234,6 +235,21 @@ static uint8_t StallDetected(uint32_t now)
     /* Phase 1: inrush ignore */
     if ((now - s_stateEnterMs) < HOMING_CURRENT_IGNORE_MS)
         return 0U;
+
+    /*
+     * Require valid ESC telemetry and only consume new packets once.
+     * This prevents duplicating stale/current=0 readings between UART frames.
+     */
+    if (!ESC_Telem_IsValid())
+    {
+        s_stallTracking = 0;
+        return 0U;
+    }
+
+    uint32_t packetsOk = ESC_Telem_GetPacketsOk();
+    if (packetsOk == s_lastTelemPacketsOk)
+        return 0U;
+    s_lastTelemPacketsOk = packetsOk;
 
     /* Phase 2: sample and evaluate */
     uint32_t instant_mA = ESC_Telem_GetCurrent_mA();
@@ -376,7 +392,7 @@ void Encoder_Homing_Task(void)
 
                 Homing_Print("Full travel = %ld units (%.3f mm)\r\n",
                              (long)s_rangeUnits,
-                             (double)s_rangeUnits / 1000000.0);
+                             (double)s_rangeUnits / 1000.0);
                 Homing_Print("Step 4/4: Settling at extended end-stop...\r\n");
                 EnterState(HOME_WAIT_EXTEND);
             }
@@ -401,12 +417,13 @@ void Encoder_Homing_Task(void)
             if (abs_i32(err) <= HOMING_ZERO_TOL_UNITS)
             {
                 ESC_App_StopMotor();
+                Encoder_Reset();
                 Homing_Print("=== Homing Complete ===\r\n");
                 Homing_Print("  Retracted : 0 units (0.000 mm)\r\n");
                 Homing_Print("  Extended  : %ld units (%.3f mm)\r\n",
                              (long)s_rangeUnits,
-                             (double)s_rangeUnits / 1000000.0);
-                Homing_Print("  Final pos : %ld units\r\n\r\n", (long)pos);
+                             (double)s_rangeUnits / 1000.0);
+                Homing_Print("  Final pos : %ld units -> zeroed here\r\n\r\n", (long)pos);
                 EnterState(HOME_DONE);
             }
             else if (elapsed >= HOMING_MOVE_TIMEOUT_MS)

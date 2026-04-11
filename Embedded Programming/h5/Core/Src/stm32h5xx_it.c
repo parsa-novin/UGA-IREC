@@ -12,7 +12,11 @@
 #include "stm32h5xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "esc_app.h"
+#include "esc_telem.h"
 #include "encoder_app.h"
+#include "sdmmc.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +50,9 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern UART_HandleTypeDef huart5;
+extern TIM_HandleTypeDef htim4;
+extern SD_HandleTypeDef hsd1;
+extern UART_HandleTypeDef huart4;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -232,19 +238,62 @@ void EXTI7_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles UART5 global interrupt.
+  * @brief This function handles SDMMC1 global interrupt.
   */
-void UART5_IRQHandler(void)
+void SDMMC1_IRQHandler(void)
 {
-  /* USER CODE BEGIN UART5_IRQn 0 */
+  /* USER CODE BEGIN SDMMC1_IRQn 0 */
 
-  /* USER CODE END UART5_IRQn 0 */
-  HAL_UART_IRQHandler(&huart5);
-  /* USER CODE BEGIN UART5_IRQn 1 */
+  /* USER CODE END SDMMC1_IRQn 0 */
+  HAL_SD_IRQHandler(&hsd1);
+  /* USER CODE BEGIN SDMMC1_IRQn 1 */
 
-  /* USER CODE END UART5_IRQn 1 */
+  /* USER CODE END SDMMC1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM4 global interrupt.
+  */
+void TIM4_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+
+  /* USER CODE END TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim4);
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+
+  /* USER CODE END TIM4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles UART4 global interrupt.
+  */
+void UART4_IRQHandler(void)
+{
+  /* USER CODE BEGIN UART4_IRQn 0 */
+
+  /* USER CODE END UART4_IRQn 0 */
+  ESC_App_Uart4IrqHandler();
+  /* USER CODE BEGIN UART4_IRQn 1 */
+
+  /* USER CODE END UART4_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
+/* STM32H5 HAL calls Rising/Falling callbacks separately — the old combined
+ * HAL_GPIO_EXTI_Callback weak symbol does not exist on H5.  Override both. */
+void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
+{
+    Encoder_EXTI_Rising_Callback(GPIO_Pin);
+}
 
+void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
+{
+    Encoder_EXTI_Falling_Callback(GPIO_Pin);
+}
+
+void UART5_IRQHandler(void)
+{
+    ESC_Telem_Uart5IrqHandler();
+}
 /* USER CODE END 1 */

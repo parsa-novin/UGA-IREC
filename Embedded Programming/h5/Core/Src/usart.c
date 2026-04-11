@@ -34,12 +34,13 @@ void MX_UART4_Init(void)
   huart4.Init.WordLength = UART_WORDLENGTH_8B;
   huart4.Init.StopBits = UART_STOPBITS_1;
   huart4.Init.Parity = UART_PARITY_NONE;
-  huart4.Init.Mode = UART_MODE_TX_RX;
+  huart4.Init.Mode = UART_MODE_RX;
   huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart4.Init.OverSampling = UART_OVERSAMPLING_16;
   huart4.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart4.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  huart4.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  huart4.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_RXINVERT_INIT;
+  huart4.AdvancedInit.RxPinLevelInvert = UART_ADVFEATURE_RXINV_ENABLE;
   if (HAL_UART_Init(&huart4) != HAL_OK)
   {
     Error_Handler();
@@ -52,11 +53,19 @@ void MX_UART4_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_UARTEx_DisableFifoMode(&huart4) != HAL_OK)
+  if (HAL_UARTEx_EnableFifoMode(&huart4) != HAL_OK)
   {
     Error_Handler();
   }
   /* USER CODE BEGIN UART4_Init 2 */
+  CLEAR_BIT(huart4.Instance->CR1, USART_CR1_RTOIE | USART_CR1_EOBIE | USART_CR1_CMIE | USART_CR1_MME | USART_CR1_PEIE);
+  CLEAR_BIT(huart4.Instance->CR2, USART_CR2_RTOEN | USART_CR2_ADDM7);
+  CLEAR_BIT(huart4.Instance->CR3, USART_CR3_EIE | USART_CR3_RXFTIE);
+  __HAL_UART_CLEAR_FLAG(&huart4, UART_CLEAR_RTOF | USART_ICR_EOBCF | UART_CLEAR_CMF |
+                                  UART_CLEAR_OREF | UART_CLEAR_NEF | UART_CLEAR_FEF |
+                                  UART_CLEAR_PEF | UART_CLEAR_IDLEF);
+  SET_BIT(huart4.Instance->CR1, USART_CR1_RXNEIE_RXFNEIE);
+  SET_BIT(huart4.Instance->CR3, USART_CR3_EIE);
 
   /* USER CODE END UART4_Init 2 */
 
@@ -100,7 +109,17 @@ void MX_UART5_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN UART5_Init 2 */
-
+  /* Bypass HAL IT state machine — drive RXNEIE directly like UART4.
+   * This eliminates the per-byte HAL re-arm overhead and prevents
+   * overrun errors that misalign KISS telemetry packets. */
+  CLEAR_BIT(huart5.Instance->CR1, USART_CR1_RTOIE | USART_CR1_EOBIE | USART_CR1_CMIE | USART_CR1_MME | USART_CR1_PEIE);
+  CLEAR_BIT(huart5.Instance->CR2, USART_CR2_RTOEN | USART_CR2_ADDM7);
+  CLEAR_BIT(huart5.Instance->CR3, USART_CR3_EIE | USART_CR3_RXFTIE);
+  __HAL_UART_CLEAR_FLAG(&huart5, UART_CLEAR_RTOF | USART_ICR_EOBCF | UART_CLEAR_CMF |
+                                  UART_CLEAR_OREF | UART_CLEAR_NEF | UART_CLEAR_FEF |
+                                  UART_CLEAR_PEF | UART_CLEAR_IDLEF);
+  SET_BIT(huart5.Instance->CR1, USART_CR1_RXNEIE_RXFNEIE | USART_CR1_IDLEIE);
+  SET_BIT(huart5.Instance->CR3, USART_CR3_EIE);
   /* USER CODE END UART5_Init 2 */
 
 }
@@ -228,6 +247,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    /* UART4 interrupt Init */
+    HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(UART4_IRQn);
   /* USER CODE BEGIN UART4_MspInit 1 */
     HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(UART4_IRQn);
@@ -253,19 +275,16 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 
     __HAL_RCC_GPIOB_CLK_ENABLE();
     /**UART5 GPIO Configuration
+    PB13     ------> UART5_TX
     PB5     ------> UART5_RX
-    PB6     ------> UART5_TX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6;
+    GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_5;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF14_UART5;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    /* UART5 interrupt Init */
-    HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(UART5_IRQn);
   /* USER CODE BEGIN UART5_MspInit 1 */
     HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(UART5_IRQn);
@@ -360,6 +379,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
 
+    /* UART4 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(UART4_IRQn);
   /* USER CODE BEGIN UART4_MspDeInit 1 */
     HAL_NVIC_DisableIRQ(UART4_IRQn);
   /* USER CODE END UART4_MspDeInit 1 */
@@ -373,13 +394,11 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     __HAL_RCC_UART5_CLK_DISABLE();
 
     /**UART5 GPIO Configuration
+    PB13     ------> UART5_TX
     PB5     ------> UART5_RX
-    PB6     ------> UART5_TX
     */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_5|GPIO_PIN_6);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13|GPIO_PIN_5);
 
-    /* UART5 interrupt Deinit */
-    HAL_NVIC_DisableIRQ(UART5_IRQn);
   /* USER CODE BEGIN UART5_MspDeInit 1 */
     HAL_NVIC_DisableIRQ(UART5_IRQn);
   /* USER CODE END UART5_MspDeInit 1 */

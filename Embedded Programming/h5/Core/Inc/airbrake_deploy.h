@@ -18,4 +18,8 @@ uint8_t Airbrake_Is_Sequence_Active(void);
 /* Convert angle to position in micrometers */
 int32_t Airbrake_Angle_To_Position_um(float angle_deg);
 
+/* Go directly to max deployment (70 deg) or zero, without the full sequence */
+void Airbrake_GoToMax(void);
+void Airbrake_GoToZero(void);
+
 #endif /* AIRBRAKE_DEPLOY_H */

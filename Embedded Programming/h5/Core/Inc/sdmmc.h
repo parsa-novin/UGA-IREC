@@ -41,6 +41,7 @@ extern SD_HandleTypeDef hsd1;
 void MX_SDMMC1_SD_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+uint8_t SDMMC_IsHwReady(void);
 
 /* USER CODE END Prototypes */
 

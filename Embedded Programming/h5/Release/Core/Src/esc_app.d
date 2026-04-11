@@ -34,10 +34,11 @@ Core/Src/esc_app.o: ../Core/Src/esc_app.c ../Core/Inc/esc_app.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h \
- ../Core/Inc/tim.h ../Core/Inc/main.h ../Core/Inc/usart.h \
- ../Core/Inc/esc_telem.h ../Core/Inc/command_sequence.h \
- ../Core/Inc/sd_logger.h ../Core/Inc/airbrake_deploy.h \
- ../Core/Inc/encoder_homing.h ../Core/Inc/encoder_app.h
+ ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/tim.h \
+ ../Core/Inc/usart.h ../Core/Inc/esc_telem.h \
+ ../Core/Inc/command_sequence.h ../Core/Inc/sd_logger.h \
+ ../Core/Inc/airbrake_deploy.h ../Core/Inc/encoder_homing.h \
+ ../Core/Inc/encoder_app.h ../Core/Inc/flight_trigger.h
 ../Core/Inc/esc_app.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h:
@@ -75,8 +76,9 @@ Core/Src/esc_app.o: ../Core/Src/esc_app.c ../Core/Inc/esc_app.h \
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h:
-../Core/Inc/tim.h:
+../Core/Inc/spi.h:
 ../Core/Inc/main.h:
+../Core/Inc/tim.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/esc_telem.h:
 ../Core/Inc/command_sequence.h:
@@ -84,3 +86,4 @@ Core/Src/esc_app.o: ../Core/Src/esc_app.c ../Core/Inc/esc_app.h \
 ../Core/Inc/airbrake_deploy.h:
 ../Core/Inc/encoder_homing.h:
 ../Core/Inc/encoder_app.h:
+../Core/Inc/flight_trigger.h:

@@ -25,4 +25,8 @@ SUBDIRS := \
 Core/Src \
 Core/Startup \
 Drivers/STM32H5xx_HAL_Driver/Src \
+FileX/App \
+FileX/Target \
+Middlewares/ST/filex/common/drivers \
+Middlewares/ST/filex/common/src \
 

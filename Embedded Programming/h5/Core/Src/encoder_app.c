@@ -1,12 +1,10 @@
 #include "encoder_app.h"
 
 #include "main.h"
+#include "tim.h"
 #include "usart.h"
 
 #include <stdint.h>
-#include <stdio.h>
-#include <stdarg.h>
-
 /* -------------------------------------------------------------------------
  * Pin mapping
  * ------------------------------------------------------------------------- */
@@ -23,7 +21,7 @@
 #define HALL_C_BIT       0U
 
 /* -------------------------------------------------------------------------
- * Mechanical constants — adjust to match your motor/leadscrew
+ * Mechanical constants - adjust to match your motor/leadscrew
  *   COUNTS_PER_REV : Hall steps per full mechanical revolution
  *                    = 6 * number_of_pole_pairs
  *   UM_PER_REV     : Linear travel per revolution in micrometres
@@ -31,7 +29,7 @@
  *   ENCODER_DIR_SIGN: +1 or -1, flip if position counts backwards
  * ------------------------------------------------------------------------- */
 #define COUNTS_PER_REV    42
-#define UM_PER_REV        1000000L
+#define UM_PER_REV        1000L
 #define ENCODER_DIR_SIGN  1
 
 /* Debug print cadence */
@@ -51,7 +49,10 @@ static const uint8_t k_hallSequence[6] = {
 };
 
 /* -------------------------------------------------------------------------
- * State — not volatile since there is no ISR touching these anymore
+ * State
+ * s_count and s_hallState are written from EXTI ISR context and read from
+ * the main loop. Declared volatile; int32_t/uint8_t writes on Cortex-M33
+ * are naturally atomic for aligned accesses, so no critical section needed.
  * ------------------------------------------------------------------------- */
 static int32_t  s_count              = 0;
 static uint8_t  s_hallState          = 0;
@@ -65,18 +66,7 @@ static uint32_t s_lastPrintMs        = 0;
 
 static void Encoder_Print(const char *fmt, ...)
 {
-    char buf[256];
-    va_list args;
-    va_start(args, fmt);
-    int len = vsnprintf(buf, sizeof(buf), fmt, args);
-    va_end(args);
-
-    if (len > 0)
-    {
-        if (len > (int)sizeof(buf))
-            len = (int)sizeof(buf);
-        HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)len, HAL_MAX_DELAY);
-    }
+    (void)fmt;
 }
 
 static uint8_t ReadHallState(void)
@@ -105,10 +95,12 @@ static int8_t HallStepDelta(uint8_t prev, uint8_t curr)
     if (ip < 0 || ic < 0 || prev == curr)
         return 0;
 
-    if (((ip + 1) % 6) == ic) return +1;
-    if (((ip + 5) % 6) == ic) return -1;
+    if (((ip + 1) % 6) == ic)
+        return +1;
+    if (((ip + 5) % 6) == ic)
+        return -1;
 
-    return 0; /* skipped step — missed a transition */
+    return 0; /* skipped step - missed a transition */
 }
 
 /* -------------------------------------------------------------------------
@@ -148,15 +140,8 @@ int32_t Encoder_GetPosition_um(void)
     return (int32_t)(((int64_t)s_count * UM_PER_REV) / COUNTS_PER_REV);
 }
 
-/* -------------------------------------------------------------------------
- * Encoder_App_Task
- *
- * Call this as fast as possible from the main loop — no delays between calls.
- * It polls the Hall pins on every call and handles periodic debug printing.
- * ------------------------------------------------------------------------- */
-void Encoder_App_Task(void)
+void Encoder_TimerPollCallback(void)
 {
-    /* ---- Poll Hall state on every call ---- */
     uint8_t curr = ReadHallState();
     uint8_t prev = s_hallState;
 
@@ -171,35 +156,56 @@ void Encoder_App_Task(void)
         else
             s_invalidTransitions++;
     }
+}
 
-    /* ---- Periodic debug print every 200 ms ---- */
+void Encoder_App_Task(void)
+{
     uint32_t now = HAL_GetTick();
     if ((now - s_lastPrintMs) < DEBUG_PRINT_MS)
         return;
     s_lastPrintMs = now;
 
     int32_t count = s_count;
+    int64_t um    = ((int64_t)count * UM_PER_REV) / COUNTS_PER_REV;
+    char    sign  = (um < 0) ? '-' : '+';
+    if (um < 0)
+        um = -um;
 
-    int64_t  um   = ((int64_t)count * UM_PER_REV) / COUNTS_PER_REV;
-    char     sign = (um < 0) ? '-' : '+';
-    if (um < 0) um = -um;
-
-    uint32_t mm_whole = (uint32_t)(um / 1000000);
-    uint32_t mm_frac  = (uint32_t)(um % 1000000);
+    uint32_t mm_whole = (uint32_t)(um / 1000);
+    uint32_t mm_frac  = (uint32_t)(um % 1000);
 
     Encoder_Print(
-        "encoder position = %c%lu.%03lumm",
+        "enc hall=%u%u%u raw=0x%X cnt=%ld pos=%c%lu.%03lumm exti=%lu bad=%lu\r\n",
+        (s_hallState >> HALL_A_BIT) & 1U,
+        (s_hallState >> HALL_B_BIT) & 1U,
+        (s_hallState >> HALL_C_BIT) & 1U,
+        s_hallState,
+        (long)count,
         sign,
         (unsigned long)mm_whole,
-        (unsigned long)mm_frac
+        (unsigned long)mm_frac,
+        (unsigned long)s_pollHits,
+        (unsigned long)s_invalidTransitions
     );
 }
 
-/* -------------------------------------------------------------------------
- * Encoder_EXTI_Callback — stub only, polling does the work now.
- * Kept so stm32h5xx_it.c compiles without changes.
- * ------------------------------------------------------------------------- */
 void Encoder_EXTI_Callback(uint16_t GPIO_Pin)
 {
     (void)GPIO_Pin;
+}
+
+void Encoder_EXTI_Rising_Callback(uint16_t GPIO_Pin)
+{
+    (void)GPIO_Pin;
+}
+
+void Encoder_EXTI_Falling_Callback(uint16_t GPIO_Pin)
+{
+    (void)GPIO_Pin;
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM4)
+        Encoder_TimerPollCallback();
 }

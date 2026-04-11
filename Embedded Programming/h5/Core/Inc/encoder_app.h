@@ -8,10 +8,14 @@
 void    Encoder_App_Init(void);
 
 /**
- * @brief  Poll Hall pins and handle debug printing.
- *         Call as fast as possible from the main loop — NO delays between calls.
+ * @brief  Handle periodic debug printing from the main loop.
  */
 void    Encoder_App_Task(void);
+
+/**
+ * @brief  Poll Hall pins once. Intended to be called from TIM4 ISR.
+ */
+void    Encoder_TimerPollCallback(void);
 
 /**
  * @brief  Returns raw Hall step count.
@@ -24,12 +28,13 @@ int32_t Encoder_GetCount(void);
 int32_t Encoder_GetPosition_um(void);
 
 /**
- * @brief  Resets count and position to zero.
+ * @brief  Sets the current physical position as the new zero reference.
  */
 void    Encoder_Reset(void);
 
 /**
- * @brief  Stub — kept so stm32h5xx_it.c compiles without changes.
- *         Polling handles everything now; EXTI is not used.
+ * @brief  Edge-specific EXTI hooks used on STM32H5.
  */
 void    Encoder_EXTI_Callback(uint16_t GPIO_Pin);
+void    Encoder_EXTI_Rising_Callback(uint16_t GPIO_Pin);
+void    Encoder_EXTI_Falling_Callback(uint16_t GPIO_Pin);

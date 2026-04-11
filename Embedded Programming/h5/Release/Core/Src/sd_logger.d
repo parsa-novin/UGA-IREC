@@ -1,7 +1,6 @@
 Core/Src/sd_logger.o: ../Core/Src/sd_logger.c ../Core/Inc/sd_logger.h \
- ../Core/Inc/airbrake_config.h ../Core/Inc/encoder_app.h \
- ../Core/Inc/esc_telem.h ../Core/Inc/main.h \
- ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h \
+ ../Core/Inc/encoder_app.h ../Core/Inc/esc_app.h ../Core/Inc/esc_telem.h \
+ ../Core/Inc/main.h ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h \
  ../Core/Inc/stm32h5xx_hal_conf.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rcc.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_def.h \
@@ -36,10 +35,13 @@ Core/Src/sd_logger.o: ../Core/Src/sd_logger.c ../Core/Inc/sd_logger.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h \
- ../Core/Inc/usart.h ../Core/Inc/main.h ../Core/Inc/fatfs.h
+ ../Core/Inc/sdmmc.h ../Core/Inc/main.h ../Core/Inc/usart.h \
+ ../FileX/App/app_filex.h ../Middlewares/ST/filex/common/inc/fx_api.h \
+ ../Middlewares/ST/filex/ports/generic/inc/fx_port.h \
+ ../FileX/App/fx_user.h ../FileX/Target/fx_stm32_sd_driver.h
 ../Core/Inc/sd_logger.h:
-../Core/Inc/airbrake_config.h:
 ../Core/Inc/encoder_app.h:
+../Core/Inc/esc_app.h:
 ../Core/Inc/esc_telem.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h:
@@ -77,6 +79,11 @@ Core/Src/sd_logger.o: ../Core/Src/sd_logger.c ../Core/Inc/sd_logger.h \
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_uart_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_exti.h:
-../Core/Inc/usart.h:
+../Core/Inc/sdmmc.h:
 ../Core/Inc/main.h:
-../Core/Inc/fatfs.h:
+../Core/Inc/usart.h:
+../FileX/App/app_filex.h:
+../Middlewares/ST/filex/common/inc/fx_api.h:
+../Middlewares/ST/filex/ports/generic/inc/fx_port.h:
+../FileX/App/fx_user.h:
+../FileX/Target/fx_stm32_sd_driver.h:
