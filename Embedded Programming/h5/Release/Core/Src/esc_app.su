@@ -1,0 +1,15 @@
+../Core/Src/esc_app.c:173:13:is_signed_integer	0	static
+../Core/Src/esc_app.c:355:13:Upstream_EnableIrqRx	0	static
+../Core/Src/esc_app.c:524:13:PWM_Set	0	static
+../Core/Src/esc_app.c:237:13:Camera_SendSpiByte.isra	16	static
+../Core/Src/esc_app.c:600:13:HandleCommand	104	static
+../Core/Src/esc_app.c:758:13:ProcessConsoleByte	24	static
+../Core/Src/esc_app.c:289:13:Upstream_ProcessByte	88	static
+../Core/Src/esc_app.c:795:6:ESC_App_SetPulseUs	0	static
+../Core/Src/esc_app.c:800:6:ESC_App_StopMotor	0	static
+../Core/Src/esc_app.c:805:6:ESC_App_SetPercent	0	static
+../Core/Src/esc_app.c:814:9:ESC_App_GetNeutralUs	0	static
+../Core/Src/esc_app.c:833:9:ESC_App_GetLatestSensorPacket	8	static,ignoring_inline_asm
+../Core/Src/esc_app.c:851:6:ESC_App_Init	8	static
+../Core/Src/esc_app.c:875:6:ESC_App_Task	200	static,ignoring_inline_asm
+../Core/Src/esc_app.c:912:6:ESC_App_Uart4IrqHandler	24	static

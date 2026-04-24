@@ -1,0 +1,14 @@
+../Core/Src/encoder_app.c:67:13:Encoder_Print	1
+../Core/Src/encoder_app.c:72:16:ReadHallState	4
+../Core/Src/encoder_app.c:80:15:HallIndex	3
+../Core/Src/encoder_app.c:90:15:HallStepDelta	6
+../Core/Src/encoder_app.c:110:6:Encoder_App_Init	1
+../Core/Src/encoder_app.c:128:6:Encoder_Reset	1
+../Core/Src/encoder_app.c:133:9:Encoder_GetCount	1
+../Core/Src/encoder_app.c:138:9:Encoder_GetPosition_um	1
+../Core/Src/encoder_app.c:143:6:Encoder_TimerPollCallback	3
+../Core/Src/encoder_app.c:161:6:Encoder_App_Task	4
+../Core/Src/encoder_app.c:192:6:Encoder_EXTI_Callback	1
+../Core/Src/encoder_app.c:197:6:Encoder_EXTI_Rising_Callback	1
+../Core/Src/encoder_app.c:202:6:Encoder_EXTI_Falling_Callback	1
+../Core/Src/encoder_app.c:207:6:HAL_TIM_PeriodElapsedCallback	2

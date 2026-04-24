@@ -1,0 +1,12 @@
+../Core/Src/imu.c:66:20:cs_assert	16	static
+../Core/Src/imu.c:71:20:cs_deassert	16	static
+../Core/Src/imu.c:77:13:spi_transfer	128	dynamic
+../Core/Src/imu.c:91:13:imu_write_reg	32	static
+../Core/Src/imu.c:100:16:imu_read_reg	32	static
+../Core/Src/imu.c:111:13:imu_read_burst	120	dynamic
+../Core/Src/imu.c:127:13:imu_select_bank	16	static
+../Core/Src/imu.c:134:6:IMU_init	24	static
+../Core/Src/imu.c:164:6:IMU_setFullScale	24	static
+../Core/Src/imu.c:174:6:IMU_getRawAccel	40	static
+../Core/Src/imu.c:185:6:IMU_getAccel	56	static
+../Core/Src/imu.c:195:7:IMU_getTemp	32	static

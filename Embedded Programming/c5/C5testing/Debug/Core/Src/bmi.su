@@ -1,0 +1,12 @@
+../Core/Src/bmi.c:110:20:cs_assert	16	static
+../Core/Src/bmi.c:115:20:cs_deassert	16	static
+../Core/Src/bmi.c:121:16:bmi_read_reg	40	static
+../Core/Src/bmi.c:132:13:bmi_write_reg	40	static
+../Core/Src/bmi.c:146:13:bmi_read_burst	120	static
+../Core/Src/bmi.c:165:13:bmi_write_burst	112	static
+../Core/Src/bmi.c:188:13:bmi_upload_config	48	static
+../Core/Src/bmi.c:214:6:BMI_init	40	static
+../Core/Src/bmi.c:285:6:BMI_getAccel	56	static
+../Core/Src/bmi.c:299:6:BMI_getGyro	56	static
+../Core/Src/bmi.c:313:6:BMI_getAllMotion	64	static
+../Core/Src/bmi.c:339:7:BMI_getTemp	32	static
