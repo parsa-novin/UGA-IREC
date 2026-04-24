@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where python *)",
+      "Bash(conda info *)",
+      "Bash(/c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe -c \"import rocketpy; print\\(rocketpy.__version__\\)\")",
+      "Bash(/c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe -c \"from rocketpy import Airbrakes; print\\('Airbrakes available'\\)\")",
+      "Bash(/c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe -c \"from rocketpy import AirBrakes; import inspect; print\\(inspect.signature\\(AirBrakes.__init__\\)\\)\")",
+      "Bash(/c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe -c ' *)",
+      "Read(//c/Users/parsa/AppData/Local/Programs/Python/Python313/Lib/site-packages/rocketpy/**)",
+      "Bash(xargs grep *)",
+      "Bash(/c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe mags_test_launch.py single --no-airbrakes)",
+      "Bash(PYTHONIOENCODING=utf-8 /c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe mags_test_launch.py single --no-airbrakes)",
+      "Bash(PYTHONIOENCODING=utf-8 /c/Users/parsa/AppData/Local/Programs/Python/Python313/python.exe mags_test_launch.py single --state-machine-controller)"
+    ]
+  }
+}
