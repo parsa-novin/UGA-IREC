@@ -21,13 +21,13 @@ from airbrake_controller import AirbrakeController
 BASE_DIR = Path(__file__).resolve().parent
 
 DEFAULT_BASE_DRAG_CSV   = BASE_DIR / "Deployment_Fits_Output" / "Deployment_0deg_CdFit.csv"
-DEFAULT_MOTOR_FILE      = BASE_DIR / "m2050x.eng"
+DEFAULT_MOTOR_FILE      = BASE_DIR / "m2050x_corrected.eng"
 DEFAULT_AIRBRAKE_CSV_DIR = BASE_DIR / "Deployment_Fits_Output"
 
 ROCKET_RADIUS        = 0.078359
-ROCKET_MASS          = 18.7
-ROCKET_INERTIA       = (7.15, 7.15, 0.095)
-ROCKET_COM_NO_MOTOR  = 1.1633
+ROCKET_MASS          = 18.6
+ROCKET_INERTIA       = (6.641, 6.641, 0.09)
+ROCKET_COM_NO_MOTOR  = 1.27
 ROCKET_COORD_SYS     = "nose_to_tail"
 
 NOSE_LENGTH        = 0.7625
@@ -422,32 +422,12 @@ def build_environment_from_api_row(args, api_row):
 # METRICS
 # ============================================================
 
-def get_peak_angular_metrics(flight):
-    t = np.array(flight.time, dtype=float)
-    burnout_time = float(flight.rocket.motor.burn_out_time)
-
-    t = t[t <= burnout_time]
-    if len(t) == 0:
-        raise RuntimeError("No time samples found before burnout.")
-
-    y1 = np.array([flight.alpha1(tt) for tt in t], dtype=float)
-    y2 = np.array([flight.alpha2(tt) for tt in t], dtype=float)
-    y3 = np.array([flight.alpha3(tt) for tt in t], dtype=float)
-
-    alpha_mag = np.sqrt(y1**2 + y2**2 + y3**2)
-    alpha_lat = np.sqrt(y1**2 + y2**2)
-
-    i_mag = np.argmax(alpha_mag)
-    i_lat = np.argmax(alpha_lat)
-
+def get_flight_metrics(flight):
+    apogee_agl = float(flight.apogee) - float(flight.env.elevation)
     return {
-        "peak_alpha1":           float(np.max(np.abs(y1))),
-        "peak_alpha2":           float(np.max(np.abs(y2))),
-        "peak_alpha3":           float(np.max(np.abs(y3))),
-        "peak_alpha_mag":        float(alpha_mag[i_mag]),
-        "peak_alpha_lat":        float(alpha_lat[i_lat]),
-        "time_peak_alpha_mag":   float(t[i_mag]),
-        "time_peak_alpha_lat":   float(t[i_lat]),
+        "apogee_agl_m":      apogee_agl,
+        "max_speed_mps":     float(flight.max_speed),
+        "max_accel_mps2":    float(flight.max_acceleration),
     }
 
 
@@ -465,19 +445,136 @@ def run_preview(args, drag_table):
     rocket.draw()
 
 
+
+# ============================================================
+# AIRBRAKE DEBUG LOG
+# ============================================================
+
+def debug_flight_airbrakes(flight, airbrake_model, drag_table, deployment_log, output_csv="airbrake_debug.csv"):
+    """Print and save a per-timestep airbrake debug table.
+
+    Columns:
+        time(s)      simulation time
+        alt_agl(m)   altitude above launch point
+        vel(m/s)     scalar speed
+        mach         Mach number
+        level        RocketPy deployment_level [0-1]
+        angle(deg)   physical deployment angle
+        dArea(m2)    extra exposed area from airbrake geometry [m2]
+        totArea(m2)  reference area + dArea
+        dCd          effective Cd added by airbrakes (RocketPy surface Cd)
+        baseCd       base rocket Cd from drag table at current Mach
+        totalCd      baseCd + dCd
+    """
+    dt_arr = np.array(drag_table, dtype=float)
+
+    COL_W = 12
+    headers = [
+        "time(s)", "alt_agl(m)", "vel(m/s)", "mach",
+        "level", "angle(deg)", "dArea(m2)", "totArea(m2)",
+        "dCd", "baseCd", "totalCd",
+    ]
+    sep = "=" * (COL_W * len(headers) + len(headers) - 1)
+    row_fmt = " ".join(f"{{{i}:>{COL_W}}}" for i in range(len(headers)))
+
+    print("\n" + sep)
+    print("AIRBRAKE DEBUG LOG")
+    print(sep)
+    print(row_fmt.format(*headers))
+    print("-" * (COL_W * len(headers) + len(headers) - 1))
+
+    rows = []
+    prev_level = None
+
+    for t, level in deployment_log:
+        try:
+            alt  = float(flight.z(t)) - float(flight.env.elevation)
+            vel  = float(flight.speed(t))
+            mach = float(flight.mach_number(t))
+        except Exception:
+            continue
+
+        level = float(level)
+        angle_deg = level * AIRBRAKE_MAX_ANGLE
+
+        if airbrake_model is not None:
+            delta_area = airbrake_model._delta_area(angle_deg)
+            delta_cd   = airbrake_model.drag_coefficient_curve(level, mach)
+        else:
+            delta_area = 0.0
+            delta_cd   = 0.0
+
+        total_area = REF_AREA + delta_area
+        base_cd    = float(np.interp(mach, dt_arr[:, 0], dt_arr[:, 1]))
+        total_cd   = base_cd + delta_cd
+
+        marker = " <-- DEPLOY CHANGE" if (prev_level is not None and level != prev_level) else ""
+        prev_level = level
+
+        row_vals = [
+            f"{t:.3f}", f"{alt:.2f}", f"{vel:.3f}", f"{mach:.5f}",
+            f"{level:.4f}", f"{angle_deg:.2f}", f"{delta_area:.6f}", f"{total_area:.6f}",
+            f"{delta_cd:.6f}", f"{base_cd:.6f}", f"{total_cd:.6f}",
+        ]
+        print(row_fmt.format(*row_vals) + marker)
+
+        rows.append({
+            "time_s":        t,
+            "alt_agl_m":     alt,
+            "velocity_mps":  vel,
+            "mach":          mach,
+            "level":         level,
+            "angle_deg":     angle_deg,
+            "delta_area_m2": delta_area,
+            "total_area_m2": total_area,
+            "delta_cd":      delta_cd,
+            "base_cd":       base_cd,
+            "total_cd":      total_cd,
+        })
+
+    print(sep)
+
+    if rows:
+        df = pd.DataFrame(rows)
+        deployed = df[df["level"] > 0]
+        print("\nSummary:")
+        print(f"  Total timesteps logged : {len(df)}")
+        print(f"  Timesteps deployed     : {len(deployed)}")
+        if not deployed.empty:
+            print(f"  First deployment time  : {deployed['time_s'].iloc[0]:.3f} s")
+            print(f"  Max angle reached      : {deployed['angle_deg'].max():.2f} deg")
+            print(f"  Max delta_area         : {deployed['delta_area_m2'].max():.6f} m2")
+            print(f"  Max total_area         : {deployed['total_area_m2'].max():.6f} m2")
+            print(f"  Max delta_cd           : {deployed['delta_cd'].max():.6f}")
+            print(f"  Max total_cd           : {deployed['total_cd'].max():.6f}")
+            print(f"  Alt at first deploy    : {deployed['alt_agl_m'].iloc[0]:.2f} m AGL")
+        print(f"  Peak altitude          : {df['alt_agl_m'].max():.2f} m AGL")
+
+        df.to_csv(output_csv, index=False)
+        print(f"  Saved debug log to     : {output_csv}")
+
+
 def run_single(args, drag_table, wind_df, airbrake_model):
-    api_row     = select_api_row(wind_df, args.api_hour)
+    api_row       = select_api_row(wind_df, args.api_hour)
     wind_from_deg = float(api_row["wind_direction_from_deg"])
 
     env = build_environment_from_api_row(args, api_row)
 
+    deployment_log = []  # [(time, deployment_level), ...]
+
     if airbrake_model:
-        if args.state_machine_controller:
-            controller_fn = AirbrakeController(arm_g=args.arm_g, fire_g=args.fire_g)
-        else:
-            controller_fn = airbrake_model.make_controller(
+        if args.constant_angle:
+            _inner_ctrl = airbrake_model.make_controller(
                 _make_angle_fn(args.airbrake_angle)
             )
+        else:
+            _inner_ctrl = AirbrakeController(arm_g=args.arm_g, fire_g=args.fire_g)
+
+        def controller_fn(time, sampling_rate, state_vector, state_history,
+                          observed_variables, interactive_objects):
+            _inner_ctrl(time, sampling_rate, state_vector, state_history,
+                        observed_variables, interactive_objects)
+            deployment_log.append((time, interactive_objects.deployment_level))
     else:
         controller_fn = None
 
@@ -498,12 +595,20 @@ def run_single(args, drag_table, wind_df, airbrake_model):
 
     print("\nSINGLE FLIGHT RESULTS")
     flight.info()
-    flight.all_info()
 
-    metrics = get_peak_angular_metrics(flight)
-    for k, v in metrics.items():
-        print(f"{k}: {v}")
+    debug_flight_airbrakes(
+        flight=flight,
+        airbrake_model=airbrake_model,
+        drag_table=drag_table,
+        deployment_log=deployment_log,
+        output_csv="airbrake_debug.csv",
+    )
 
+    metrics = get_flight_metrics(flight)
+    print("\nFLIGHT METRICS")
+    print(f"  apogee AGL:   {metrics['apogee_agl_m']:.1f} m")
+    print(f"  max speed:    {metrics['max_speed_mps']:.1f} m/s")
+    print(f"  max accel:    {metrics['max_accel_mps2']:.1f} m/s²")
 
 def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
     rng     = np.random.default_rng(args.seed)
@@ -533,14 +638,14 @@ def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
             env = build_environment_from_api_row(args, api_row)
 
             if airbrake_model:
-                if args.state_machine_controller:
+                if args.constant_angle:
+                    controller_fn = airbrake_model.make_controller(
+                        _make_angle_fn(angle_this_run)
+                    )
+                else:
                     # Fresh instance each run so the state machine starts IDLE.
                     controller_fn = AirbrakeController(
                         arm_g=args.arm_g, fire_g=args.fire_g
-                    )
-                else:
-                    controller_fn = airbrake_model.make_controller(
-                        _make_angle_fn(angle_this_run)
                     )
             else:
                 controller_fn = None
@@ -560,9 +665,9 @@ def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
                 heading=wind_from_deg,
             )
 
-            metrics = get_peak_angular_metrics(flight)
+            metrics = get_flight_metrics(flight)
 
-            ctrl_label = "state_machine" if args.state_machine_controller else "constant"
+            ctrl_label = "constant" if args.constant_angle else "state_machine"
             row = {
                 "run":                     k,
                 "time_utc":                api_row["time_utc"],
@@ -581,7 +686,9 @@ def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
                 f"wind={wind_speed:.3f} m/s @ {wind_from_deg:.1f}° | "
                 f"incl={inclination_run:.3f}° | "
                 f"brake={angle_this_run:.1f}° [{ctrl_label}] | "
-                f"peak_alpha_mag={metrics['peak_alpha_mag']:.4f} rad/s²"
+                f"apogee={metrics['apogee_agl_m']:.1f} m AGL | "
+                f"max_v={metrics['max_speed_mps']:.1f} m/s | "
+                f"max_a={metrics['max_accel_mps2']:.1f} m/s²"
             )
 
         except Exception as e:
@@ -592,7 +699,7 @@ def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
                 "wind_direction_from_deg": wind_from_deg,
                 "inclination_deg":         inclination_run,
                 "airbrake_angle_deg":      angle_this_run,
-                "controller":              "state_machine" if args.state_machine_controller else "constant",
+                "controller":              "constant" if args.constant_angle else "state_machine",
                 "error":                   str(e),
             })
             print(f"[{k+1}/{args.runs}] failed | error: {e}")
@@ -601,31 +708,51 @@ def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
     results_df.to_csv(args.output_csv, index=False)
     print(f"\nSaved Monte Carlo results to: {args.output_csv}")
 
-    if "peak_alpha_mag" not in results_df.columns:
+    metric_columns = ["apogee_agl_m", "max_speed_mps", "max_accel_mps2"]
+    if not all(col in results_df.columns for col in metric_columns):
         return
 
-    good = results_df[results_df["peak_alpha_mag"].notna()].copy()
+    good = results_df.dropna(subset=metric_columns).copy()
     if good.empty:
         return
 
-    worst_row = good.loc[good["peak_alpha_mag"].idxmax()]
-    print("\nWORST CASE BY TOTAL ANGULAR ACCELERATION")
-    print(worst_row)
+    print("\nMAX APOGEE")
+    print(good.loc[good["apogee_agl_m"].idxmax()])
+
+    print("\nMAX VELOCITY")
+    print(good.loc[good["max_speed_mps"].idxmax()])
+
+    print("\nMAX ACCELERATION")
+    print(good.loc[good["max_accel_mps2"].idxmax()])
 
     plt.figure()
-    plt.hist(good["peak_alpha_mag"], bins=25)
-    plt.xlabel("Peak angular acceleration magnitude (rad/s²)")
+    plt.hist(good["apogee_agl_m"], bins=25)
+    plt.xlabel("Apogee AGL (m)")
     plt.ylabel("Count")
-    plt.title("Monte Carlo: peak angular acceleration distribution")
+    plt.title("Monte Carlo: apogee distribution")
     plt.grid(True)
-    plt.show()
 
     plt.figure()
-    plt.scatter(good["surface_wind_speed_mps"], good["peak_alpha_mag"])
-    plt.xlabel("Surface wind speed (m/s)")
-    plt.ylabel("Peak angular acceleration magnitude (rad/s²)")
-    plt.title("Peak angular acceleration vs surface wind speed")
+    plt.hist(good["max_speed_mps"], bins=25)
+    plt.xlabel("Maximum velocity (m/s)")
+    plt.ylabel("Count")
+    plt.title("Monte Carlo: maximum velocity distribution")
     plt.grid(True)
+
+    plt.figure()
+    plt.hist(good["max_accel_mps2"], bins=25)
+    plt.xlabel("Maximum acceleration (m/s²)")
+    plt.ylabel("Count")
+    plt.title("Monte Carlo: maximum acceleration distribution")
+    plt.grid(True)
+
+    plt.figure()
+    plt.scatter(good["surface_wind_speed_mps"], good["apogee_agl_m"])
+    plt.xlabel("Surface wind speed (m/s)")
+    plt.ylabel("Apogee AGL (m)")
+    plt.title("Apogee vs surface wind speed")
+    plt.grid(True)
+
     plt.show()
 
 
@@ -664,8 +791,8 @@ def build_parser():
         # Airbrake options (shared across all modes)
         p.add_argument(
             "--airbrake-angle", type=float, default=0.0,
-            help="Constant deployment angle in degrees [0, 80] used when "
-                 "--state-machine-controller is NOT set (default: 0)"
+            help="Constant deployment angle in degrees [0, 80] used only with "
+                 "--constant-angle (default: 0)"
         )
         p.add_argument(
             "--airbrake-csv-dir", default=str(DEFAULT_AIRBRAKE_CSV_DIR),
@@ -676,16 +803,21 @@ def build_parser():
             help="Disable airbrake surface entirely (pure base-drag simulation)"
         )
         p.add_argument(
-            "--state-machine-controller", action="store_true",
-            help="Use the H5 firmware state machine: arm at --arm-g, deploy at --fire-g"
+            "--constant-angle", action="store_true",
+            help="Use a fixed deployment angle (--airbrake-angle) instead of the "
+                 "H5 state-machine controller (default: state machine)"
         )
         p.add_argument(
-            "--arm-g", type=float, default=5.0,
-            help="Acceleration threshold [g] to enter ARMED state (default: 5.0)"
+            "--arm-g", type=float, default=4.0,
+            help="Acceleration threshold [g] to enter ARMED state. "
+                 "Real firmware uses 5g body-frame; simulation velocity-diff gives inertial "
+                 "acceleration (excludes gravity), so effective threshold is ~1g lower. (default: 4.0)"
         )
         p.add_argument(
-            "--fire-g", type=float, default=3.0,
-            help="Acceleration threshold [g] to trigger full deployment (default: 3.0)"
+            "--fire-g", type=float, default=2.0,
+            help="Acceleration threshold [g] to trigger deployment. "
+                 "Real firmware uses 3g body-frame; simulation inertial accel is ~1g lower "
+                 "at the same physical event, so set to 2.0 to match burnout timing. (default: 2.0)"
         )
 
     preview = subparsers.add_parser("preview", help="Show rocket geometry only")
@@ -700,7 +832,7 @@ def build_parser():
     mc.add_argument("--seed",            type=int,   default=12345)
     mc.add_argument("--inclination-min", type=float, default=87.5)
     mc.add_argument("--inclination-max", type=float, default=90.0)
-    mc.add_argument("--output-csv",      default="monte_carlo_angular_accel_results.csv")
+    mc.add_argument("--output-csv",      default="monte_carlo_flight_metrics_results.csv")
     mc.add_argument(
         "--airbrake-angle-min", type=float, default=None,
         help="Min deployment angle for Monte Carlo random sampling (overrides --airbrake-angle)"

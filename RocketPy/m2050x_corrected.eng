@@ -1,0 +1,23 @@
+; M2050X corrected to match 2026-04-11 flight telemetry.
+; Original .eng burned until t=2.764s at high thrust — real motor burned out at ~2.35s.
+; Tail-off profile corrected:
+;   t=2.225s: thrust back-calculated from imu16=4.39g body-frame (~1100N)
+;   t=2.350s: burnout confirmed by imu16 dropping to 0.23g
+; Total impulse reduced from ~5486 Ns to ~4826 Ns to reflect actual burn.
+; Propellant mass adjusted from 2.268 to 1.99 kg proportionally.
+M2050X 75 700 - 1.990 4.281 AT
+   0.028	417.222769192503
+   0.067	2562.0753495965
+   0.151	2409.04465087117
+   0.261	2391.8596865445
+   0.372	2297.59593140184
+   0.557	2265.36708027117
+   0.779	2242.4350131205
+   0.965	2220.17907571384
+   1.150	2188.6826984725
+   1.372	2145.7484597285
+   1.816	2059.65460565917
+   2.149	2027.9328518365
+   2.225	1100.0
+   2.350	0
+;
