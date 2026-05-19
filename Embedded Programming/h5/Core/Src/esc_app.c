@@ -23,6 +23,14 @@
  *   'O' — power on
  *   'Z' — power off
  *   'C' — request current reading (follow-up: read 4-byte IEEE-754 float, mA)
+ *   'E' — query echo buffer byte count (follow-up: read 1 byte = pending count)
+ *   'G' — fetch next echo byte (follow-up: read 1 byte = echo byte or 0x00)
+ *
+ * Echo passthrough ('E'/'G' poll loop):
+ *   H7 queues ASCII status lines ("CAM:...\n") in a ring buffer after each
+ *   RunCam UART event.  This file polls those lines every CAM_ECHO_POLL_PERIOD_MS
+ *   and forwards each complete line verbatim to huart1 and huart2 so the
+ *   ground station's serial reader can pick them up alongside the telemetry stream.
  */
 
 #include "esc_app.h"
@@ -35,6 +43,8 @@
 #include "command_sequence.h"
 #include "sd_logger.h"
 #include "airbrake_deploy.h"
+#include "airbrake_control.h"
+#include "flight_estimator.h"
 #include "encoder_homing.h"
 #include "encoder_app.h"
 #include "flight_trigger.h"
@@ -83,6 +93,12 @@
 #define SPI_CMD_CAMERA_ON       ((uint8_t)'O')
 #define SPI_CMD_CAMERA_OFF      ((uint8_t)'Z')
 #define SPI_CMD_CAMERA_CURR     ((uint8_t)'C')
+#define SPI_CMD_CAM_ECHO_AVAIL  ((uint8_t)'E')   /* query pending echo byte count  */
+#define SPI_CMD_CAM_ECHO_GET    ((uint8_t)'G')   /* fetch one byte from echo buffer */
+
+/* Echo poll period and per-cycle byte cap */
+#define CAM_ECHO_POLL_PERIOD_MS     100U
+#define CAM_ECHO_MAX_BYTES_PER_POLL 48U
 
 /*
  * SensorPacket_t is defined in esc_app.h so it is visible to sd_logger.c
@@ -124,6 +140,7 @@ static uint32_t                s_lastForwardedVersion  = 0U;
 static uint32_t                s_lastTelemetryTxMs     = 0U;
 static uint32_t                s_lastFallbackTxMs      = 0U;
 static uint32_t                s_lastUart4DebugTxMs    = 0U;
+static uint32_t                s_lastCamEchoPollMs     = 0U;
 static uint8_t                 s_headerFirstByte       = 0U;
 static volatile uint32_t       s_uart4RxCount          = 0U;
 static volatile uint32_t       s_uart4ErrorCount       = 0U;
@@ -150,6 +167,7 @@ static void Upstream_EnableIrqRx(void);
 static void Upstream_EnsureIrqRxEnabled(void);
 static void Upstream_PollRx(void);
 static void __attribute__((unused)) Uart4_DebugPrintTask(void);
+static void Camera_PollEchoTask(void);
 
 /* =========================================================================
  * Private helpers — arithmetic
@@ -280,6 +298,79 @@ static bool Camera_ReadCurrent_mA(float *current_mA)
     memcpy(&value, rx_bytes, sizeof(value));
     *current_mA = value;
     return true;
+}
+
+/**
+  * @brief  Poll the H7 echo buffer and forward any complete CAM:...\n lines
+  *         to both downstream UARTs for pickup by the ground station.
+  *
+  * Two-phase SPI protocol per transaction:
+  *   1. Send command byte ('E' or 'G') in its own SPI transaction.
+  *   2. Wait 1 ms for H7 to process the command and pre-load its MISO response.
+  *   3. Clock one dummy byte while receiving the response byte.
+  *
+  * Lines are accumulated across poll cycles in a static buffer so that a line
+  * split across two poll windows is reassembled correctly.
+  */
+static void Camera_PollEchoTask(void)
+{
+    static char     line_buf[128];
+    static uint32_t line_len = 0U;
+
+    uint32_t now = HAL_GetTick();
+    if ((now - s_lastCamEchoPollMs) < CAM_ECHO_POLL_PERIOD_MS)
+        return;
+    s_lastCamEchoPollMs = now;
+
+    /* ── Phase 1: query pending byte count ──────────────────────────────── */
+    uint8_t cmd   = SPI_CMD_CAM_ECHO_AVAIL;
+    uint8_t dummy = 0x00U;
+    uint8_t avail = 0U;
+
+    if (HAL_SPI_Transmit(&hspi2, &cmd, 1U, SPI_TX_TIMEOUT_MS) != HAL_OK)
+        return;
+
+    HAL_Delay(1U); /* H7 processes 'E' and arms its 1-byte MISO response */
+
+    if (HAL_SPI_TransmitReceive(&hspi2, &dummy, &avail, 1U, SPI_TX_TIMEOUT_MS) != HAL_OK)
+        return;
+
+    if (avail == 0U)
+        return;
+
+    if (avail > CAM_ECHO_MAX_BYTES_PER_POLL)
+        avail = CAM_ECHO_MAX_BYTES_PER_POLL;
+
+    /* ── Phase 2: fetch bytes one at a time, forward complete lines ─────── */
+    cmd = SPI_CMD_CAM_ECHO_GET;
+
+    for (uint8_t i = 0U; i < avail; i++)
+    {
+        uint8_t b = 0x00U;
+
+        if (HAL_SPI_Transmit(&hspi2, &cmd, 1U, SPI_TX_TIMEOUT_MS) != HAL_OK)
+            break;
+
+        HAL_Delay(1U); /* H7 processes 'G' and arms the next echo byte */
+
+        if (HAL_SPI_TransmitReceive(&hspi2, &dummy, &b, 1U, SPI_TX_TIMEOUT_MS) != HAL_OK)
+            break;
+
+        /* H7 returns 0x00 when the buffer empties earlier than expected */
+        if ((b == 0x00U) && (line_len == 0U))
+            continue;
+
+        if (line_len < (sizeof(line_buf) - 1U))
+            line_buf[line_len++] = (char)b;
+
+        if (b == (uint8_t)'\n')
+        {
+            /* Complete line received — forward verbatim to both downstream UARTs. */
+            HAL_UART_Transmit(&huart1, (uint8_t *)line_buf, (uint16_t)line_len, PACKET_TX_TIMEOUT);
+            HAL_UART_Transmit(&huart2, (uint8_t *)line_buf, (uint16_t)line_len, PACKET_TX_TIMEOUT);
+            line_len = 0U;
+        }
+    }
 }
 
 /* =========================================================================
@@ -743,6 +834,16 @@ static void HandleCommand(char *cmd)
         return;
     }
 
+    /* ── ALT<feet> — set target apogee altitude for airbrake controller ─────
+     *   Example: "ALT10000" targets 10 000 ft (default).
+     *   Accepted before launch or during coast.                          */
+    if (strncmp(upper, "ALT", 3) == 0 && is_signed_integer(upper + 3))
+    {
+        float feet = (float)strtol(upper + 3, NULL, 10);
+        Airbrake_Control_SetTargetFt(feet);
+        return;
+    }
+
     /* ── -100..100 — percentage throttle ────────────────────────────────── */
     if (is_signed_integer(upper))
     {
@@ -879,6 +980,8 @@ void ESC_App_Init(void)
     HAL_TIM_Base_Start_IT(&htim4);
     SD_Logger_Init();
     Flight_Trigger_Init();
+    Estimator_Init();
+    Airbrake_Control_Init();
 }
 
 void ESC_App_Task(void)
@@ -890,11 +993,14 @@ void ESC_App_Task(void)
     ESC_Telem_Task();
     Encoder_App_Task();
     Encoder_Homing_Task();
+    Estimator_Task();
+    Airbrake_Control_Task();
     Airbrake_Deploy_Task();
     SD_Logger_Task();
     Flight_Trigger_Task();
     ForwardAggregatePacketIfReady();
     ForwardFallbackPacketToUsart2IfNeeded();
+    Camera_PollEchoTask();
 
     if (Command_Sequence_Check_Deploy_Trigger())
     {

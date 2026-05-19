@@ -139,6 +139,19 @@ LOW_LEVEL_PLOTS = [
     ("Flap Angle", "flap_angle_deg", "deg"),
 ]
 
+# Camera echo message prefixes forwarded by H5 from the H7 echo buffer.
+_CAM_CMD_LABELS = {
+    "CAM:CMD:REC": ("Start recording dispatched",  "info"),
+    "CAM:CMD:STP": ("Stop recording dispatched",   "info"),
+    "CAM:CMD:ON":  ("Power-on dispatched",          "info"),
+    "CAM:CMD:OFF": ("Power-off dispatched",         "info"),
+    "CAM:CMD:CUR": ("Current query dispatched",     "info"),
+    "CAM:RC:OK":   ("RunCam OK",                    "ok"),
+    "CAM:RC:TMO":  ("RunCam timeout",               "err"),
+    "CAM:RC:UNS":  ("Feature unsupported",          "warn"),
+    "CAM:RC:ERR":  ("RunCam error",                 "err"),
+}
+
 
 def xor_checksum(data: bytes) -> int:
     value = 0
@@ -317,6 +330,9 @@ class SerialTelemetryReader(threading.Thread):
         self.status = "Disconnected"
         self.serial_lock = threading.Lock()
         self.serial_handle = None
+        # Camera echo messages forwarded by H5 from the H7 echo buffer.
+        self.camera_queue: queue.Queue[str] = queue.Queue()
+        self._cam_line_buf: bytearray = bytearray()
 
     def run(self):
         while not self.stop_event.is_set():
@@ -339,6 +355,7 @@ class SerialTelemetryReader(threading.Thread):
 
                         for sample in self.parser.feed(chunk):
                             self.sample_queue.put(sample)
+                        self._scan_cam_lines(chunk)
 
                         # Drain any immediate backlog so UI tracks live data.
                         for _ in range(6):
@@ -350,6 +367,7 @@ class SerialTelemetryReader(threading.Thread):
                                 break
                             for sample in self.parser.feed(extra):
                                 self.sample_queue.put(sample)
+                            self._scan_cam_lines(extra)
             except Exception as exc:
                 self.status = f"Serial error: {exc}"
                 with self.serial_lock:
@@ -358,6 +376,26 @@ class SerialTelemetryReader(threading.Thread):
             finally:
                 with self.serial_lock:
                     self.serial_handle = None
+
+    def _scan_cam_lines(self, data: bytes):
+        """Extract CAM:... lines from the byte stream alongside binary packets."""
+        for byte in data:
+            if byte == ord('\n'):
+                if self._cam_line_buf:
+                    line = self._cam_line_buf.decode("ascii", errors="ignore").strip()
+                    if line.startswith("CAM:"):
+                        self.camera_queue.put(line)
+                    self._cam_line_buf.clear()
+            elif byte == ord('\r'):
+                pass
+            elif 0x20 <= byte <= 0x7E:
+                # Only accumulate printable ASCII; binary packet bytes will
+                # appear as non-printable and reset the buffer, preventing
+                # false matches inside binary telemetry frames.
+                if len(self._cam_line_buf) < 128:
+                    self._cam_line_buf.append(byte)
+            else:
+                self._cam_line_buf.clear()
 
     def send_line(self, line: str) -> bool:
         payload = (line.strip() + "\n").encode("ascii", errors="ignore")
@@ -498,6 +536,9 @@ class GroundStationApp:
         self.log_var = tk.StringVar(value=f"CSV: {LOG_PATH}")
         self.command_var = tk.StringVar(value="Controls idle")
 
+        # Camera state: UNKNOWN | ONLINE | RECORDING | IDLE | OFFLINE
+        self._cam_state = "UNKNOWN"
+
         self.metric_cards: dict[str, MetricCard] = {}
         self.low_level_axes = []
         self.low_level_lines = {}
@@ -541,7 +582,7 @@ class GroundStationApp:
         top = ttk.Frame(self.root, padding=(18, 16, 18, 8))
         top.pack(fill="x")
         ttk.Label(top, text="UGA Spaceport Telemetry Console", style="Header.TLabel").pack(anchor="w")
-        ttk.Label(top, text="Three-tab live dashboard for the aggregate H5 packet stream", style="SubHeader.TLabel").pack(anchor="w", pady=(2, 0))
+        ttk.Label(top, text="Four-tab live dashboard for the aggregate H5 packet stream", style="SubHeader.TLabel").pack(anchor="w", pady=(2, 0))
 
         controls = ttk.Frame(top)
         controls.pack(fill="x", pady=(10, 0))
@@ -558,15 +599,6 @@ class GroundStationApp:
         ttk.Button(controls, text="Refresh Ports", command=self._refresh_ports).pack(side="left")
         ttk.Button(controls, text="Reset H5", command=self._confirm_reset).pack(side="left", padx=(12, 0))
 
-        camera_controls = ttk.Frame(controls)
-        camera_controls.pack(side="right")
-        ttk.Label(camera_controls, text="Camera", style="SubHeader.TLabel").pack(side="left", padx=(0, 8))
-        ttk.Button(camera_controls, text="On", command=lambda: self._send_command("CAMON", "Camera power on")).pack(side="left", padx=3)
-        ttk.Button(camera_controls, text="Off", command=lambda: self._send_command("CAMOFF", "Camera power off")).pack(side="left", padx=3)
-        ttk.Button(camera_controls, text="Start Rec", command=lambda: self._send_command("CAMSTART", "Camera start recording")).pack(side="left", padx=3)
-        ttk.Button(camera_controls, text="Stop Rec", command=lambda: self._send_command("CAMSTOP", "Camera stop recording")).pack(side="left", padx=3)
-        ttk.Button(camera_controls, text="Current", command=lambda: self._send_command("CAMCURR", "Camera current read")).pack(side="left", padx=3)
-
         status_bar = ttk.Frame(self.root, padding=(18, 0, 18, 10))
         status_bar.pack(fill="x")
         ttk.Label(status_bar, textvariable=self.status_var, style="SubHeader.TLabel").pack(side="left")
@@ -579,14 +611,17 @@ class GroundStationApp:
         self.high_tab = ttk.Frame(self.notebook, style="Tab.TFrame", padding=12)
         self.low_tab = ttk.Frame(self.notebook, style="Tab.TFrame", padding=12)
         self.airbrake_tab = ttk.Frame(self.notebook, style="Tab.TFrame", padding=12)
+        self.camera_tab = ttk.Frame(self.notebook, style="Tab.TFrame", padding=12)
 
         self.notebook.add(self.high_tab, text="1. High-Level")
         self.notebook.add(self.low_tab, text="2. Low-Level")
         self.notebook.add(self.airbrake_tab, text="3. Airbrakes")
+        self.notebook.add(self.camera_tab, text="4. Camera")
 
         self._build_high_level_tab()
         self._build_low_level_tab()
         self._build_airbrake_tab()
+        self._build_camera_tab()
 
         self.root.bind("<Up>",   lambda _e: self._send_command("F", "Up arrow jog"))
         self.root.bind("<Down>", lambda _e: self._send_command("B", "Down arrow jog"))
@@ -675,6 +710,169 @@ class GroundStationApp:
 
         self.airbrake_plot_host = ttk.Frame(right)
         self.airbrake_plot_host.pack(fill="both", expand=True)
+
+    def _build_camera_tab(self):
+        left = ttk.Frame(self.camera_tab, width=300)
+        left.pack(side="left", fill="y", padx=(0, 12))
+        left.pack_propagate(False)
+
+        right = ttk.Frame(self.camera_tab)
+        right.pack(side="right", fill="both", expand=True)
+
+        # ── Status card ────────────────────────────────────────────────────────
+        status_card = ttk.Frame(left, style="Card.TFrame", padding=(14, 10))
+        status_card.pack(fill="x", pady=(0, 12))
+        ttk.Label(status_card, text="Camera Status", style="CardTitle.TLabel").pack(anchor="w")
+        self._cam_state_var = tk.StringVar(value="UNKNOWN")
+        self._cam_sub_var = tk.StringVar(value="No device info received")
+        ttk.Label(status_card, textvariable=self._cam_state_var,
+                  style="Gold.Value.TLabel").pack(anchor="w", pady=(6, 0))
+        ttk.Label(status_card, textvariable=self._cam_sub_var,
+                  style="CardSub.TLabel").pack(anchor="w", pady=(4, 0))
+
+        # ── Control buttons ────────────────────────────────────────────────────
+        ctrl_card = ttk.Frame(left, style="Card.TFrame", padding=(14, 10))
+        ctrl_card.pack(fill="x", pady=(0, 12))
+        ttk.Label(ctrl_card, text="Controls", style="CardTitle.TLabel").pack(anchor="w", pady=(0, 8))
+
+        btn_frame = ttk.Frame(ctrl_card, style="Card.TFrame")
+        btn_frame.pack(fill="x")
+        btn_frame.columnconfigure(0, weight=1)
+        btn_frame.columnconfigure(1, weight=1)
+
+        ttk.Button(btn_frame, text="Power On",
+                   command=lambda: self._send_cam_command("CAMON", "Power on")).grid(
+            row=0, column=0, sticky="ew", padx=4, pady=4)
+        ttk.Button(btn_frame, text="Power Off",
+                   command=lambda: self._send_cam_command("CAMOFF", "Power off")).grid(
+            row=0, column=1, sticky="ew", padx=4, pady=4)
+        ttk.Button(btn_frame, text="Start Recording",
+                   command=lambda: self._send_cam_command("CAMSTART", "Start recording")).grid(
+            row=1, column=0, sticky="ew", padx=4, pady=4)
+        ttk.Button(btn_frame, text="Stop Recording",
+                   command=lambda: self._send_cam_command("CAMSTOP", "Stop recording")).grid(
+            row=1, column=1, sticky="ew", padx=4, pady=4)
+        ttk.Button(btn_frame, text="Read Current",
+                   command=lambda: self._send_cam_command("CAMCURR", "Read current")).grid(
+            row=2, column=0, columnspan=2, sticky="ew", padx=4, pady=4)
+
+        # ── Note about H5 passthrough ──────────────────────────────────────────
+        ttk.Label(
+            left,
+            text="Echo data (CAM:... lines) arrives once H5 passthrough is enabled.",
+            style="SubHeader.TLabel",
+            wraplength=270,
+            justify="left",
+        ).pack(fill="x", padx=4, pady=(4, 0))
+
+        # ── Event log ──────────────────────────────────────────────────────────
+        log_header = ttk.Frame(right)
+        log_header.pack(fill="x", pady=(0, 6))
+        ttk.Label(log_header, text="Camera Event Log", style="CardTitle.TLabel").pack(side="left")
+        ttk.Button(log_header, text="Clear", command=self._cam_log_clear).pack(side="right")
+
+        log_frame = ttk.Frame(right, style="Card.TFrame")
+        log_frame.pack(fill="both", expand=True)
+
+        self._cam_log = tk.Text(
+            log_frame,
+            state=tk.DISABLED,
+            bg="#0a111c",
+            fg="#c9d5f0",
+            font=("Consolas", 10),
+            wrap=tk.WORD,
+            borderwidth=0,
+            highlightthickness=0,
+            relief="flat",
+            padx=10,
+            pady=8,
+        )
+        scrollbar = ttk.Scrollbar(log_frame, orient="vertical", command=self._cam_log.yview)
+        self._cam_log.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right", fill="y")
+        self._cam_log.pack(side="left", fill="both", expand=True)
+
+        # Colour tags
+        self._cam_log.tag_configure("sent",  foreground="#8bd3ff")   # commands sent from GS
+        self._cam_log.tag_configure("ok",    foreground="#9ff1c7")   # success response
+        self._cam_log.tag_configure("err",   foreground="#ff8ba7")   # error / timeout
+        self._cam_log.tag_configure("warn",  foreground="#ffd479")   # unsupported / warning
+        self._cam_log.tag_configure("info",  foreground="#d1b3ff")   # device info / neutral
+        self._cam_log.tag_configure("curr",  foreground="#ffb366")   # current readings
+        self._cam_log.tag_configure("ts",    foreground="#4a5f80")   # timestamps
+
+    # ── Camera helpers ─────────────────────────────────────────────────────────
+
+    def _send_cam_command(self, command: str, label: str):
+        ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        ok = self.reader.send_line(command)
+        if ok:
+            self._cam_log_append(f"[{ts}]", "ts")
+            self._cam_log_append(f" >> {label} ({command})\n", "sent")
+        else:
+            port = self.port_var.get()
+            self._cam_log_append(f"[{ts}]", "ts")
+            self._cam_log_append(f" !! Could not send {command} — no connection on {port}\n", "err")
+        self.command_var.set(f"{'Sent' if ok else 'Failed'} {label} at {datetime.now().strftime('%H:%M:%S')}")
+
+    def _cam_log_append(self, text: str, tag: str = ""):
+        self._cam_log.configure(state=tk.NORMAL)
+        if tag:
+            self._cam_log.insert(tk.END, text, tag)
+        else:
+            self._cam_log.insert(tk.END, text)
+        self._cam_log.see(tk.END)
+        self._cam_log.configure(state=tk.DISABLED)
+
+    def _cam_log_clear(self):
+        self._cam_log.configure(state=tk.NORMAL)
+        self._cam_log.delete("1.0", tk.END)
+        self._cam_log.configure(state=tk.DISABLED)
+
+    def _process_camera_echo(self, line: str):
+        ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        self._cam_log_append(f"[{ts}]", "ts")
+
+        if line in _CAM_CMD_LABELS:
+            label, tag = _CAM_CMD_LABELS[line]
+            self._cam_log_append(f" {label}\n", tag)
+            # Update camera state from dispatch echoes
+            if line == "CAM:CMD:REC":
+                self._cam_state = "RECORDING"
+            elif line == "CAM:CMD:STP":
+                self._cam_state = "IDLE"
+            elif line == "CAM:CMD:OFF":
+                self._cam_state = "OFFLINE"
+            elif line == "CAM:CMD:ON":
+                self._cam_state = "POWERING ON"
+        elif line.startswith("CAM:INF:"):
+            parts = line[8:].split(":")
+            ver_str  = parts[0] if parts else "?"
+            feat_str = parts[1] if len(parts) > 1 else "?"
+            self._cam_log_append(f" Device info — {ver_str}, features {feat_str}\n", "info")
+            self._cam_state = "ONLINE"
+        elif line.startswith("CAM:CUR:"):
+            val = line[8:]
+            self._cam_log_append(f" Current: {val} mA\n", "curr")
+        else:
+            self._cam_log_append(f" {line}\n", "info")
+
+        self._update_cam_state_card()
+
+    def _update_cam_state_card(self):
+        colors = {
+            "UNKNOWN":    ("Gold",  "No device info received"),
+            "ONLINE":     ("Green", "Camera responding on UART"),
+            "RECORDING":  ("Rose",  "Recording in progress"),
+            "IDLE":       ("Blue",  "Ready, not recording"),
+            "OFFLINE":    ("Blue",  "Camera powered off"),
+            "POWERING ON": ("Gold", "Waiting for camera boot"),
+        }
+        accent, sub = colors.get(self._cam_state, ("Gold", ""))
+        self._cam_state_var.set(self._cam_state)
+        self._cam_sub_var.set(sub)
+
+    # ── Existing UI helpers ────────────────────────────────────────────────────
 
     def _build_high_level_figure(self):
         self.high_fig = Figure(figsize=(12, 7), facecolor="#0a111c")
@@ -793,6 +991,14 @@ class GroundStationApp:
             self.history.add(sample)
             self.logger.write(sample)
             updated = True
+
+        # Drain camera echo messages from the serial reader.
+        while True:
+            try:
+                line = self.reader.camera_queue.get_nowait()
+            except queue.Empty:
+                break
+            self._process_camera_echo(line)
 
         self.status_var.set(self.reader.status)
         self.packet_var.set(f"Packets: {self.history.packet_count} | Rate: {self.history.packet_rate_hz:5.1f} Hz")
@@ -962,7 +1168,7 @@ class GroundStationApp:
         flap_len = body_width * 1.12
         flap_width = body_width * 0.20
         angle_rad = math.radians(sample.flap_angle_deg)
-        cos_a, sin_a = math.cos(angle_rad), math.sin(angle_rad)
+        cos_a, sin_a = math.cos(angle_rad), -math.sin(angle_rad)
 
         corners = [(0.0, -flap_len / 2), (flap_width, -flap_len / 2), (flap_width, flap_len / 2), (0.0, flap_len / 2)]
         points = []
@@ -997,7 +1203,6 @@ class GroundStationApp:
                 fill=petal_fill, outline=petal_outline, width=1,
             )
         canvas.create_oval(x - 0.25 * size, y - 0.25 * size, x + 0.25 * size, y + 0.25 * size, fill="#f7db7b", outline="")
-
 
     def _lerp_color(self, left: str, right: str, frac: float) -> str:
         lv = tuple(int(left[i:i + 2], 16) for i in (1, 3, 5))

@@ -48,6 +48,7 @@
 /* USER CODE BEGIN Includes */
 #include "runcam_device.h"
 #include "ina219.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,6 +69,15 @@
 
 /** Attempts to call RunCam_GetDeviceInfo before declaring the camera absent. */
 #define RUNCAM_INIT_RETRIES      (5U)
+
+/** SPI command: query how many echo bytes are pending in the H7 echo buffer. */
+#define SPI_CMD_ECHO_AVAIL       ((uint8_t)'E')   /* 0x45 */
+
+/** SPI command: fetch the next byte from the echo buffer (0x00 if empty). */
+#define SPI_CMD_ECHO_GET         ((uint8_t)'G')   /* 0x47 */
+
+/** Size of the camera echo ring buffer in bytes. */
+#define CAM_ECHO_BUF_SIZE        256U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -115,6 +125,19 @@ static union
     float   f;
     uint8_t b[4];
 } spi_current_tx;
+
+/*
+ * Ring buffer holding ASCII camera echo messages destined for H5.
+ * Written by the main loop after every RunCam event.
+ * Read by the main loop when H5 sends SPI_CMD_ECHO_AVAIL / SPI_CMD_ECHO_GET.
+ * Both producer and consumer run on the main loop, so no critical section needed.
+ */
+static uint8_t  cam_echo_buf[CAM_ECHO_BUF_SIZE];
+static uint16_t cam_echo_head = 0U; /* write index */
+static uint16_t cam_echo_tail = 0U; /* read index  */
+
+/* Persistent TX byte for echo SPI responses — must outlive HAL_SPI_Transmit_IT. */
+static uint8_t spi_echo_tx_byte = 0U;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -131,6 +154,10 @@ static RunCam_StatusTypeDef RunCam_Init(void);
 static void SPI_StartReceive(void);
 static void RunCam_DispatchSpiCommand(uint8_t cmd);
 static void SPI_SendCurrentReading(void);
+static void CamEcho_Write(const char *msg);
+static uint8_t CamEcho_Available(void);
+static uint8_t CamEcho_Read(void);
+static void CamEcho_WriteResult(RunCam_StatusTypeDef status);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -162,6 +189,11 @@ static RunCam_StatusTypeDef RunCam_Init(void)
         status = RunCam_GetDeviceInfo(&hrc);
         if (status == RUNCAM_OK)
         {
+            char buf[32];
+            snprintf(buf, sizeof(buf), "CAM:INF:v%u:f%04X\n",
+                     (unsigned)hrc.protocolVersion,
+                     (unsigned)hrc.features);
+            CamEcho_Write(buf);
             break;
         }
         HAL_Delay(200U);
@@ -170,6 +202,7 @@ static RunCam_StatusTypeDef RunCam_Init(void)
 
     if (status != RUNCAM_OK)
     {
+        CamEcho_Write("CAM:RC:ERR\n");
         return status;
     }
 
@@ -182,7 +215,9 @@ static RunCam_StatusTypeDef RunCam_Init(void)
     HAL_Delay(200U);
 
     /* Guarantee video mode before accepting SPI commands */
-    return RunCam_EnsureVideoMode(&hrc);
+    status = RunCam_EnsureVideoMode(&hrc);
+    CamEcho_WriteResult(status);
+    return status;
 }
 
 /**
@@ -203,6 +238,59 @@ static void SPI_StartReceive(void)
 }
 
 /**
+  * @brief  Append an ASCII string to the camera echo ring buffer.
+  *
+  * Messages are short `CAM:...\n` lines consumed by H5 via
+  * SPI_CMD_ECHO_AVAIL / SPI_CMD_ECHO_GET once H5 is updated.
+  * Bytes that would overflow the buffer are silently dropped.
+  */
+static void CamEcho_Write(const char *msg)
+{
+    while (*msg != '\0')
+    {
+        uint16_t next = (uint16_t)((cam_echo_head + 1U) % CAM_ECHO_BUF_SIZE);
+        if (next == cam_echo_tail)
+        {
+            break; /* overflow — drop remainder */
+        }
+        cam_echo_buf[cam_echo_head] = (uint8_t)*msg++;
+        cam_echo_head = next;
+    }
+}
+
+/** @brief  Return the number of bytes currently pending in the echo buffer. */
+static uint8_t CamEcho_Available(void)
+{
+    return (uint8_t)((cam_echo_head - cam_echo_tail + CAM_ECHO_BUF_SIZE) % CAM_ECHO_BUF_SIZE);
+}
+
+/** @brief  Pop and return the next byte from the echo buffer (0x00 if empty). */
+static uint8_t CamEcho_Read(void)
+{
+    if (cam_echo_head == cam_echo_tail)
+    {
+        return 0x00U;
+    }
+    uint8_t byte    = cam_echo_buf[cam_echo_tail];
+    cam_echo_tail   = (uint16_t)((cam_echo_tail + 1U) % CAM_ECHO_BUF_SIZE);
+    return byte;
+}
+
+/**
+  * @brief  Write a `CAM:RC:*\n` echo for a RunCam API return value.
+  */
+static void CamEcho_WriteResult(RunCam_StatusTypeDef status)
+{
+    switch (status)
+    {
+        case RUNCAM_OK:          CamEcho_Write("CAM:RC:OK\n");  break;
+        case RUNCAM_TIMEOUT:     CamEcho_Write("CAM:RC:TMO\n"); break;
+        case RUNCAM_UNSUPPORTED: CamEcho_Write("CAM:RC:UNS\n"); break;
+        default:                 CamEcho_Write("CAM:RC:ERR\n"); break;
+    }
+}
+
+/**
   * @brief  Read the INA219 current register over I2C and pre-load the result
   *         into the SPI TX buffer as a big-endian IEEE-754 float (mA).
   *
@@ -219,6 +307,11 @@ static void SPI_SendCurrentReading(void)
 
     /* Read current — failure leaves current_mA = 0.0f */
     (void)INA219_ReadCurrent_mA(&hina, &current_mA);
+
+    /* Echo the reading so H5 can forward it to the ground station. */
+    char echo_buf[24];
+    snprintf(echo_buf, sizeof(echo_buf), "CAM:CUR:%.2f\n", (double)current_mA);
+    CamEcho_Write(echo_buf);
 
     /*
      * Store as big-endian so the master can read MSB first without needing
@@ -249,19 +342,23 @@ static void RunCam_DispatchSpiCommand(uint8_t cmd)
     switch (cmd)
     {
         case SPI_CMD_START_RECORDING:
-            (void)RunCam_StartRecording(&hrc);
+            CamEcho_Write("CAM:CMD:REC\n");
+            CamEcho_WriteResult(RunCam_StartRecording(&hrc));
             break;
 
         case SPI_CMD_STOP_RECORDING:
-            (void)RunCam_StopRecording(&hrc);
+            CamEcho_Write("CAM:CMD:STP\n");
+            CamEcho_WriteResult(RunCam_StopRecording(&hrc));
             break;
 
         case SPI_CMD_POWER_ON:
             /*
              * Simulate the physical power button to turn the camera on, then
              * wait for boot and re-run init so the handle reflects the fresh
-             * feature set reported after power-up.
+             * feature set reported after power-up.  RunCam_Init echoes device
+             * info and the video-mode result itself.
              */
+            CamEcho_Write("CAM:CMD:ON\n");
             (void)RunCam_PowerButton(&hrc);
             HAL_Delay(RUNCAM_BOOT_DELAY_MS);
             (void)RunCam_Init();
@@ -271,19 +368,42 @@ static void RunCam_DispatchSpiCommand(uint8_t cmd)
             /*
              * Stop any active recording first so the SD-card file is not
              * corrupted, then simulate the power button to shut down.
+             * Clear features so the next command after power-off goes through
+             * the fail-open path (features == 0) rather than checking stale bits.
              */
+            CamEcho_Write("CAM:CMD:OFF\n");
             (void)RunCam_StopRecording(&hrc);
             HAL_Delay(500U);
             (void)RunCam_PowerButton(&hrc);
+            hrc.features = 0U;
             break;
 
         case SPI_CMD_READ_CURRENT:
             /*
-             * Read INA219 over I2C and pre-load the 4-byte float result into
-             * the SPI TX buffer.  The master must clock 4 more bytes to read
-             * the value — see file header for the two-phase protocol.
+             * Read INA219 over I2C, echo the value, and pre-load the 4-byte
+             * float result into the SPI TX buffer.  The master must clock 4
+             * more bytes to read the value — see file header for protocol.
              */
+            CamEcho_Write("CAM:CMD:CUR\n");
             SPI_SendCurrentReading();
+            break;
+
+        case SPI_CMD_ECHO_AVAIL:
+            /*
+             * H5 queries how many echo bytes are waiting.  Pre-load the count
+             * so H5 can clock it out in its next SPI transaction.
+             */
+            spi_echo_tx_byte = CamEcho_Available();
+            (void)HAL_SPI_Transmit_IT(&hspi2, &spi_echo_tx_byte, 1U);
+            break;
+
+        case SPI_CMD_ECHO_GET:
+            /*
+             * H5 fetches the next echo byte.  Pre-load it for the next SPI
+             * transaction.  Returns 0x00 when the buffer is empty.
+             */
+            spi_echo_tx_byte = CamEcho_Read();
+            (void)HAL_SPI_Transmit_IT(&hspi2, &spi_echo_tx_byte, 1U);
             break;
 
         default:
