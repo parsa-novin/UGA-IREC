@@ -13,6 +13,7 @@
 #include "magnetometer.h"
 #include "bmi.h"
 #include "temperature.h"
+#include "filters.h"
 #include <string.h>
 /* USER CODE END Includes */
 
@@ -117,6 +118,17 @@ TMP127_Handle tmp;   /* TMP127-Q1 temperature  */
 
 SensorPacket_t pkt;
 static uint32_t mmc_tick = 0u;   /* counts main-loop iterations for MMC divider */
+static float    alt_ref   = 0.0f; /* ground-level reference subtracted from altitude */
+
+/* ── Sensor filters ──────────────────────────────────────────────────────── */
+static Filter1P_t filt_alt;
+static Filter1P_t filt_pres;
+static Filter1P_t filt_i16ax, filt_i16ay, filt_i16az;
+static Filter1P_t filt_i4ax,  filt_i4ay,  filt_i4az;
+static Filter1P_t filt_mx,    filt_my,    filt_mz;
+static Filter1P_t filt_bax,   filt_bay,   filt_baz;
+static Filter1P_t filt_bgx,   filt_bgy,   filt_bgz;
+static Filter1P_t filt_temp;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -190,6 +202,42 @@ int main(void)
   /* External temperature sensor (TMP127-Q1) — update CS pin to match schematic */
   TMP127_init(&tmp, GPIOA, GPIO_PIN_8);
 
+  /* ── Init filters ──────────────────────────────────────────────────────── */
+  Filter1P_init(&filt_alt,  FILT_ALPHA_ALT);
+  Filter1P_init(&filt_pres, FILT_ALPHA_ALT);
+
+  Filter1P_init(&filt_i16ax, FILT_ALPHA_ACCEL);
+  Filter1P_init(&filt_i16ay, FILT_ALPHA_ACCEL);
+  Filter1P_init(&filt_i16az, FILT_ALPHA_ACCEL);
+
+  Filter1P_init(&filt_i4ax, FILT_ALPHA_ACCEL);
+  Filter1P_init(&filt_i4ay, FILT_ALPHA_ACCEL);
+  Filter1P_init(&filt_i4az, FILT_ALPHA_ACCEL);
+
+  Filter1P_init(&filt_mx, FILT_ALPHA_MAG);
+  Filter1P_init(&filt_my, FILT_ALPHA_MAG);
+  Filter1P_init(&filt_mz, FILT_ALPHA_MAG);
+
+  Filter1P_init(&filt_bax, FILT_ALPHA_ACCEL);
+  Filter1P_init(&filt_bay, FILT_ALPHA_ACCEL);
+  Filter1P_init(&filt_baz, FILT_ALPHA_ACCEL);
+
+  Filter1P_init(&filt_bgx, FILT_ALPHA_GYRO);
+  Filter1P_init(&filt_bgy, FILT_ALPHA_GYRO);
+  Filter1P_init(&filt_bgz, FILT_ALPHA_GYRO);
+
+  Filter1P_init(&filt_temp, FILT_ALPHA_TEMP);
+
+  /* ── Altitude zero calibration ─────────────────────────────────────────── */
+  {
+      float sum = 0.0f;
+      for (uint32_t i = 0u; i < 10u; i++) {
+          sum += Barometer_getAltitude(true);
+          HAL_Delay(10);
+      }
+      alt_ref = sum / 10.0f;
+  }
+
   /* Pre-fill the header — it never changes */
   pkt.header = PKT_HEADER;
 
@@ -201,36 +249,40 @@ int main(void)
   {
       /* ── Read all sensors ──────────────────────────────────────────────── */
 
-	  pkt.altitude = Barometer_getAltitude(true);
-	  pkt.pressure = Barometer_getPressure(false);
+	  pkt.altitude = (int32_t)Filter1P_update(&filt_alt,  Barometer_getAltitude(true) - alt_ref);
+	  pkt.pressure = (int32_t)Filter1P_update(&filt_pres, (float)Barometer_getPressure(false));
 
 	  float ax, ay, az;
 
 	  IMU_getAccel(&imu_16g, &ax, &ay, &az);
-	  pkt.imu16_ax = ax;
-	  pkt.imu16_ay = ay;
-	  pkt.imu16_az = az;
+	  pkt.imu16_ax = Filter1P_update(&filt_i16ax, ax);
+	  pkt.imu16_ay = Filter1P_update(&filt_i16ay, ay);
+	  pkt.imu16_az = Filter1P_update(&filt_i16az, az);
 
 	  IMU_getAccel(&imu_4g, &ax, &ay, &az);
-	  pkt.imu4_ax = ax;
-	  pkt.imu4_ay = ay;
-	  pkt.imu4_az = az;
+	  pkt.imu4_ax = Filter1P_update(&filt_i4ax, ax);
+	  pkt.imu4_ay = Filter1P_update(&filt_i4ay, ay);
+	  pkt.imu4_az = Filter1P_update(&filt_i4az, az);
 
 	  float mx, my, mz;
 	  if (++mmc_tick >= MMC_DIVIDER) {
 	      mmc_tick = 0u;
 	      MMC_getMag(&mag, &mx, &my, &mz);
-	      pkt.mag_x = mx;
-	      pkt.mag_y = my;
-	      pkt.mag_z = mz;
+	      pkt.mag_x = Filter1P_update(&filt_mx, mx);
+	      pkt.mag_y = Filter1P_update(&filt_my, my);
+	      pkt.mag_z = Filter1P_update(&filt_mz, mz);
 	  }
 
 	  float gx, gy, gz;
 	  BMI_getAllMotion(&bmi, &ax, &ay, &az, &gx, &gy, &gz);
-	  pkt.bmi_ax = ax;  pkt.bmi_ay = ay;  pkt.bmi_az = az;
-	  pkt.bmi_gx = gx;  pkt.bmi_gy = gy;  pkt.bmi_gz = gz;
+	  pkt.bmi_ax = Filter1P_update(&filt_bax, ax);
+	  pkt.bmi_ay = Filter1P_update(&filt_bay, ay);
+	  pkt.bmi_az = Filter1P_update(&filt_baz, az);
+	  pkt.bmi_gx = Filter1P_update(&filt_bgx, gx);
+	  pkt.bmi_gy = Filter1P_update(&filt_bgy, gy);
+	  pkt.bmi_gz = Filter1P_update(&filt_bgz, gz);
 
-	  pkt.ext_temp = TMP127_getTemp(&tmp);
+	  pkt.ext_temp = Filter1P_update(&filt_temp, TMP127_getTemp(&tmp));
 
       /* ── Seal and transmit ─────────────────────────────────────────────── */
       pkt.checksum = packet_checksum(&pkt);
