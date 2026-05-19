@@ -45,6 +45,15 @@ FIN_POSITION   = 1.9445
 MOTOR_POSITION           = 2.262
 AIRBRAKE_SURFACE_POSITION = 0.762
 
+DROGUE_CD_S              = 1.16 * np.pi * (0.61 / 2) ** 2   # 0.339 m²
+DROGUE_SHOCK_CORD_M      = 1.37
+DROGUE_POSITION_FROM_TIP = 1.29
+
+MAIN_CD_S                = 2.59 * np.pi * (2.54 / 2) ** 2   # 13.12 m²
+MAIN_SHOCK_CORD_M        = 3.05
+MAIN_POSITION_FROM_TIP   = 0.402
+MAIN_TRIGGER_AGL_M       = 304.8   # 1000 ft in metres
+
 REF_AREA = np.pi * (ROCKET_RADIUS ** 2)
 REF_LEN  = 2 * ROCKET_RADIUS
 
@@ -330,7 +339,7 @@ def select_api_row(wind_df, api_hour):
 # ============================================================
 
 def build_rocket(drag_table, motor_file, airbrake_model=None, controller_fn=None,
-                 airbrake_sampling_rate=50.0):
+                 airbrake_sampling_rate=50.0, elevation=DEFAULT_ELEVATION):
     """Build and return a configured RocketPy Rocket.
 
     Parameters
@@ -396,6 +405,30 @@ def build_rocket(drag_table, motor_file, airbrake_model=None, controller_fn=None
             name="AirBrakes",
         )
 
+    rocket.add_parachute(
+        name="Drogue",
+        cd_s=DROGUE_CD_S,
+        trigger="apogee",
+        sampling_rate=105,
+        lag=1,
+        noise=(0, 8.3, 0.5),
+    )
+
+    main_trigger_asl = elevation + MAIN_TRIGGER_AGL_M
+
+    def _main_trigger(p, h, y):
+        # y[5] is z-velocity; negative means descending
+        return h <= main_trigger_asl and y[5] < 0
+
+    rocket.add_parachute(
+        name="Main",
+        cd_s=MAIN_CD_S,
+        trigger=_main_trigger,
+        sampling_rate=105,
+        lag=1,
+        noise=(0, 8.3, 0.5),
+    )
+
     return rocket
 
 
@@ -441,7 +474,7 @@ def _make_angle_fn(constant_angle):
 
 
 def run_preview(args, drag_table):
-    rocket = build_rocket(drag_table=drag_table, motor_file=args.motor_file)
+    rocket = build_rocket(drag_table=drag_table, motor_file=args.motor_file, elevation=args.elevation)
     rocket.draw()
 
 
@@ -583,6 +616,7 @@ def run_single(args, drag_table, wind_df, airbrake_model):
         motor_file=args.motor_file,
         airbrake_model=airbrake_model,
         controller_fn=controller_fn,
+        elevation=args.elevation,
     )
 
     flight = rocketpy.Flight(
@@ -595,6 +629,7 @@ def run_single(args, drag_table, wind_df, airbrake_model):
 
     print("\nSINGLE FLIGHT RESULTS")
     flight.info()
+    flight.plots.all()
 
     debug_flight_airbrakes(
         flight=flight,
@@ -655,6 +690,7 @@ def run_monte_carlo(args, drag_table, wind_df, airbrake_model):
                 motor_file=args.motor_file,
                 airbrake_model=airbrake_model,
                 controller_fn=controller_fn,
+                elevation=args.elevation,
             )
 
             flight = rocketpy.Flight(
@@ -872,7 +908,7 @@ def main():
     print(wind_df)
 
     # Always show geometry
-    display_rocket = build_rocket(drag_table=drag_table, motor_file=args.motor_file)
+    display_rocket = build_rocket(drag_table=drag_table, motor_file=args.motor_file, elevation=args.elevation)
     display_rocket.draw()
 
     if args.mode == "preview":
