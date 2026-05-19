@@ -550,6 +550,7 @@ class GroundStationApp:
         self.packet_var = tk.StringVar(value="Packets: 0")
         self.log_var = tk.StringVar(value=f"CSV: {LOG_PATH}")
         self.command_var = tk.StringVar(value="Controls idle")
+        self.apogee_var = tk.StringVar(value="10000")
 
         # Camera state: UNKNOWN | ONLINE | RECORDING | IDLE | OFFLINE
         self._cam_state = "UNKNOWN"
@@ -714,6 +715,21 @@ class GroundStationApp:
         ttk.Button(command_frame, text="Stop", command=lambda: self._send_command("S", "Stop")).grid(row=1, column=0, sticky="ew", padx=4, pady=4)
         ttk.Button(command_frame, text="Zero Encoder", command=lambda: self._send_command("O", "Zero encoder")).grid(row=1, column=1, sticky="ew", padx=4, pady=4)
         ttk.Button(command_frame, text="Deploy Seq", command=lambda: self._send_command("67", "Deploy sequence")).grid(row=1, column=2, sticky="ew", padx=4, pady=4)
+
+        # ── Target apogee input ────────────────────────────────────────────────
+        apogee_card = ttk.Frame(right, style="Card.TFrame", padding=(12, 8))
+        apogee_card.pack(fill="x", padx=6, pady=(0, 6))
+        ttk.Label(apogee_card, text="Target Apogee", style="CardTitle.TLabel").pack(anchor="w", pady=(0, 6))
+        apogee_row = ttk.Frame(apogee_card, style="Card.TFrame")
+        apogee_row.pack(fill="x")
+        apogee_entry = ttk.Entry(apogee_row, textvariable=self.apogee_var, width=10,
+                                  font=("Bahnschrift SemiBold", 16), justify="right")
+        apogee_entry.pack(side="left", padx=(0, 8))
+        ttk.Label(apogee_row, text="ft", style="CardSub.TLabel",
+                  font=("Segoe UI Semibold", 12)).pack(side="left", padx=(0, 12))
+        ttk.Button(apogee_row, text="Set Apogee",
+                   command=self._send_apogee).pack(side="left", fill="x", expand=True)
+        apogee_entry.bind("<Return>", lambda _e: self._send_apogee())
 
         ttk.Label(
             right,
@@ -997,6 +1013,17 @@ class GroundStationApp:
             self.command_var.set(f"Sent {label} on {port} at {datetime.now().strftime('%H:%M:%S')}")
         else:
             self.command_var.set(f"Could not send {label}; no live serial connection on {port}")
+
+    def _send_apogee(self):
+        raw = self.apogee_var.get().strip()
+        try:
+            feet = int(raw)
+            if feet <= 0:
+                raise ValueError
+        except ValueError:
+            self.command_var.set(f"Invalid apogee '{raw}' — enter a positive integer in feet")
+            return
+        self._send_command(f"ALT{feet}", f"Set target apogee {feet} ft")
 
     def update(self):
         updated = False
