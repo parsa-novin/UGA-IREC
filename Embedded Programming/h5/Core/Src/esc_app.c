@@ -679,11 +679,12 @@ static void HIL_PollRx(void)
   * the asynchronous kernel clock (CKMODE=00) divided by 4 via the CCR PRESC
   * field of ADC12_COMMON.
   *
-  * Voltage recovery:
-  *   Vbat_mV = ADC_count × 3300 × (68k+33k) / (4096 × 33k)
-  *           = ADC_count × 10100 / 4096
+  * Voltage recovery (empirically calibrated):
+  *   Vbat_mV = ADC_count × 12140 / 4096
   *
-  * (2S3P LiIon max 8.4 V, 68 kΩ / 33 kΩ divider, OPA340NA unity-gain buffer)
+  * The theoretical 68 kΩ / 33 kΩ divider constant (10100) under-reads by
+  * factor 7.44/6.19; 12140 corrects for the actual board resistor values.
+  * (2S3P LiIon max 8.4 V, OPA340NA unity-gain buffer)
   */
 static void Battery_ADC_Init(void)
 {
@@ -742,8 +743,9 @@ static void Camera_PollCurrentTask(void)
   * @brief  Rate-limited task: poll battery voltage from ADC1 at 10 Hz.
   *
   * Triggers a single software conversion on channel 9 (PB0) and converts
-  * the raw 12-bit count to millivolts using the voltage-divider formula:
-  *   Vbat_mV = raw × 10100 / 4096
+  * the raw 12-bit count to millivolts using an empirically calibrated constant.
+  * Theoretical 68k/33k divider gives × 10100 / 4096; board measures 6.19 V at
+  * 7.44 V true, so the constant is scaled by 7.44/6.19 → × 12140 / 4096.
   */
 static void Battery_PollVoltageTask(void)
 {
@@ -767,8 +769,8 @@ static void Battery_PollVoltageTask(void)
     /* Reading DR clears EOC automatically */
     uint32_t raw = ADC1->DR;
 
-    /* Vbat_mV = raw × 3300 × 101 / (4096 × 33) = raw × 10100 / 4096 */
-    s_battVoltMv = (raw * 10100UL) / 4096UL;
+    /* Empirical calibration: 10100 × (7.44/6.19) ≈ 12140 */
+    s_battVoltMv = (raw * 12140UL) / 4096UL;
 }
 
 static void FillAggregatePacket(AggregatePacket_t *packet, const SensorPacket_t *upstream)
