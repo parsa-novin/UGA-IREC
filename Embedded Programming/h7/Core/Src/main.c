@@ -202,7 +202,7 @@ static RunCam_StatusTypeDef RunCam_Init(void)
 
     if (status != RUNCAM_OK)
     {
-        CamEcho_Write("CAM:RC:ERR\n");
+        CamEcho_WriteResult(status);
         return status;
     }
 

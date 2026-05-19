@@ -147,8 +147,8 @@ _CAM_CMD_LABELS = {
     "CAM:CMD:OFF": ("Power-off dispatched",         "info"),
     "CAM:CMD:CUR": ("Current query dispatched",     "info"),
     "CAM:RC:OK":   ("RunCam OK",                    "ok"),
-    "CAM:RC:TMO":  ("RunCam timeout",               "err"),
-    "CAM:RC:UNS":  ("Feature unsupported",          "warn"),
+    "CAM:RC:TMO":  ("Camera not responding (timeout) — enable RunCam Device Protocol in camera OSD: Settings → UART Protocol → On", "err"),
+    "CAM:RC:UNS":  ("Feature unsupported by camera", "warn"),
     "CAM:RC:ERR":  ("RunCam error",                 "err"),
 }
 
@@ -756,10 +756,10 @@ class GroundStationApp:
                    command=lambda: self._send_cam_command("CAMCURR", "Read current")).grid(
             row=2, column=0, columnspan=2, sticky="ew", padx=4, pady=4)
 
-        # ── Note about H5 passthrough ──────────────────────────────────────────
+        # ── Note about RunCam protocol ─────────────────────────────────────────
         ttk.Label(
             left,
-            text="Echo data (CAM:... lines) arrives once H5 passthrough is enabled.",
+            text="If camera is unresponsive, enable RunCam Device Protocol in camera OSD: Settings → UART Protocol → On",
             style="SubHeader.TLabel",
             wraplength=270,
             justify="left",
@@ -800,6 +800,9 @@ class GroundStationApp:
         self._cam_log.tag_configure("info",  foreground="#d1b3ff")   # device info / neutral
         self._cam_log.tag_configure("curr",  foreground="#ffb366")   # current readings
         self._cam_log.tag_configure("ts",    foreground="#4a5f80")   # timestamps
+
+        self._cam_log_append("Camera tab ready.\n", "info")
+        self._cam_log_append("Click a button to send a command. Echo messages (CAM:...) from H7 appear here once firmware is flashed and serial is connected.\n", "ts")
 
     # ── Camera helpers ─────────────────────────────────────────────────────────
 
