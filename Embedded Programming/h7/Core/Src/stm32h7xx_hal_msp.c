@@ -280,7 +280,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* USER CODE BEGIN SPI2_MspInit 1 */
-
+    /* SPI2 interrupt Init */
+    HAL_NVIC_SetPriority(SPI2_IRQn, 1, 0);
+    HAL_NVIC_EnableIRQ(SPI2_IRQn);
     /* USER CODE END SPI2_MspInit 1 */
 
   }
