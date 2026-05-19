@@ -46,10 +46,10 @@ extern "C" {
 #define INA219_I2C_ADDR        (0x45U)
 
 /** Shunt resistor value in ohms. */
-#define INA219_SHUNT_OHMS      (0.05f)
+#define INA219_SHUNT_OHMS      (0.002f)   /* 2 mΩ shunt on board */
 
 /** Maximum expected current in amps (sets Current_LSB granularity). */
-#define INA219_MAX_CURRENT_A   (2.5f)
+#define INA219_MAX_CURRENT_A   (40.0f)    /* generous ceiling for 2S3P pack */
 
 /** I2C timeout in milliseconds for each transaction. */
 #define INA219_I2C_TIMEOUT_MS  (10U)
@@ -71,14 +71,15 @@ extern "C" {
 /* Bits [15:13] = 011  — reserved, must write 0; bus/shunt both enabled       */
 /* Bit  [13]    = 1    — reset bit (leave 0 for normal operation)             */
 /* Bits [12:11] = BRNG = 1  — bus voltage range 32 V                         */
-/* Bits [10:9]  = PGA  = 00 — shunt PGA ÷1 (±40 mV range, suits ≤100 mA)    */
-/* Bits [8:7]   = BADC = 0011 — bus ADC 12-bit / 532 µs                      */
+/* Bits [12:11] = PGA  = 11 — shunt PGA ÷8 (±320 mV range; at 40 A × 2 mΩ   */
+/*                            = 80 mV shunt voltage, this gives 4× headroom) */
+/* Bits [9:7]   = BADC = 011 — bus ADC 12-bit / 532 µs                       */
 /* Bits [6:3]   = SADC = 0011 — shunt ADC 12-bit / 532 µs                    */
 /* Bits [2:0]   = MODE = 111  — continuous shunt + bus                        */
 /*                                                                            */
-/* Encoded:  0 0 1 1  1 0 0 0  0 0 0 1  1111  = 0x381F                        */
+/* Encoded:  0x399F  (BRNG=32V, PGA÷8, BADC/SADC 12-bit, continuous)         */
 /* -------------------------------------------------------------------------- */
-#define INA219_CONFIG_VALUE    (0x381FU)
+#define INA219_CONFIG_VALUE    (0x399FU)
 
 /* -------------------------------------------------------------------------- */
 /* Return status                                                               */

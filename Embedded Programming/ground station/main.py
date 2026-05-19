@@ -24,7 +24,7 @@ SERIAL_TIMEOUT_S = 0.005
 
 AGGREGATE_HEADER = 0xA55A
 UPSTREAM_HEADER = 0xAA55
-PACKET_LEN = 100
+PACKET_LEN = 108
 HISTORY_LEN = 1200
 UI_REFRESH_MS = 20
 RECONNECT_DELAY_S = 1.0
@@ -34,7 +34,7 @@ LOG_DIR = Path(".")
 LOG_FILENAME = f"ground_station_telemetry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
 LOG_PATH = LOG_DIR / LOG_FILENAME
 
-AGGREGATE_FORMAT = "<" + "H" + "Hii" + "f" * 16 + "B" + "B" + "B" + "I" + "I" + "I" + "I" + "i" + "B"
+AGGREGATE_FORMAT = "<" + "H" + "Hii" + "f" * 16 + "B" + "B" + "B" + "I" + "I" + "I" + "I" + "i" + "f" + "I" + "B"
 PACKET_STRUCT = struct.Struct(AGGREGATE_FORMAT)
 
 AGGREGATE_FIELDS = [
@@ -66,13 +66,15 @@ AGGREGATE_FIELDS = [
     "esc_consumption_mah",
     "esc_erpm",
     "encoder_position_um",
+    "cam_current_ma",
+    "batt_voltage_mv",
     "aggregate_checksum",
 ]
 
+# Unified CSV schema — identical column names and order as the H5 SD card logger.
+# One program can read both the ground-station CSV and the SD card CSV unchanged.
 CSV_FIELDS = [
-    "pc_time_iso",
-    "packet_time_s",
-    "packet_age_ms",
+    "epoch_time_s",
     "altitude_m",
     "pressure_kpa",
     "imu16_ax_g",
@@ -104,6 +106,8 @@ CSV_FIELDS = [
     "esc_erpm",
     "encoder_position_mm",
     "flap_angle_deg",
+    "cam_current_ma",
+    "batt_voltage_v",
 ]
 
 LOW_LEVEL_PLOTS = [
@@ -137,6 +141,8 @@ LOW_LEVEL_PLOTS = [
     ("eRPM", "esc_erpm", "eRPM"),
     ("Displacement", "encoder_position_mm", "mm"),
     ("Flap Angle", "flap_angle_deg", "deg"),
+    ("Cam Current", "cam_current_ma", "mA"),
+    ("Batt Voltage", "batt_voltage_v", "V"),
 ]
 
 # Camera echo message prefixes forwarded by H5 from the H7 echo buffer.
@@ -217,6 +223,8 @@ class TelemetrySample:
     esc_erpm: float
     encoder_position_mm: float
     flap_angle_deg: float
+    cam_current_ma: float
+    batt_voltage_v: float
     aggregate_checksum_ok: bool
     upstream_checksum_ok: bool
 
@@ -280,6 +288,7 @@ class PacketParser:
         # encoder_position_um holds true micrometres; divide by 1000 to get mm
         encoder_position_mm = fields["encoder_position_um"] / 1000.0
         flap_angle_deg = displacement_mm_to_angle_deg(max(0.0, encoder_position_mm))
+        batt_voltage_v = fields["batt_voltage_mv"] / 1000.0
 
         return TelemetrySample(
             packet_time_s=time.time(),
@@ -314,6 +323,8 @@ class PacketParser:
             esc_erpm=float(fields["esc_erpm"]),
             encoder_position_mm=encoder_position_mm,
             flap_angle_deg=flap_angle_deg,
+            cam_current_ma=fields["cam_current_ma"],
+            batt_voltage_v=batt_voltage_v,
             aggregate_checksum_ok=aggregate_checksum_ok,
             upstream_checksum_ok=upstream_checksum_ok,
         )
@@ -341,6 +352,10 @@ class SerialTelemetryReader(threading.Thread):
                 self.status = f"Connecting to {port} @ {self.baud}"
                 with serial.Serial(port, self.baud, timeout=SERIAL_TIMEOUT_S) as ser:
                     ser.reset_input_buffer()
+                    # Send Unix epoch to H5 so SD card timestamps are absolute.
+                    epoch_cmd = f"EPOCH{int(time.time())}\n".encode("ascii")
+                    ser.write(epoch_cmd)
+                    ser.flush()
                     with self.serial_lock:
                         self.serial_handle = ser
                     self.status = f"Connected to {port} @ {self.baud}"
@@ -447,11 +462,9 @@ class TelemetryLogger:
         self.lock = threading.Lock()
 
     def write(self, sample: TelemetrySample):
-        now = time.time()
+        # Unified schema — identical column names and order as the H5 SD card CSV.
         row = {
-            "pc_time_iso": datetime.now().isoformat(timespec="milliseconds"),
-            "packet_time_s": f"{sample.packet_time_s:.3f}",
-            "packet_age_ms": f"{(now - sample.packet_time_s) * 1000.0:.1f}",
+            "epoch_time_s": f"{sample.packet_time_s:.3f}",
             "altitude_m": f"{sample.altitude_m:.3f}",
             "pressure_kpa": f"{sample.pressure_kpa:.3f}",
             "imu16_ax_g": f"{sample.imu16_ax_g:.4f}",
@@ -483,6 +496,8 @@ class TelemetryLogger:
             "esc_erpm": f"{sample.esc_erpm:.3f}",
             "encoder_position_mm": f"{sample.encoder_position_mm:.4f}",
             "flap_angle_deg": f"{sample.flap_angle_deg:.3f}",
+            "cam_current_ma": f"{sample.cam_current_ma:.3f}",
+            "batt_voltage_v": f"{sample.batt_voltage_v:.3f}",
         }
         with self.lock:
             self.writer.writerow(row)
@@ -515,7 +530,7 @@ class MetricCard(ttk.Frame):
 class GroundStationApp:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("UGA Spaceport Ground Station")
+        self.root.title("UGA Rocketry Ground Station")
         self.root.geometry("1620x980")
         self.root.configure(bg="#06080d")
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -907,7 +922,7 @@ class GroundStationApp:
         self.low_fig.subplots_adjust(left=0.035, right=0.99, top=0.97, bottom=0.05, hspace=0.48, wspace=0.26)
 
         for idx, (title, field, unit) in enumerate(LOW_LEVEL_PLOTS, start=1):
-            ax = self.low_fig.add_subplot(6, 5, idx)
+            ax = self.low_fig.add_subplot(7, 5, idx)
             self._style_axis(ax, title, unit, compact=True)
             line = ax.plot([], [], color=self._plot_color(idx), linewidth=1.4)[0]
             self.low_level_axes.append(ax)

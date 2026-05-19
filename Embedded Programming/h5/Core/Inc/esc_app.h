@@ -98,6 +98,20 @@ int32_t ESC_App_GetNeutralUs(void);
   */
 uint8_t ESC_App_GetLatestSensorPacket(SensorPacket_t *out);
 
+/**
+  * @brief  Return the most recently polled camera circuit current in milliamps.
+  *         Updated at ~10 Hz by Camera_PollCurrentTask().
+  *         Returns 0.0f until the first successful SPI read.
+  */
+float ESC_App_GetCamCurrent_mA(void);
+
+/**
+  * @brief  Return the most recently measured battery voltage in millivolts.
+  *         Updated at ~10 Hz by Battery_PollVoltageTask().
+  *         Returns 0 until the ADC has been read at least once.
+  */
+uint32_t ESC_App_GetBattVoltage_mV(void);
+
 #ifdef __cplusplus
 }
 #endif

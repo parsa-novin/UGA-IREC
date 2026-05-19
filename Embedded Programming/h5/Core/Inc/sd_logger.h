@@ -95,6 +95,17 @@ uint8_t SD_Logger_Is_Active(void);
   */
 void SD_Logger_Task(void);
 
+/**
+  * @brief  Synchronise the logger's epoch clock to a Unix timestamp.
+  *
+  * Call this once after the ground station sends an EPOCH command over serial.
+  * From this point on, each CSV row carries an absolute epoch_time_s timestamp
+  * (seconds since 1970-01-01 00:00:00 UTC) instead of a relative elapsed time.
+  *
+  * @param  unix_seconds  Unix time in whole seconds (from ground-station PC clock).
+  */
+void SD_Logger_SetEpoch(uint32_t unix_seconds);
+
 #ifdef __cplusplus
 }
 #endif

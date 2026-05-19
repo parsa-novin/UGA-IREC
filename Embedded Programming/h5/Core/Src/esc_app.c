@@ -34,6 +34,7 @@
  */
 
 #include "esc_app.h"
+#include "hil_config.h"
 
 #include "main.h"
 #include "spi.h"
@@ -100,6 +101,10 @@
 #define CAM_ECHO_POLL_PERIOD_MS     100U
 #define CAM_ECHO_MAX_BYTES_PER_POLL 48U
 
+/* 10 Hz poll period for camera current and battery voltage */
+#define CAM_CURR_POLL_PERIOD_MS     100U
+#define BATT_VOLT_POLL_PERIOD_MS    100U
+
 /*
  * SensorPacket_t is defined in esc_app.h so it is visible to sd_logger.c
  * and any other consumer.  The _Static_assert lives there too.
@@ -116,6 +121,8 @@ typedef struct __attribute__((packed))
     uint32_t       esc_consumption_mAh;
     uint32_t       esc_erpm;
     int32_t        encoder_position_um;
+    float          cam_current_mA;
+    uint32_t       batt_voltage_mV;
     uint8_t        checksum;
 } AggregatePacket_t;
 
@@ -141,6 +148,10 @@ static uint32_t                s_lastTelemetryTxMs     = 0U;
 static uint32_t                s_lastFallbackTxMs      = 0U;
 static uint32_t                s_lastUart4DebugTxMs    = 0U;
 static uint32_t                s_lastCamEchoPollMs     = 0U;
+static float                   s_camCurrentMa          = 0.0f;
+static uint32_t                s_battVoltMv            = 0U;
+static uint32_t                s_lastCamCurrPollMs     = 0U;
+static uint32_t                s_lastBattVoltPollMs    = 0U;
 static uint8_t                 s_headerFirstByte       = 0U;
 static volatile uint32_t       s_uart4RxCount          = 0U;
 static volatile uint32_t       s_uart4ErrorCount       = 0U;
@@ -168,6 +179,14 @@ static void Upstream_EnsureIrqRxEnabled(void);
 static void Upstream_PollRx(void);
 static void __attribute__((unused)) Uart4_DebugPrintTask(void);
 static void Camera_PollEchoTask(void);
+static void Camera_PollCurrentTask(void);
+static void Battery_ADC_Init(void);
+static void Battery_PollVoltageTask(void);
+static void ProcessConsoleByte(char c, char *buf, volatile uint32_t *idx);
+#ifdef HIL_MODE
+static void HIL_ProcessPacket(const uint8_t *buf);
+static void HIL_PollRx(void);
+#endif
 
 /* =========================================================================
  * Private helpers — arithmetic
@@ -545,6 +564,213 @@ static void __attribute__((unused)) Uart4_DebugPrintTask(void)
     HAL_UART_Transmit(&huart2, (uint8_t *)line, (uint16_t)len, PACKET_TX_TIMEOUT);
 }
 
+#ifdef HIL_MODE
+/* =========================================================================
+ * HIL receive path — parse 100-byte aggregate packets from USART2
+ *
+ * The PC running hil_gui.py transmits the same AggregatePacket_t format
+ * the H5 normally outputs.  We strip the outer aggregate wrapper, validate
+ * both checksums, and push the embedded SensorPacket_t into the normal
+ * upstream buffer so the entire flight-control stack runs unchanged.
+ *
+ * Any byte on USART2 that is NOT the 0xA5 / 0x5A header start byte is
+ * forwarded to the ASCII command handler (ProcessConsoleByte) so that
+ * "H", "67", "UP", "DOWN", "ALTxxxxx", etc. still work from the same port.
+ * ========================================================================= */
+
+static void HIL_ProcessPacket(const uint8_t *buf)
+{
+    /* Verify aggregate header (little-endian 0xA55A → bytes 0xA5, 0x5A) */
+    uint16_t hdr;
+    memcpy(&hdr, buf, sizeof(hdr));
+    if (hdr != AGGREGATE_HEADER)
+        return;
+
+    /* Validate aggregate checksum: XOR of bytes [2 .. sizeof-2] inclusive */
+    uint8_t cs = PacketChecksum(buf + sizeof(uint16_t),
+                                buf + sizeof(AggregatePacket_t) - sizeof(uint8_t));
+    if (cs != buf[sizeof(AggregatePacket_t) - 1U])
+        return;
+
+    /* Extract the embedded SensorPacket_t that starts at byte offset 2 */
+    SensorPacket_t candidate;
+    memcpy(&candidate, buf + sizeof(uint16_t), sizeof(SensorPacket_t));
+
+    /* Validate the inner upstream checksum */
+    if (!SensorPacket_IsValid(&candidate))
+        return;
+
+    /* Normalise header byte order and publish to the shared buffer */
+    candidate.header = UPSTREAM_HEADER;
+    __disable_irq();
+    s_upstreamPacket        = candidate;
+    s_upstreamPacketValid   = 1U;
+    s_upstreamPacketVersion++;
+    __enable_irq();
+}
+
+static void HIL_PollRx(void)
+{
+    static uint8_t  s_hilBuf[sizeof(AggregatePacket_t)];
+    static uint32_t s_hilIdx = 0U;
+    uint32_t        guard    = 0U;
+
+    while ((__HAL_UART_GET_FLAG(&huart2, USART_ISR_RXNE_RXFNE) != 0U)
+           && (guard < UART_POLL_BURST_MAX))
+    {
+        uint8_t byte = (uint8_t)(huart2.Instance->RDR & 0xFFU);
+        guard++;
+
+        /* Clear any line errors so the FIFO does not stall */
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_ORE)) __HAL_UART_CLEAR_OREFLAG(&huart2);
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_FE))  __HAL_UART_CLEAR_FEFLAG(&huart2);
+        if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_NE))  __HAL_UART_CLEAR_NEFLAG(&huart2);
+
+        if (s_hilIdx == 0U)
+        {
+            /* 0xA5 is the first byte of AGGREGATE_HEADER = 0xA55A (little-endian) */
+            if (byte == 0xA5U)
+            {
+                s_hilBuf[s_hilIdx++] = byte;
+            }
+            else
+            {
+                /* ASCII command character — route to console handler */
+                ProcessConsoleByte((char)byte, s_rxLine2, &s_rxIdx2);
+            }
+        }
+        else if (s_hilIdx == 1U)
+        {
+            /* Second byte of the header must be 0x5A */
+            if (byte == 0x5AU)
+            {
+                s_hilBuf[s_hilIdx++] = byte;
+            }
+            else
+            {
+                /* Not a valid frame start — replay first byte as ASCII */
+                ProcessConsoleByte((char)s_hilBuf[0], s_rxLine2, &s_rxIdx2);
+                s_hilIdx = 0U;
+                if (byte == 0xA5U)
+                    s_hilBuf[s_hilIdx++] = byte;
+                else
+                    ProcessConsoleByte((char)byte, s_rxLine2, &s_rxIdx2);
+            }
+        }
+        else
+        {
+            s_hilBuf[s_hilIdx++] = byte;
+            if (s_hilIdx >= (uint32_t)sizeof(AggregatePacket_t))
+            {
+                HIL_ProcessPacket(s_hilBuf);
+                s_hilIdx = 0U;
+            }
+        }
+    }
+}
+#endif /* HIL_MODE */
+
+/**
+  * @brief  Initialise ADC1 for single-ended polling on channel 9 (PB0).
+  *
+  * Uses direct register access because the HAL ADC driver is not included in
+  * this project (HAL_ADC_MODULE_ENABLED is not defined).  The GPIOB clock is
+  * already enabled by other peripheral init functions.  ADC clock source is
+  * the asynchronous kernel clock (CKMODE=00) divided by 4 via the CCR PRESC
+  * field of ADC12_COMMON.
+  *
+  * Voltage recovery:
+  *   Vbat_mV = ADC_count × 3300 × (68k+33k) / (4096 × 33k)
+  *           = ADC_count × 10100 / 4096
+  *
+  * (2S3P LiIon max 8.4 V, 68 kΩ / 33 kΩ divider, OPA340NA unity-gain buffer)
+  */
+static void Battery_ADC_Init(void)
+{
+    /* Enable ADC1/ADC2 clock (shared RCC bit on H5) */
+    RCC->AHB2ENR |= RCC_AHB2ENR_ADCEN;
+    (void)RCC->AHB2ENR;  /* read-back barrier so the clock is active before use */
+
+    /* PB0 → analog input, no pull (GPIOB clock already enabled by SPI/TIM init) */
+    GPIOB->MODER  |=  (3UL << (0U * 2U));  /* bits 1:0 = 11 → Analog */
+    GPIOB->PUPDR  &= ~(3UL << (0U * 2U));  /* bits 1:0 = 00 → no pull */
+
+    /* Async clock prescaler ÷4 in the ADC12 common register (PRESC = 0b0010) */
+    ADC12_COMMON->CCR = (ADC12_COMMON->CCR & ~ADC_CCR_PRESC) | (2UL << ADC_CCR_PRESC_Pos);
+
+    /* Exit deep power-down mode, then enable internal voltage regulator */
+    ADC1->CR &= ~ADC_CR_DEEPPWD;
+    ADC1->CR |=  ADC_CR_ADVREGEN;
+    HAL_Delay(1U);  /* regulator needs ≥ 20 µs; 1 ms tick is the minimum delay */
+
+    /* Single-ended calibration (ADEN must be 0 during calibration) */
+    ADC1->CR &= ~ADC_CR_ADCALDIF;          /* single-ended mode */
+    ADC1->CR |=  ADC_CR_ADCAL;             /* start calibration  */
+    while (ADC1->CR & ADC_CR_ADCAL) {}     /* wait for ADCAL=0   */
+
+    /* Enable ADC and wait for hardware ready flag */
+    ADC1->ISR  = ADC_ISR_ADRDY;            /* clear any stale ready flag */
+    ADC1->CR  |= ADC_CR_ADEN;
+    while (!(ADC1->ISR & ADC_ISR_ADRDY)) {}
+
+    /* CFGR: 12-bit (RES=00), overwrite-on-overrun, software trigger, single conv */
+    ADC1->CFGR = ADC_CFGR_OVRMOD;
+
+    /* SMPR1 SMP9 = 111 → 640.5 ADC clock cycles (maximum, best accuracy) */
+    ADC1->SMPR1 = ADC_SMPR1_SMP9;
+
+    /* SQR1: sequence length = 1 (L=0000), first conversion = channel 9 */
+    ADC1->SQR1 = (9UL << ADC_SQR1_SQ1_Pos);
+}
+
+/**
+  * @brief  Rate-limited task: read camera circuit current from H7 at 10 Hz.
+  */
+static void Camera_PollCurrentTask(void)
+{
+    uint32_t now = HAL_GetTick();
+    if ((now - s_lastCamCurrPollMs) < CAM_CURR_POLL_PERIOD_MS)
+        return;
+    s_lastCamCurrPollMs = now;
+
+    float val;
+    if (Camera_ReadCurrent_mA(&val))
+        s_camCurrentMa = val;
+}
+
+/**
+  * @brief  Rate-limited task: poll battery voltage from ADC1 at 10 Hz.
+  *
+  * Triggers a single software conversion on channel 9 (PB0) and converts
+  * the raw 12-bit count to millivolts using the voltage-divider formula:
+  *   Vbat_mV = raw × 10100 / 4096
+  */
+static void Battery_PollVoltageTask(void)
+{
+    uint32_t now = HAL_GetTick();
+    if ((now - s_lastBattVoltPollMs) < BATT_VOLT_POLL_PERIOD_MS)
+        return;
+    s_lastBattVoltPollMs = now;
+
+    /* Start a single software-triggered conversion */
+    ADC1->ISR  = ADC_ISR_EOC;          /* clear any previous end-of-conversion flag */
+    ADC1->CR  |= ADC_CR_ADSTART;
+
+    /* Poll for EOC with a 2 ms timeout */
+    uint32_t deadline = HAL_GetTick() + 2U;
+    while (!(ADC1->ISR & ADC_ISR_EOC))
+    {
+        if (HAL_GetTick() >= deadline)
+            return;  /* timeout — discard this sample, try again next period */
+    }
+
+    /* Reading DR clears EOC automatically */
+    uint32_t raw = ADC1->DR;
+
+    /* Vbat_mV = raw × 3300 × 101 / (4096 × 33) = raw × 10100 / 4096 */
+    s_battVoltMv = (raw * 10100UL) / 4096UL;
+}
+
 static void FillAggregatePacket(AggregatePacket_t *packet, const SensorPacket_t *upstream)
 {
     packet->header              = AGGREGATE_HEADER;
@@ -556,6 +782,8 @@ static void FillAggregatePacket(AggregatePacket_t *packet, const SensorPacket_t 
     packet->esc_consumption_mAh = ESC_Telem_GetConsumption_mAh();
     packet->esc_erpm            = ESC_Telem_GetERPM();
     packet->encoder_position_um = Encoder_GetPosition_um();
+    packet->cam_current_mA      = s_camCurrentMa;
+    packet->batt_voltage_mV     = s_battVoltMv;
     packet->checksum            = PacketChecksum(((const uint8_t *)packet) + sizeof(packet->header),
                                                 ((const uint8_t *)packet) + sizeof(*packet) - sizeof(packet->checksum));
 }
@@ -581,7 +809,11 @@ static void ForwardAggregatePacketIfReady(void)
 
     FillAggregatePacket(&packet, &upstream);
     HAL_UART_Transmit(&huart1, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+#ifndef HIL_MODE
+    /* In HIL mode USART2 RX carries binary HIL packets — don't pollute it
+     * with outbound binary frames.  USART1 still forwards to any ground station. */
     HAL_UART_Transmit(&huart2, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+#endif
 
     s_lastForwardedVersion = s_upstreamPacketVersion;
     s_lastTelemetryTxMs    = now;
@@ -604,7 +836,9 @@ static void ForwardFallbackPacketToUsart2IfNeeded(void)
                                      ((const uint8_t *)&packet) + sizeof(packet) - sizeof(packet.checksum));
 
     HAL_UART_Transmit(&huart1, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+#ifndef HIL_MODE
     HAL_UART_Transmit(&huart2, (uint8_t *)&packet, sizeof(packet), PACKET_TX_TIMEOUT);
+#endif
     s_lastFallbackTxMs = now;
 }
 
@@ -652,7 +886,10 @@ static void PollUartInputs(void)
         ProcessConsoleByte((char)byte, s_rxLine1, &s_rxIdx1);
     }
 
-    /* Optional console commands on USART2 */
+#ifndef HIL_MODE
+    /* Optional console commands on USART2.
+     * In HIL mode USART2 bytes are consumed by HIL_PollRx() which
+     * already routes non-packet bytes to ProcessConsoleByte. */
     for (i = 0U; i < UART_POLL_BURST_MAX; i++)
     {
         if (!__HAL_UART_GET_FLAG(&huart2, USART_ISR_RXNE_RXFNE))
@@ -671,6 +908,7 @@ static void PollUartInputs(void)
 
         ProcessConsoleByte((char)byte, s_rxLine2, &s_rxIdx2);
     }
+#endif /* !HIL_MODE */
 }
 
 /* =========================================================================
@@ -844,6 +1082,17 @@ static void HandleCommand(char *cmd)
         return;
     }
 
+    /* ── EPOCH<unix_seconds> — synchronise SD logger epoch clock ───────────
+     *   Ground station sends "EPOCH1716000000\n" on connect.
+     *   strtoul returns 0 on empty/invalid input, which the >0 guard rejects. */
+    if (strncmp(upper, "EPOCH", 5) == 0)
+    {
+        uint32_t unix_sec = (uint32_t)strtoul(upper + 5, NULL, 10);
+        if (unix_sec > 0U)
+            SD_Logger_SetEpoch(unix_sec);
+        return;
+    }
+
     /* ── -100..100 — percentage throttle ────────────────────────────────── */
     if (is_signed_integer(upper))
     {
@@ -953,6 +1202,16 @@ uint8_t ESC_App_GetLatestSensorPacket(SensorPacket_t *out)
     return valid;
 }
 
+float ESC_App_GetCamCurrent_mA(void)
+{
+    return s_camCurrentMa;
+}
+
+uint32_t ESC_App_GetBattVoltage_mV(void)
+{
+    return s_battVoltMv;
+}
+
 /* =========================================================================
  * Public API — init / task
  * ========================================================================= */
@@ -966,7 +1225,11 @@ void ESC_App_Init(void)
     PWM_Set(PWM_NEUTRAL_US);
 
     /* ── Step 2: UARTs + telemetry ──────────────────────────────────────── */
+#ifndef HIL_MODE
+    /* Normal operation: receive raw upstream packets from C5 board over UART4 */
     Upstream_EnableIrqRx();
+#endif
+    /* In HIL mode UART4 is left idle; HIL_PollRx() reads USART2 instead. */
     ESC_Telem_Init();
 
     /* ── Step 3: ESC arm hold ───────────────────────────────────────────── */
@@ -978,6 +1241,7 @@ void ESC_App_Init(void)
     Encoder_Homing_Init();
     Encoder_App_Init();
     HAL_TIM_Base_Start_IT(&htim4);
+    Battery_ADC_Init();
     SD_Logger_Init();
     Flight_Trigger_Init();
     Estimator_Init();
@@ -987,8 +1251,15 @@ void ESC_App_Init(void)
 void ESC_App_Task(void)
 {
     /* Service all background state machines every loop iteration */
+#ifdef HIL_MODE
+    /* HIL mode: parse aggregate packets arriving on USART2 from the PC tool.
+     * ASCII command bytes that arrive interleaved are forwarded to the
+     * console handler inside HIL_PollRx(), so commands still work. */
+    HIL_PollRx();
+#else
     Upstream_EnsureIrqRxEnabled();
     Upstream_PollRx();
+#endif
     PollUartInputs();
     ESC_Telem_Task();
     Encoder_App_Task();
@@ -1001,6 +1272,8 @@ void ESC_App_Task(void)
     ForwardAggregatePacketIfReady();
     ForwardFallbackPacketToUsart2IfNeeded();
     Camera_PollEchoTask();
+    Camera_PollCurrentTask();
+    Battery_PollVoltageTask();
 
     if (Command_Sequence_Check_Deploy_Trigger())
     {
@@ -1018,6 +1291,39 @@ void ESC_App_Task(void)
         if (!Airbrake_Is_Sequence_Active() && !Encoder_Homing_Is_Active())
             Encoder_Homing_Start();
     }
+
+#ifdef HIL_MODE
+    /* ── HIL status line at 10 Hz ──────────────────────────────────────────
+     * Emitted on USART2 so hil_gui.py can track the estimated flight state
+     * and the commanded airbrake angle.  The GUI parses "angle=X.Xdeg" to
+     * update the commanded-angle plot and to feed the live RocketPy sim.
+     *
+     * Format (ASCII, newline terminated):
+     *   [HIL] t=<ms> alt=<m>m vel=<mps>mps deploy=<0-1> angle=<deg>deg
+     * -------------------------------------------------------------------- */
+    {
+        static uint32_t s_hilStatusTxMs = 0U;
+        uint32_t hil_now = HAL_GetTick();
+        if ((hil_now - s_hilStatusTxMs) >= 100U)
+        {
+            s_hilStatusTxMs = hil_now;
+            EstimatorState_t est;
+            Estimator_GetState(&est);
+            float hil_deploy = Airbrake_Control_GetDeployFraction();
+            float hil_angle  = hil_deploy * AIRBRAKE_MAX_ANGLE_DEG;
+            char  hil_line[128];
+            int   hil_n = snprintf(hil_line, sizeof(hil_line),
+                "[HIL] t=%lu alt=%.0fm vel=%.1fmps deploy=%.3f angle=%.1fdeg\r\n",
+                (unsigned long)hil_now,
+                (double)est.altitude_m,
+                (double)est.velocity_mps,
+                (double)hil_deploy,
+                (double)hil_angle);
+            if (hil_n > 0 && hil_n < (int)sizeof(hil_line))
+                HAL_UART_Transmit(&huart2, (uint8_t *)hil_line, (uint16_t)hil_n, 20U);
+        }
+    }
+#endif /* HIL_MODE */
 }
 
 /* =========================================================================
@@ -1026,6 +1332,13 @@ void ESC_App_Task(void)
 
 void ESC_App_Uart4IrqHandler(void)
 {
+#ifdef HIL_MODE
+    /* UART4 is not used in HIL mode (RXNEIE is never enabled).
+     * If the IRQ somehow fires, clear all pending flags and bail. */
+    huart4.Instance->ICR = 0xFFFFFFFFU;
+    return;
+#endif
+
     uint32_t isr = huart4.Instance->ISR;
 
     s_uart4LastIsr = isr;
