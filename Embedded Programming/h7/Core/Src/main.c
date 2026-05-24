@@ -2,7 +2,21 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body — RunCam SPI command controller
+  * @brief          : Main program body — RunCam SPI command + ADV7280 DCMI controller
+  *
+  * ADV7280 video decoder
+  * ----------------------
+  * I2C3 (PC0 = SCL, PC1 = SDA, AF4), address 0x20.
+  * DCMI 8-bit BT.656 embedded-sync: D0–D7 on PC6/PC7/PB13/PC9/PC11/PD3/PB8/PB9,
+  * PIXCLK on PA6.  Initialised for NTSC composite (CVBS on AIN1) at startup.
+  * Data capture is not started; DMA must be configured before calling
+  * HAL_DCMI_Start_DMA() when image capture is required.
+  *
+  * ADV7280 control signals
+  * -----------------------
+  *   PA8  (ADV_INTR)    — active-low interrupt input (open-drain, pull-up fitted)
+  *   PC14 (ADV_PWRDWN)  — active-low power-down; driven HIGH on boot
+  *   PC3  (CAM_MUX_SEL) — external mux select; LOW = camera 0 (default)
   *
   * SPI2 slave interface (8-bit frames, mode 0, MSB first):
   *   'R' (0x52) — Start recording
@@ -58,6 +72,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/** I2C address of the ADV7280 (7-bit 0x20 shifted left per HAL convention).
+ *  Assumes ALSB pin tied to GND on the board; change to 0x42 if ALSB = VCC. */
+#define ADV7280_I2C_ADDR  ((uint16_t)(0x20U << 1U))
+
 #define SPI_CMD_START_RECORDING  ((uint8_t)'R')   /* 0x52 */
 #define SPI_CMD_STOP_RECORDING   ((uint8_t)'S')   /* 0x53 */
 #define SPI_CMD_POWER_ON         ((uint8_t)'O')   /* 0x4F */
@@ -86,7 +104,9 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+DCMI_HandleTypeDef hdcmi;
 I2C_HandleTypeDef  hi2c1;
+I2C_HandleTypeDef  hi2c3;   /* ADV7280 video decoder (PC0=SCL, PC1=SDA) */
 SPI_HandleTypeDef  hspi2;
 UART_HandleTypeDef huart4;
 
@@ -148,6 +168,8 @@ static void MX_UART4_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_I2C3_Init(void);
+static void MX_DCMI_Init(void);
 
 /* USER CODE BEGIN PFP */
 static RunCam_StatusTypeDef RunCam_Init(void);
@@ -158,10 +180,63 @@ static void CamEcho_Write(const char *msg);
 static uint8_t CamEcho_Available(void);
 static uint8_t CamEcho_Read(void);
 static void CamEcho_WriteResult(RunCam_StatusTypeDef status);
+static HAL_StatusTypeDef ADV7280_WriteReg(uint8_t reg, uint8_t val);
+static HAL_StatusTypeDef ADV7280_Init(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/**
+  * @brief  Write one register on the ADV7280 video decoder over I2C3.
+  *
+  * @param  reg  Register address (8-bit).
+  * @param  val  Value to write.
+  * @retval HAL_OK on success, HAL_ERROR if the chip did not ACK.
+  */
+static HAL_StatusTypeDef ADV7280_WriteReg(uint8_t reg, uint8_t val)
+{
+    return HAL_I2C_Mem_Write(&hi2c3, ADV7280_I2C_ADDR,
+                              reg, I2C_MEMADD_SIZE_8BIT,
+                              &val, 1U, 10U);
+}
+
+/**
+  * @brief  Initialise the ADV7280 for NTSC composite input (CVBS on AIN1).
+  *
+  * Applies the standard Analog Devices NTSC initialisation script.
+  * Designed for use with the RunCam Split 4 4K NTSC composite output.
+  *
+  * The chip must have been powered up (PWRDWN = HIGH) for at least 10 ms
+  * and I2C3 must be initialised before calling this function.
+  *
+  * @retval HAL_OK on success, HAL_ERROR if any I2C transaction fails.
+  */
+static HAL_StatusTypeDef ADV7280_Init(void)
+{
+    static const uint8_t init_seq[][2] =
+    {
+        /* ADV7280 NTSC composite init — Analog Devices recommended sequence.
+         * All writes target the main I2C address (0x20). */
+        {0x00U, 0x00U},  /* Input Control: CVBS on AIN1, NTSC               */
+        {0x04U, 0x57U},  /* Extended Output Control: SFL enable, BT.656-4   */
+        {0x17U, 0x41U},  /* ADI required write                               */
+        {0x1DU, 0x40U},  /* ADI required write                               */
+        {0x52U, 0xCDU},  /* ADI required write                               */
+        {0x80U, 0x51U},  /* ADI required write                               */
+        {0x81U, 0x51U},  /* ADI required write                               */
+        {0x82U, 0x68U},  /* ADI required write                               */
+    };
+
+    for (uint8_t i = 0U; i < (uint8_t)(sizeof(init_seq) / sizeof(init_seq[0])); i++)
+    {
+        if (ADV7280_WriteReg(init_seq[i][0], init_seq[i][1]) != HAL_OK)
+        {
+            return HAL_ERROR;
+        }
+    }
+    return HAL_OK;
+}
 
 /**
   * @brief  Initialise the RunCam handle and confirm the camera is reachable
@@ -374,7 +449,7 @@ static void RunCam_DispatchSpiCommand(uint8_t cmd)
             CamEcho_Write("CAM:CMD:OFF\n");
             (void)RunCam_StopRecording(&hrc);
             HAL_Delay(500U);
-            (void)RunCam_PowerButton(&hrc);
+            CamEcho_WriteResult(RunCam_PowerButton(&hrc));
             hrc.features = 0U;
             break;
 
@@ -449,6 +524,8 @@ int main(void)
     MX_SPI2_Init();
     MX_ADC1_Init();
     MX_I2C1_Init();
+    MX_I2C3_Init();
+    MX_DCMI_Init();
 
     /* USER CODE BEGIN 2 */
 
@@ -458,6 +535,24 @@ int main(void)
      * until the device becomes available.
      */
     (void)INA219_Init(&hina, &hi2c1);
+
+    /*
+     * Initialise the ADV7280 video decoder for NTSC composite input.
+     * PWRDWN was driven HIGH during MX_GPIO_Init; allow 10 ms for the
+     * chip's internal power-on reset to complete before the I2C writes.
+     * A failed init is non-fatal — the DCMI bus will remain idle until
+     * the issue is resolved (e.g. reset, re-power).
+     */
+    HAL_Delay(10U);
+    (void)ADV7280_Init();
+
+    /*
+     * Signal to H5 (and through it, the ground station) that the H7 subsystem
+     * is initialised and ready to accept SPI commands.  This message sits in
+     * the echo ring buffer until H5 polls it, so it survives the RunCam boot
+     * delay below without being lost.
+     */
+    CamEcho_Write("CAM:H7:ONLINE\n");
 
     /*
      * Bring the RunCam up.  If the camera is absent at boot (e.g. powered
@@ -617,6 +712,100 @@ static void MX_I2C1_Init(void)
     /* USER CODE BEGIN I2C1_Init 2 */
 
     /* USER CODE END I2C1_Init 2 */
+}
+
+/**
+  * @brief I2C3 Initialisation Function — ADV7280 video decoder bus.
+  *
+  * Operates at 400 kHz (Fast Mode) on PC0 (SCL) and PC1 (SDA).
+  * Timing register is identical to I2C1 since both share the same
+  * APB1 clock domain at 16 MHz.
+  *
+  * @retval None
+  */
+static void MX_I2C3_Init(void)
+{
+    /* USER CODE BEGIN I2C3_Init 0 */
+
+    /* USER CODE END I2C3_Init 0 */
+
+    /* USER CODE BEGIN I2C3_Init 1 */
+
+    /* USER CODE END I2C3_Init 1 */
+
+    hi2c3.Instance              = I2C3;
+    hi2c3.Init.Timing           = 0x00300F13U; /* 400 kHz at 16 MHz APB1, same as I2C1 */
+    hi2c3.Init.OwnAddress1      = 0U;
+    hi2c3.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
+    hi2c3.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
+    hi2c3.Init.OwnAddress2      = 0U;
+    hi2c3.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+    hi2c3.Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
+    hi2c3.Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
+
+    if (HAL_I2C_Init(&hi2c3) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    if (HAL_I2CEx_ConfigAnalogFilter(&hi2c3, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    if (HAL_I2CEx_ConfigDigitalFilter(&hi2c3, 0U) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /* USER CODE BEGIN I2C3_Init 2 */
+
+    /* USER CODE END I2C3_Init 2 */
+}
+
+/**
+  * @brief DCMI Initialisation Function — ADV7280 BT.656 NTSC video input.
+  *
+  * Configured for 8-bit embedded-sync (BT.656) mode with a rising-edge
+  * pixel clock.  The ADV7280 outputs standard NTSC at 27 MHz on the
+  * parallel data bus; HSYNC and VSYNC are embedded in the data stream
+  * (SAV/EAV codes) so no separate sync GPIO pins are required.
+  *
+  * NOTE: stm32h7xx_hal_dcmi.h and stm32h7xx_hal_dcmi.c must be copied
+  * from the STM32Cube_FW_H7 package into the Drivers/STM32H7xx_HAL_Driver
+  * Inc/ and Src/ directories respectively for this to compile.
+  *
+  * @retval None
+  */
+static void MX_DCMI_Init(void)
+{
+    /* USER CODE BEGIN DCMI_Init 0 */
+
+    /* USER CODE END DCMI_Init 0 */
+
+    /* USER CODE BEGIN DCMI_Init 1 */
+
+    /* USER CODE END DCMI_Init 1 */
+
+    hdcmi.Instance              = DCMI;
+    hdcmi.Init.SynchroMode      = DCMI_SYNCHRO_EMBEDDED;  /* BT.656 embedded SAV/EAV */
+    hdcmi.Init.PCKPolarity      = DCMI_PCKPOLARITY_RISING; /* Sample on rising PIXCLK */
+    hdcmi.Init.VSPolarity       = DCMI_VSPOLARITY_LOW;     /* Unused in embedded mode */
+    hdcmi.Init.HSPolarity       = DCMI_HSPOLARITY_LOW;     /* Unused in embedded mode */
+    hdcmi.Init.CaptureRate      = DCMI_CR_ALL_FRAME;
+    hdcmi.Init.ExtendedDataMode = DCMI_EXTEND_DATA_8B;     /* 8-bit parallel bus */
+    hdcmi.Init.JPEGMode         = DCMI_JPEG_DISABLE;
+    hdcmi.Init.ByteSelectMode   = DCMI_BSM_ALL;
+    hdcmi.Init.ByteSelectStart  = DCMI_OEBS_ODD;
+    hdcmi.Init.LineSelectMode   = DCMI_LSM_ALL;
+    hdcmi.Init.LineSelectStart  = DCMI_OELS_ODD;
+
+    if (HAL_DCMI_Init(&hdcmi) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /* USER CODE BEGIN DCMI_Init 2 */
+
+    /* USER CODE END DCMI_Init 2 */
 }
 
 /**
@@ -787,6 +976,8 @@ static void MX_UART4_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
     /* USER CODE BEGIN MX_GPIO_Init_1 */
 
     /* USER CODE END MX_GPIO_Init_1 */
@@ -795,6 +986,39 @@ static void MX_GPIO_Init(void)
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+
+    /*
+     * ADV_PWRDWN (PC14) — active-low power-down for the ADV7280.
+     * Pre-write HIGH before configuring the pin so the chip is never
+     * inadvertently powered down on the first clock cycle after init.
+     */
+    HAL_GPIO_WritePin(ADV_PWRDWN_GPIO_Port, ADV_PWRDWN_Pin, GPIO_PIN_SET);
+    GPIO_InitStruct.Pin   = ADV_PWRDWN_Pin;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(ADV_PWRDWN_GPIO_Port, &GPIO_InitStruct);
+
+    /*
+     * CAM_MUX_SEL (PC3) — external camera multiplexer select.
+     * LOW selects camera 0 (default).  Drive before configuring the pin
+     * for the same reason as PWRDWN above.
+     */
+    HAL_GPIO_WritePin(CAM_MUX_SEL_GPIO_Port, CAM_MUX_SEL_Pin, GPIO_PIN_RESET);
+    GPIO_InitStruct.Pin   = CAM_MUX_SEL_Pin;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(CAM_MUX_SEL_GPIO_Port, &GPIO_InitStruct);
+
+    /* ADV_INTR (PA8) — active-low interrupt from the ADV7280.
+     * Pull-up because the ADV7280 INTR pin is open-drain. */
+    GPIO_InitStruct.Pin   = ADV_INTR_Pin;
+    GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull  = GPIO_PULLUP;
+    HAL_GPIO_Init(ADV_INTR_GPIO_Port, &GPIO_InitStruct);
 
     /* USER CODE END MX_GPIO_Init_2 */
 }

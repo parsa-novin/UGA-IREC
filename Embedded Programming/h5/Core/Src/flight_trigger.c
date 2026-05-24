@@ -8,14 +8,16 @@
  *   IDLE  → ARMED : magnitude > FLIGHT_TRIGGER_ARM_G  (5 G)
  *   ARMED → FIRED : magnitude < FLIGHT_TRIGGER_FIRE_G (3 G)
  *
- * When FIRED, SD_Logger_Start() and Airbrake_Start_Sequence() are called
- * exactly once.  The trigger then remains in the FIRED state for the rest
- * of the power cycle.
+ * When FIRED, the estimator is transitioned to coast phase and the
+ * closed-loop airbrake controller is started.  The trigger then remains
+ * in the FIRED state for the rest of the power cycle.
  */
 
 #include "flight_trigger.h"
 #include "esc_app.h"
 #include "airbrake_deploy.h"
+#include "airbrake_control.h"
+#include "flight_estimator.h"
 #include "encoder_homing.h"
 #include "sd_logger.h"
 #include "usart.h"
@@ -84,6 +86,7 @@ void Flight_Trigger_Task(void)
                 s_state = FLIGHT_TRIGGER_ARMED;
                 Trigger_Print("[TRIGGER] ARMED — IMU16 |a| = %.2f g (threshold %.1f g)\r\n",
                               (double)mag_g, (double)FLIGHT_TRIGGER_ARM_G);
+                Estimator_SetBoost();
             }
             break;
 
@@ -94,10 +97,11 @@ void Flight_Trigger_Task(void)
                 if (!Encoder_Homing_Is_Active() && !Airbrake_Is_Sequence_Active())
                 {
                     s_state = FLIGHT_TRIGGER_FIRED;
-                    Trigger_Print("[TRIGGER] FIRED  — IMU16 |a| = %.2f g (threshold %.1f g). Starting deploy.\r\n",
+                    Trigger_Print("[TRIGGER] FIRED  — IMU16 |a| = %.2f g (threshold %.1f g). Starting control.\r\n",
                                   (double)mag_g, (double)FLIGHT_TRIGGER_FIRE_G);
                     SD_Logger_Start();
-                    Airbrake_Start_Sequence();
+                    Estimator_SetCoast();
+                    Airbrake_Control_Start();
                 }
             }
             break;

@@ -9,10 +9,17 @@ void Airbrake_Deploy_Init(void);
 /* Task to be called in main loop */
 void Airbrake_Deploy_Task(void);
 
-/* Start the deployment sequence */
+/* Start the fixed test sequence (ground testing only) */
 void Airbrake_Start_Sequence(void);
 
-/* Check if sequence is active */
+/* Enter continuous control mode — called by airbrake_control at burnout */
+void Airbrake_StartControl(void);
+
+/* Set the angle the control loop should track [0..70 deg].
+ * Has effect only while in DEPLOY_CONTROL state. */
+void Airbrake_SetTargetAngle(float angle_deg);
+
+/* Check if any deployment activity is active */
 uint8_t Airbrake_Is_Sequence_Active(void);
 
 /* Convert angle to position in micrometers */

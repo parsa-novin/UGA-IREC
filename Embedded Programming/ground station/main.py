@@ -18,7 +18,7 @@ from serial.tools import list_ports
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-PORT = "COM3"
+PORT = "COM17"
 BAUD = 115200
 SERIAL_TIMEOUT_S = 0.005
 
@@ -147,13 +147,14 @@ LOW_LEVEL_PLOTS = [
 
 # Camera echo message prefixes forwarded by H5 from the H7 echo buffer.
 _CAM_CMD_LABELS = {
+    "CAM:H7:ONLINE": ("H7 online; camera subsystem initialized", "ok"),
     "CAM:CMD:REC": ("Start recording dispatched",  "info"),
     "CAM:CMD:STP": ("Stop recording dispatched",   "info"),
     "CAM:CMD:ON":  ("Power-on dispatched",          "info"),
     "CAM:CMD:OFF": ("Power-off dispatched",         "info"),
     "CAM:CMD:CUR": ("Current query dispatched",     "info"),
     "CAM:RC:OK":   ("RunCam OK",                    "ok"),
-    "CAM:RC:TMO":  ("Camera not responding (timeout) — enable RunCam Device Protocol in camera OSD: Settings → UART Protocol → On", "err"),
+    "CAM:RC:TMO":  ("RunCam UART transaction timed out; H7 received the command but the camera did not answer", "err"),
     "CAM:RC:UNS":  ("Feature unsupported by camera", "warn"),
     "CAM:RC:ERR":  ("RunCam error",                 "err"),
 }
@@ -398,8 +399,9 @@ class SerialTelemetryReader(threading.Thread):
             if byte == ord('\n'):
                 if self._cam_line_buf:
                     line = self._cam_line_buf.decode("ascii", errors="ignore").strip()
-                    if line.startswith("CAM:"):
-                        self.camera_queue.put(line)
+                    cam_idx = line.find("CAM:")
+                    if cam_idx >= 0:
+                        self.camera_queue.put(line[cam_idx:])
                     self._cam_line_buf.clear()
             elif byte == ord('\r'):
                 pass
@@ -541,7 +543,7 @@ class GroundStationApp:
         self.port_values = available_com_ports()
         if PORT not in self.port_values:
             self.port_values.insert(0, PORT)
-        self.port_var.set(self.port_values[0] if self.port_values else PORT)
+        self.port_var.set(PORT)
         self.reader = SerialTelemetryReader(self.port_var.get, BAUD, self.sample_queue, self.stop_event)
         self.history = TelemetryHistory(HISTORY_LEN)
         self.logger = TelemetryLogger(LOG_PATH)
@@ -597,7 +599,7 @@ class GroundStationApp:
     def _build_ui(self):
         top = ttk.Frame(self.root, padding=(18, 16, 18, 8))
         top.pack(fill="x")
-        ttk.Label(top, text="UGA Spaceport Telemetry Console", style="Header.TLabel").pack(anchor="w")
+        ttk.Label(top, text="UGA IREC Telemetry Console", style="Header.TLabel").pack(anchor="w")
         ttk.Label(top, text="Four-tab live dashboard for the aggregate H5 packet stream", style="SubHeader.TLabel").pack(anchor="w", pady=(2, 0))
 
         controls = ttk.Frame(top)
@@ -790,7 +792,7 @@ class GroundStationApp:
         # ── Note about RunCam protocol ─────────────────────────────────────────
         ttk.Label(
             left,
-            text="If camera is unresponsive, enable RunCam Device Protocol in camera OSD: Settings → UART Protocol → On",
+            text="If commands time out: H7 acknowledged the command but received no reply from RunCam.",
             style="SubHeader.TLabel",
             wraplength=270,
             justify="left",
@@ -871,7 +873,9 @@ class GroundStationApp:
             label, tag = _CAM_CMD_LABELS[line]
             self._cam_log_append(f" {label}\n", tag)
             # Update camera state from dispatch echoes
-            if line == "CAM:CMD:REC":
+            if line == "CAM:H7:ONLINE":
+                self._cam_state = "ONLINE"
+            elif line == "CAM:CMD:REC":
                 self._cam_state = "RECORDING"
             elif line == "CAM:CMD:STP":
                 self._cam_state = "IDLE"

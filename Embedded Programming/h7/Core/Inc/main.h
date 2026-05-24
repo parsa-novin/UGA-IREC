@@ -60,6 +60,20 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+/* ADV7280 INTR: active-low interrupt output from the video decoder (PA8) */
+#define ADV_INTR_Pin        GPIO_PIN_8
+#define ADV_INTR_GPIO_Port  GPIOA
+
+/* ADV7280 PWRDWN: active-low power-down control (PC14).
+ * Drive HIGH for normal operation; pull LOW only to power-down the chip. */
+#define ADV_PWRDWN_Pin        GPIO_PIN_14
+#define ADV_PWRDWN_GPIO_Port  GPIOC
+
+/* External camera multiplexer select (PC3).
+ * LOW = camera 0 selected (default); HIGH = camera 1 selected. */
+#define CAM_MUX_SEL_Pin        GPIO_PIN_3
+#define CAM_MUX_SEL_GPIO_Port  GPIOC
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -24,6 +24,8 @@ Core/Src/airbrake_deploy.o: ../Core/Src/airbrake_deploy.c \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_flash_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr_ex.h \
+ ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc.h \
+ ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_sd.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_sdmmc.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_dlyb.h \
@@ -63,6 +65,8 @@ Core/Src/airbrake_deploy.o: ../Core/Src/airbrake_deploy.c \
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_flash_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr_ex.h:
+../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc.h:
+../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_sd.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_sdmmc.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_dlyb.h:

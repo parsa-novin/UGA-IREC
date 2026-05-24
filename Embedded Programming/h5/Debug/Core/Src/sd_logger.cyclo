@@ -1,7 +1,10 @@
-../Core/Src/sd_logger.c:118:13:Logger_Print	3
-../Core/Src/sd_logger.c:140:13:Logger_Write	5
-../Core/Src/sd_logger.c:172:9:SD_Logger_Init	6
-../Core/Src/sd_logger.c:220:6:SD_Logger_Start	7
-../Core/Src/sd_logger.c:272:6:SD_Logger_Stop	4
-../Core/Src/sd_logger.c:290:9:SD_Logger_Is_Active	1
-../Core/Src/sd_logger.c:295:6:SD_Logger_Task	21
+../Core/Src/sd_logger.c:132:13:Logger_Print	3
+../Core/Src/sd_logger.c:148:13:Logger_Write	5
+../Core/Src/sd_logger.c:176:14:Vec3Mag	1
+../Core/Src/sd_logger.c:182:14:DisplacementMm_to_AngleDeg	3
+../Core/Src/sd_logger.c:197:9:SD_Logger_Init	6
+../Core/Src/sd_logger.c:241:6:SD_Logger_Start	7
+../Core/Src/sd_logger.c:289:6:SD_Logger_Stop	4
+../Core/Src/sd_logger.c:307:9:SD_Logger_Is_Active	1
+../Core/Src/sd_logger.c:312:6:SD_Logger_SetEpoch	1
+../Core/Src/sd_logger.c:319:6:SD_Logger_Task	23

@@ -17,6 +17,7 @@
 #include "encoder_app.h"
 #include "sdmmc.h"
 #include "usart.h"
+#include "hil_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -273,7 +274,14 @@ void UART4_IRQHandler(void)
   /* USER CODE BEGIN UART4_IRQn 0 */
 
   /* USER CODE END UART4_IRQn 0 */
+#ifndef HIL_MODE
+  /* In HIL mode UART4 RXNEIE is never enabled so this handler should not
+   * fire; ESC_App_Uart4IrqHandler() has its own safety guard as well. */
   ESC_App_Uart4IrqHandler();
+#else
+  /* Clear all UART4 pending flags and return immediately */
+  huart4.Instance->ICR = 0xFFFFFFFFU;
+#endif
   /* USER CODE BEGIN UART4_IRQn 1 */
 
   /* USER CODE END UART4_IRQn 1 */

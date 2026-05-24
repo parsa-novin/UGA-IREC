@@ -2,13 +2,27 @@
 Hardware-In-the-Loop GUI for the STM32H5 airbrakes controller.
 
 Builds and transmits aggregate packets over UART exactly as the STM32C5 would.
-When no serial port is selected the app runs in simulation mode: a software
-replica of the H5 state machine generates realistic responses and the flap
-encoder tracks the commanded angle with a first-order lag.
+Three data sources are supported:
+
+  synth    — built-in synthetic vertical-flight trajectory (no dependencies)
+  csv      — replay a CSV log (same CSV_FIELDS as ground-station logger)
+  rocketpy — live RocketPy-based simulation using the AeroTech L2200G motor
+             and actual Deployment_Fits_Output/ drag CSVs.  Airbrake commands
+             received back from the H5 ("angle=X.Xdeg" in the [HIL] status
+             line) update the simulation drag in real time.
+
+When no serial port is selected (or "(sim)" is chosen) the app runs in
+simulation mode: a software replica of the H5 state machine generates
+responses and the flap encoder tracks the commanded angle with a lag.
 
 Usage:
   python hil_gui.py
+  python hil_gui.py --port COM4 --source rocketpy
   python hil_gui.py --port COM4 --source csv --file flight_log.csv
+
+H5 firmware requirement (rocketpy / real-H5 mode):
+  Rebuild with HIL_MODE defined in hil_config.h and connect USART2
+  (PA2/PA3, 115200 baud) to this PC.
 """
 
 import argparse
@@ -17,6 +31,7 @@ import dataclasses
 import math
 import queue
 import struct
+import sys
 import threading
 import time
 from collections import deque
@@ -44,6 +59,13 @@ UI_REFRESH_MS    = 33
 
 AGGREGATE_FORMAT = "<" + "H" + "Hii" + "f" * 16 + "B" + "B" + "B" + "I" + "I" + "I" + "I" + "i" + "B"
 PACKET_STRUCT    = struct.Struct(AGGREGATE_FORMAT)
+
+# Path to the RocketPy directory (one level up, then RocketPy/)
+_ROCKETPY_DIR = Path(__file__).resolve().parent.parent / "RocketPy"
+
+# Maximum airbrake deployment angle in the H5 firmware (must match
+# AIRBRAKE_MAX_ANGLE_DEG in airbrake_control.h = 70°)
+H5_MAX_ANGLE_DEG = 70.0
 
 FLIGHT_STATE_COLORS = {
     "IDLE":             "#7f8fb2",
@@ -286,7 +308,16 @@ class HILInjector(threading.Thread):
     def __init__(self, source_fn, rate_mult: float,
                  ser, event_queue: queue.Queue,
                  stop_event: threading.Event,
-                 sim_h5: SimulatedH5 | None):
+                 sim_h5: SimulatedH5 | None,
+                 hil_sim=None):
+        """
+        hil_sim : HILFlightSim | None
+            Live RocketPy simulation object.  When set, the injector passes
+            the PacketFields from its generate_packets() generator directly —
+            SimulatedH5 is not used.  The H5's commanded angle (parsed from
+            the "[HIL] …angle=X.Xdeg" line) is fed back by the main GUI
+            update loop via hil_sim.set_deployment_level().
+        """
         super().__init__(daemon=True)
         self.source_fn  = source_fn
         self.rate_mult  = rate_mult
@@ -294,6 +325,7 @@ class HILInjector(threading.Thread):
         self.q          = event_queue
         self.stop       = stop_event
         self.sim_h5     = sim_h5
+        self.hil_sim    = hil_sim
         self.tx_count   = 0
         self.tx_rate_hz = 0.0
         self._last_t    = 0.0
@@ -304,7 +336,12 @@ class HILInjector(threading.Thread):
             if self.stop.is_set():
                 break
 
-            if self.sim_h5 is not None:
+            if self.hil_sim is not None:
+                # RocketPy source: physics are already in pkt_fields,
+                # SimulatedH5 is bypassed.  H5 feedback is applied by the
+                # GUI update loop calling hil_sim.set_deployment_level().
+                msgs = []
+            elif self.sim_h5 is not None:
                 msgs, pkt_fields = self.sim_h5.process(pkt_fields)
                 for m in msgs:
                     self.q.put(("rx", m))
@@ -431,6 +468,7 @@ class HILApp:
         self._ser: serial.Serial | None    = None
         self._sim_h5                 = SimulatedH5()
         self._history                = HILHistory(HISTORY_LEN)
+        self._hil_sim                = None   # HILFlightSim when source=="rocketpy"
 
         # UI state vars
         self.port_var    = tk.StringVar(value="(sim)")
@@ -524,8 +562,8 @@ class HILApp:
 
         _lbl("Source")
         ttk.Combobox(ctrl, textvariable=self.source_var,
-                     values=["synth", "csv"], state="readonly", width=8).pack(side="left", padx=(0, 6))
-        ttk.Entry(ctrl, textvariable=self.csv_var, width=28,
+                     values=["synth", "csv", "rocketpy"], state="readonly", width=10).pack(side="left", padx=(0, 6))
+        ttk.Entry(ctrl, textvariable=self.csv_var, width=26,
                   ).pack(side="left", padx=(0, 14))
 
         ttk.Button(ctrl, text="Refresh Ports", command=self._refresh_ports).pack(side="left", padx=(0, 14))
@@ -687,6 +725,7 @@ class HILApp:
         self._stop.clear()
         self._sim_h5  = SimulatedH5()
         self._history = HILHistory(HISTORY_LEN)
+        self._hil_sim = None
         self._tx_n = self._rx_n = 0
         self._flight_state = "IDLE"
         self._cmd_angle    = 0.0
@@ -718,8 +757,11 @@ class HILApp:
             if dry:
                 self._conn_var.set("Simulation mode — no serial port (H5 responses are synthetic)")
 
-        src_fn = self._make_source()
-        sim_h5 = self._sim_h5 if self._ser is None else None
+        src_fn, hil_sim = self._make_source()
+        self._hil_sim = hil_sim
+
+        # Use SimulatedH5 only when no real H5 is connected AND no RocketPy sim
+        sim_h5 = self._sim_h5 if (self._ser is None and hil_sim is None) else None
 
         self._injector = HILInjector(
             source_fn   = src_fn,
@@ -728,6 +770,7 @@ class HILApp:
             event_queue = self._eq,
             stop_event  = self._stop,
             sim_h5      = sim_h5,
+            hil_sim     = hil_sim,
         )
         self._injector.start()
 
@@ -745,14 +788,54 @@ class HILApp:
         self._log_msg("Injection stopped.", "state")
 
     def _make_source(self):
+        """Return (source_fn, hil_sim_or_None).
+
+        source_fn  : callable → Iterator[(PacketFields, float)]
+        hil_sim    : HILFlightSim instance when source=="rocketpy", else None
+        """
         src = self.source_var.get()
+
         if src == "csv":
             path = Path(self.csv_var.get())
             if not path.exists():
                 messagebox.showerror("CSV Error", f"File not found: {path}")
-                return lambda: synthetic_flight(DEFAULT_RATE_HZ)
-            return lambda: csv_flight(path, DEFAULT_RATE_HZ)
-        return lambda: synthetic_flight(DEFAULT_RATE_HZ)
+                return lambda: synthetic_flight(DEFAULT_RATE_HZ), None
+            return lambda: csv_flight(path, DEFAULT_RATE_HZ), None
+
+        if src == "rocketpy":
+            # Lazy import — only requires numpy / pandas / rocketpy if selected
+            try:
+                if str(_ROCKETPY_DIR) not in sys.path:
+                    sys.path.insert(0, str(_ROCKETPY_DIR))
+                from hil_l2200_sim import HILFlightSim  # type: ignore
+            except ImportError as exc:
+                messagebox.showerror(
+                    "RocketPy Import Error",
+                    f"Could not import hil_l2200_sim:\n{exc}\n\n"
+                    "Falling back to synthetic source."
+                )
+                return lambda: synthetic_flight(DEFAULT_RATE_HZ), None
+
+            try:
+                hil_sim = HILFlightSim()
+            except Exception as exc:
+                messagebox.showerror(
+                    "RocketPy Init Error",
+                    f"HILFlightSim failed to initialise:\n{exc}\n\n"
+                    "Falling back to synthetic source."
+                )
+                return lambda: synthetic_flight(DEFAULT_RATE_HZ), None
+
+            self._log_msg(
+                f"RocketPy source: L2200G motor · drag CSVs loaded · "
+                f"target apogee {hil_sim.target_apogee_m:.0f} m "
+                f"({hil_sim.target_apogee_m / 0.3048:.0f} ft)",
+                "state",
+            )
+            return lambda: hil_sim.generate_packets(DEFAULT_RATE_HZ), hil_sim
+
+        # Default: synthetic
+        return lambda: synthetic_flight(DEFAULT_RATE_HZ), None
 
     def _refresh_ports(self):
         ports = _available_ports()
@@ -826,7 +909,15 @@ class HILApp:
                     for prefix in ("cmd=", "angle="):
                         if part.startswith(prefix):
                             try:
-                                self._cmd_angle = float(part[len(prefix):])
+                                angle_deg = float(part[len(prefix):])
+                                self._cmd_angle = angle_deg
+                                # ── Live feedback into RocketPy simulation ──
+                                # Convert the H5's commanded angle to a
+                                # deployment fraction and update the physics.
+                                if self._hil_sim is not None:
+                                    self._hil_sim.set_deployment_level(
+                                        angle_deg / H5_MAX_ANGLE_DEG
+                                    )
                             except ValueError:
                                 pass
                 self._log_msg(f"← {msg}", "rx")
@@ -838,6 +929,16 @@ class HILApp:
                 self._log_msg("Injection sequence complete.", "state")
                 self._start_btn.config(state="normal")
                 self._stop_btn.config(state="disabled")
+                # Auto-save RocketPy telemetry log
+                if self._hil_sim is not None:
+                    ts  = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    csv_path = Path(__file__).parent / f"hil_rocketpy_{ts}.csv"
+                    try:
+                        self._hil_sim.save_csv(csv_path)
+                        self._hil_sim.print_summary()
+                        self._log_msg(f"RocketPy log saved → {csv_path.name}", "state")
+                    except Exception as exc:
+                        self._log_msg(f"CSV save failed: {exc}", "error")
 
         # ── Status bar ───────────────────────────────────────────────────────
         hz = self._injector.tx_rate_hz if self._injector else 0.0
@@ -918,7 +1019,7 @@ def main():
     ap = argparse.ArgumentParser(description="HIL GUI for STM32H5 airbrakes")
     ap.add_argument("--port",   default=None)
     ap.add_argument("--baud",   type=int,   default=DEFAULT_BAUD)
-    ap.add_argument("--source", choices=["synth", "csv"], default="synth")
+    ap.add_argument("--source", choices=["synth", "csv", "rocketpy"], default="synth")
     ap.add_argument("--file",   default=None)
     ap.add_argument("--rate",   type=float, default=1.0)
     args = ap.parse_args()

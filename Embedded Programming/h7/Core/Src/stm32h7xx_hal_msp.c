@@ -203,6 +203,41 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
     /* USER CODE END I2C1_MspInit 1 */
 
   }
+  else if(hi2c->Instance==I2C3)
+  {
+    /* USER CODE BEGIN I2C3_MspInit 0 */
+
+    /* USER CODE END I2C3_MspInit 0 */
+
+    /** Initializes the peripherals clock — I2C3 shares the I2C1/2/3 clock
+     *  selection register (D2PCLK1 = APB1 at 16 MHz on this board).
+     */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C3;
+    PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C3CLKSOURCE_D2PCLK1;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    /**I2C3 GPIO Configuration
+    PC0     ------> I2C3_SCL
+    PC1     ------> I2C3_SDA
+    */
+    GPIO_InitStruct.Pin       = GPIO_PIN_0|GPIO_PIN_1;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_OD;
+    GPIO_InitStruct.Pull      = GPIO_NOPULL;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF4_I2C3;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    /* Peripheral clock enable */
+    __HAL_RCC_I2C3_CLK_ENABLE();
+
+    /* USER CODE BEGIN I2C3_MspInit 1 */
+
+    /* USER CODE END I2C3_MspInit 1 */
+  }
 
 }
 
@@ -233,6 +268,23 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
     /* USER CODE BEGIN I2C1_MspDeInit 1 */
 
     /* USER CODE END I2C1_MspDeInit 1 */
+  }
+  else if(hi2c->Instance==I2C3)
+  {
+    /* USER CODE BEGIN I2C3_MspDeInit 0 */
+
+    /* USER CODE END I2C3_MspDeInit 0 */
+    __HAL_RCC_I2C3_CLK_DISABLE();
+
+    /**I2C3 GPIO Configuration
+    PC0     ------> I2C3_SCL
+    PC1     ------> I2C3_SDA
+    */
+    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_0|GPIO_PIN_1);
+
+    /* USER CODE BEGIN I2C3_MspDeInit 1 */
+
+    /* USER CODE END I2C3_MspDeInit 1 */
   }
 
 }
@@ -403,5 +455,95 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 }
 
 /* USER CODE BEGIN 1 */
+
+/**
+  * @brief  DCMI MSP Initialisation — called by HAL_DCMI_Init().
+  *
+  * Configures the nine DCMI GPIO pins (D0–D7 + PIXCLK) and enables the
+  * peripheral AHB2 clock.  All DCMI pins on the STM32H7A3 use AF4.
+  *
+  * Pin assignment (standard DCMI mapping, embedded-sync BT.656):
+  *   PA6  — DCMI_PIXCLK
+  *   PB8  — DCMI_D6
+  *   PB9  — DCMI_D7
+  *   PB13 — DCMI_D2
+  *   PC6  — DCMI_D0
+  *   PC7  — DCMI_D1
+  *   PC9  — DCMI_D3
+  *   PC11 — DCMI_D4
+  *   PD3  — DCMI_D5
+  *
+  * HSYNC and VSYNC GPIO pins are not configured because the ADV7280 operates
+  * in BT.656 embedded-sync mode (sync codes in the data stream).
+  *
+  * @param  hdcmi  DCMI handle pointer (unused — only one DCMI instance).
+  * @retval None
+  */
+void HAL_DCMI_MspInit(DCMI_HandleTypeDef *hdcmi)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* USER CODE BEGIN DCMI_MspInit 0 */
+
+  /* USER CODE END DCMI_MspInit 0 */
+
+  /* DCMI peripheral clock is on AHB2 */
+  __HAL_RCC_DCMI_CLK_ENABLE();
+
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+
+  /* Common settings for all DCMI data/clock pins: AF push-pull, no pull,
+   * high speed to meet the 27 MHz NTSC pixel clock timing budget.        */
+  GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull      = GPIO_NOPULL;
+  GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF4_DCMI;
+
+  /* PA6: DCMI_PIXCLK */
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* PB8 (D6), PB9 (D7), PB13 (D2) */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_13;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* PC6 (D0), PC7 (D1), PC9 (D3), PC11 (D4) */
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_9|GPIO_PIN_11;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /* PD3: DCMI_D5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN DCMI_MspInit 1 */
+
+  /* USER CODE END DCMI_MspInit 1 */
+}
+
+/**
+  * @brief  DCMI MSP De-Initialisation.
+  * @param  hdcmi  DCMI handle pointer.
+  * @retval None
+  */
+void HAL_DCMI_MspDeInit(DCMI_HandleTypeDef *hdcmi)
+{
+  /* USER CODE BEGIN DCMI_MspDeInit 0 */
+
+  /* USER CODE END DCMI_MspDeInit 0 */
+
+  __HAL_RCC_DCMI_CLK_DISABLE();
+
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_6);
+  HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_13);
+  HAL_GPIO_DeInit(GPIOC, GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_9|GPIO_PIN_11);
+  HAL_GPIO_DeInit(GPIOD, GPIO_PIN_3);
+
+  /* USER CODE BEGIN DCMI_MspDeInit 1 */
+
+  /* USER CODE END DCMI_MspDeInit 1 */
+}
 
 /* USER CODE END 1 */

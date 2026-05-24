@@ -31,7 +31,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32C0xx_HAL_Driver/Inc/stm32c0xx_hal_uart_ex.h \
  ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/usart.h \
  ../Core/Inc/gpio.h ../Core/Inc/barometer.h ../Core/Inc/imu.h \
- ../Core/Inc/magnetometer.h ../Core/Inc/bmi.h ../Core/Inc/temperature.h
+ ../Core/Inc/magnetometer.h ../Core/Inc/bmi.h ../Core/Inc/temperature.h \
+ ../Core/Inc/filters.h
 ../Core/Inc/main.h:
 ../Drivers/STM32C0xx_HAL_Driver/Inc/stm32c0xx_hal.h:
 ../Drivers/STM32C0xx_HAL_Driver/Inc/stm32c0xx_ll_system.h:
@@ -72,3 +73,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/magnetometer.h:
 ../Core/Inc/bmi.h:
 ../Core/Inc/temperature.h:
+../Core/Inc/filters.h:

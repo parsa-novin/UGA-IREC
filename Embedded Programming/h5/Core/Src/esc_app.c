@@ -100,6 +100,7 @@
 /* Echo poll period and per-cycle byte cap */
 #define CAM_ECHO_POLL_PERIOD_MS     100U
 #define CAM_ECHO_MAX_BYTES_PER_POLL 48U
+#define CAM_CMD_RESPONSE_TIMEOUT_MS 500U
 
 /* 10 Hz poll period for camera current and battery voltage */
 #define CAM_CURR_POLL_PERIOD_MS     100U
@@ -148,6 +149,10 @@ static uint32_t                s_lastTelemetryTxMs     = 0U;
 static uint32_t                s_lastFallbackTxMs      = 0U;
 static uint32_t                s_lastUart4DebugTxMs    = 0U;
 static uint32_t                s_lastCamEchoPollMs     = 0U;
+static bool                    s_camCmdPending         = false;
+static uint32_t                s_camCmdDeadlineMs      = 0U;
+static char                    s_camCmdExpectedLine[24];
+static char                    s_camCmdTimeoutText[40];
 static float                   s_camCurrentMa          = 0.0f;
 static uint32_t                s_battVoltMv            = 0U;
 static uint32_t                s_lastCamCurrPollMs     = 0U;
@@ -179,6 +184,7 @@ static void Upstream_EnsureIrqRxEnabled(void);
 static void Upstream_PollRx(void);
 static void __attribute__((unused)) Uart4_DebugPrintTask(void);
 static void Camera_PollEchoTask(void);
+static void Camera_CheckCommandTimeoutTask(void);
 static void Camera_PollCurrentTask(void);
 static void Battery_ADC_Init(void);
 static void Battery_PollVoltageTask(void);
@@ -274,6 +280,57 @@ static uint8_t SensorPacket_IsValid(const SensorPacket_t *packet)
 static bool Camera_SendSpiByte(uint8_t cmd)
 {
     return (HAL_SPI_Transmit(&hspi2, &cmd, 1U, SPI_TX_TIMEOUT_MS) == HAL_OK);
+}
+
+static void Camera_ForwardText(const char *text)
+{
+    uint16_t len;
+
+    if (text == NULL)
+        return;
+
+    len = (uint16_t)strlen(text);
+    HAL_UART_Transmit(&huart1, (uint8_t *)text, len, PACKET_TX_TIMEOUT);
+    HAL_UART_Transmit(&huart2, (uint8_t *)text, len, PACKET_TX_TIMEOUT);
+}
+
+static void Camera_BeginPendingCommand(const char *expected_line,
+                                       const char *timeout_text)
+{
+    if ((expected_line == NULL) || (timeout_text == NULL))
+        return;
+
+    strncpy(s_camCmdExpectedLine, expected_line, sizeof(s_camCmdExpectedLine) - 1U);
+    s_camCmdExpectedLine[sizeof(s_camCmdExpectedLine) - 1U] = '\0';
+
+    strncpy(s_camCmdTimeoutText, timeout_text, sizeof(s_camCmdTimeoutText) - 1U);
+    s_camCmdTimeoutText[sizeof(s_camCmdTimeoutText) - 1U] = '\0';
+
+    s_camCmdDeadlineMs = HAL_GetTick() + CAM_CMD_RESPONSE_TIMEOUT_MS;
+    s_camCmdPending = true;
+}
+
+static void Camera_ObserveEchoLine(const char *line)
+{
+    if (!s_camCmdPending || (line == NULL))
+        return;
+
+    if (strncmp(line, s_camCmdExpectedLine, strlen(s_camCmdExpectedLine)) == 0)
+    {
+        s_camCmdPending = false;
+    }
+}
+
+static void Camera_CheckCommandTimeoutTask(void)
+{
+    if (!s_camCmdPending)
+        return;
+
+    if ((int32_t)(HAL_GetTick() - s_camCmdDeadlineMs) >= 0)
+    {
+        Camera_ForwardText(s_camCmdTimeoutText);
+        s_camCmdPending = false;
+    }
 }
 
 /**
@@ -384,6 +441,9 @@ static void Camera_PollEchoTask(void)
 
         if (b == (uint8_t)'\n')
         {
+            line_buf[line_len] = '\0';
+            Camera_ObserveEchoLine(line_buf);
+
             /* Complete line received — forward verbatim to both downstream UARTs. */
             HAL_UART_Transmit(&huart1, (uint8_t *)line_buf, (uint16_t)line_len, PACKET_TX_TIMEOUT);
             HAL_UART_Transmit(&huart2, (uint8_t *)line_buf, (uint16_t)line_len, PACKET_TX_TIMEOUT);
@@ -985,34 +1045,65 @@ static void HandleCommand(char *cmd)
     }
 
     /* ── Camera commands ─────────────────────────────────────────────────── */
+
+    /*
+     * Helper: if the SPI byte fails to reach the H7, emit an immediate timeout
+     * line on both downstream UARTs so the ground station isn't left waiting
+     * for an echo that will never arrive.  If the SPI succeeds the H7 echoes
+     * its own CMD + result lines via the normal poll loop.
+     */
+#define CAM_SPI_SEND_OR_TMO(cmd_byte, echo_cmd_str)                         \
+    do {                                                                      \
+        static const char _tmo[] = echo_cmd_str "CAM:RC:TMO\n";             \
+        if (Camera_SendSpiByte(cmd_byte))                                    \
+        {                                                                     \
+            Camera_BeginPendingCommand(echo_cmd_str, _tmo);                  \
+        }                                                                     \
+        else                                                                  \
+        {                                                                     \
+            Camera_ForwardText(_tmo);                                         \
+        }                                                                     \
+    } while (0)
+
     if (strcmp(upper, "CAMSTART") == 0)
     {
-        Camera_SendSpiByte(SPI_CMD_CAMERA_START);
+        CAM_SPI_SEND_OR_TMO(SPI_CMD_CAMERA_START, "CAM:CMD:REC\n");
         return;
     }
 
     if (strcmp(upper, "CAMSTOP") == 0)
     {
-        Camera_SendSpiByte(SPI_CMD_CAMERA_STOP);
+        CAM_SPI_SEND_OR_TMO(SPI_CMD_CAMERA_STOP, "CAM:CMD:STP\n");
         return;
     }
 
     if (strcmp(upper, "CAMON") == 0)
     {
-        Camera_SendSpiByte(SPI_CMD_CAMERA_ON);
+        CAM_SPI_SEND_OR_TMO(SPI_CMD_CAMERA_ON, "CAM:CMD:ON\n");
         return;
     }
 
     if (strcmp(upper, "CAMOFF") == 0)
     {
-        Camera_SendSpiByte(SPI_CMD_CAMERA_OFF);
+        CAM_SPI_SEND_OR_TMO(SPI_CMD_CAMERA_OFF, "CAM:CMD:OFF\n");
         return;
     }
+
+#undef CAM_SPI_SEND_OR_TMO
 
     if (strcmp(upper, "CAMCURR") == 0)
     {
         float camera_current_mA = 0.0f;
-        Camera_ReadCurrent_mA(&camera_current_mA);
+        static const char tmo[] = "CAM:CMD:CUR\nCAM:RC:TMO\n";
+
+        if (!Camera_ReadCurrent_mA(&camera_current_mA))
+        {
+            Camera_ForwardText(tmo);
+        }
+        else
+        {
+            Camera_BeginPendingCommand("CAM:CMD:CUR\n", tmo);
+        }
         return;
     }
 
@@ -1274,6 +1365,7 @@ void ESC_App_Task(void)
     ForwardAggregatePacketIfReady();
     ForwardFallbackPacketToUsart2IfNeeded();
     Camera_PollEchoTask();
+    Camera_CheckCommandTimeoutTask();
     Camera_PollCurrentTask();
     Battery_PollVoltageTask();
 

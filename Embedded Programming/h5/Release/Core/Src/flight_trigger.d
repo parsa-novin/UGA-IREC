@@ -1,8 +1,9 @@
 Core/Src/flight_trigger.o: ../Core/Src/flight_trigger.c \
  ../Core/Inc/flight_trigger.h ../Core/Inc/esc_app.h \
- ../Core/Inc/airbrake_deploy.h ../Core/Inc/encoder_homing.h \
- ../Core/Inc/sd_logger.h ../Core/Inc/usart.h ../Core/Inc/main.h \
- ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h \
+ ../Core/Inc/airbrake_deploy.h ../Core/Inc/airbrake_control.h \
+ ../Core/Inc/flight_estimator.h ../Core/Inc/esc_app.h \
+ ../Core/Inc/encoder_homing.h ../Core/Inc/sd_logger.h ../Core/Inc/usart.h \
+ ../Core/Inc/main.h ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal.h \
  ../Core/Inc/stm32h5xx_hal_conf.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rcc.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_def.h \
@@ -26,6 +27,8 @@ Core/Src/flight_trigger.o: ../Core/Src/flight_trigger.c \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_flash_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr_ex.h \
+ ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc.h \
+ ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc_ex.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_sd.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_sdmmc.h \
  ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_dlyb.h \
@@ -41,6 +44,9 @@ Core/Src/flight_trigger.o: ../Core/Src/flight_trigger.c \
 ../Core/Inc/flight_trigger.h:
 ../Core/Inc/esc_app.h:
 ../Core/Inc/airbrake_deploy.h:
+../Core/Inc/airbrake_control.h:
+../Core/Inc/flight_estimator.h:
+../Core/Inc/esc_app.h:
 ../Core/Inc/encoder_homing.h:
 ../Core/Inc/sd_logger.h:
 ../Core/Inc/usart.h:
@@ -69,6 +75,8 @@ Core/Src/flight_trigger.o: ../Core/Src/flight_trigger.c \
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_flash_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_pwr_ex.h:
+../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc.h:
+../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_rtc_ex.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_hal_sd.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_sdmmc.h:
 ../Drivers/STM32H5xx_HAL_Driver/Inc/stm32h5xx_ll_dlyb.h:

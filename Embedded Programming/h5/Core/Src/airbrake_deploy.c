@@ -40,11 +40,13 @@ typedef enum
     DEPLOY_LOCK_ZERO,
     DEPLOY_DONE,
     DEPLOY_JOG_UP,    /* go to max deployment (70 deg) and hold */
-    DEPLOY_JOG_DOWN   /* go to zero position (0 deg) and hold   */
+    DEPLOY_JOG_DOWN,  /* go to zero position (0 deg) and hold   */
+    DEPLOY_CONTROL,   /* continuous angle control by flight computer */
 } DeployState_t;
 
-static volatile DeployState_t s_deployState = DEPLOY_IDLE;
-static volatile uint32_t s_stateStartTimeMs = 0;
+static volatile DeployState_t s_deployState    = DEPLOY_IDLE;
+static volatile uint32_t      s_stateStartTimeMs = 0;
+static volatile float         s_controlTargetDeg = 0.0f;  /* commanded angle for DEPLOY_CONTROL */
 
 /* ----------------------- user-tunable settings ----------------------- */
 
@@ -178,8 +180,27 @@ static uint8_t MoveTowardTarget(int32_t target_units)
 
 void Airbrake_Deploy_Init(void)
 {
-    s_deployState = DEPLOY_IDLE;
+    s_deployState      = DEPLOY_IDLE;
     s_stateStartTimeMs = 0;
+    s_controlTargetDeg = 0.0f;
+}
+
+void Airbrake_StartControl(void)
+{
+    if (s_deployState == DEPLOY_IDLE || s_deployState == DEPLOY_DONE)
+    {
+        s_controlTargetDeg = 0.0f;
+        s_deployState      = DEPLOY_CONTROL;
+        s_stateStartTimeMs = HAL_GetTick();
+        Deploy_Print("Control mode active. Target angle = 0 deg.\r\n");
+    }
+}
+
+void Airbrake_SetTargetAngle(float angle_deg)
+{
+    if (angle_deg < 0.0f)                  angle_deg = 0.0f;
+    if (angle_deg > FULL_DEPLOY_ANGLE_DEG) angle_deg = FULL_DEPLOY_ANGLE_DEG;
+    s_controlTargetDeg = angle_deg;
 }
 
 void Airbrake_GoToMax(void)
@@ -224,6 +245,8 @@ void Airbrake_Start_Sequence(void)
 
 uint8_t Airbrake_Is_Sequence_Active(void)
 {
+    /* DEPLOY_CONTROL counts as active — prevents re-entering the test sequence
+     * or homing while the flight control loop owns the actuator. */
     return (s_deployState != DEPLOY_IDLE && s_deployState != DEPLOY_DONE);
 }
 
@@ -415,6 +438,10 @@ void Airbrake_Deploy_Task(void)
                                   Encoder_GetPosition_um());
                 s_deployState = DEPLOY_IDLE;
             }
+            break;
+
+        case DEPLOY_CONTROL:
+            MoveTowardTarget(Airbrake_Angle_To_Position_um(s_controlTargetDeg));
             break;
 
         default:
