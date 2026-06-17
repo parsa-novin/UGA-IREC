@@ -6,7 +6,7 @@
  *
  * ── What changes in HIL mode ──────────────────────────────────────────────
  *  • UART4 (C5 upstream RS422 link) is left idle — no IRQ, no polling.
- *  • USART2 RX is repurposed to receive 100-byte aggregate packets from the
+ *  • USART2 RX is repurposed to receive 108-byte aggregate packets from the
  *    HIL GUI running on a PC.  Any byte on USART2 that does NOT start with
  *    the 0xA55A frame header is passed to the normal ASCII command handler,
  *    so "H", "67", "UP", "DOWN", "ALTxxxxx", etc. still work from the same
@@ -34,6 +34,6 @@
 #ifndef HIL_CONFIG_H
 #define HIL_CONFIG_H
 
-// #define HIL_MODE
+//#define HIL_MODE  /* enable in h5hil project only */
 
 #endif /* HIL_CONFIG_H */

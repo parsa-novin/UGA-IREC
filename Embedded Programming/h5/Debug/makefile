@@ -65,7 +65,7 @@ main-build: H5main.elf secondary-outputs
 
 # Tool invocations
 H5main.elf H5main.map: $(OBJS) $(USER_OBJS) C:\Users\parsa\Desktop\UGASpaceport\Embedded\ Programming\h5\STM32H562RITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "H5main.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m33 -T"C:\Users\parsa\Desktop\UGASpaceport\Embedded Programming\h5\STM32H562RITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="H5main.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "H5main.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m33 -T"C:\Users\parsa\Desktop\UGASpaceport\Embedded Programming\h5\STM32H562RITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="H5main.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

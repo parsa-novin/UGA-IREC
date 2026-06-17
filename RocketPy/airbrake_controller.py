@@ -6,10 +6,22 @@ Mirrors the two-stage state machine in the H5 embedded firmware:
     flight_trigger.h / flight_trigger.c
 
 State machine:
-    IDLE  ──(|a| > ARM_G  = 5 g)──▶  ARMED
-    ARMED ──(|a| < FIRE_G = 3 g)──▶  DEPLOYED
+    IDLE  ──(az >  arm_g)──▶  ARMED
+    ARMED ──(az < fire_g)──▶  DEPLOYED
 
     DEPLOYED is a terminal state (one-shot, no retraction).
+
+Both thresholds use the SIGNED vertical (z-axis) inertial acceleration, not
+the magnitude.  Using magnitude is ambiguous: it crosses the same value both
+at motor ignition (rising) and at burnout (falling), so a magnitude < threshold
+check can fire during the early-flight transient instead of at burnout.
+
+Signed-acceleration semantics:
+  • During motor burn:  az ≈ +10 g  (thrust >> gravity + drag)
+  • At burnout:         az crosses 0 and goes negative  (gravity + drag >> 0 thrust)
+  • arm_g  > 0  → arms once the motor has built up thrust  (az rising past arm_g)
+  • fire_g ≤ 0  → deploys the moment the net vertical acceleration goes negative
+                  (i.e., right at burnout, not near apogee when drag has bled off)
 
 Once DEPLOYED, the airbrakes stay at full deployment (80°) for the rest of
 the flight.  This exactly matches the embedded lockout:
@@ -60,7 +72,7 @@ class AirbrakeController:
     _ARMED    = "ARMED"
     _DEPLOYED = "DEPLOYED"   # equivalent to FLIGHT_TRIGGER_FIRED
 
-    def __init__(self, max_angle=80.0, arm_g=5.0, fire_g=3.0):
+    def __init__(self, max_angle=80.0, arm_g=4.0, fire_g=0.0):
         self.max_angle  = float(max_angle)
         self.arm_g      = float(arm_g)
         self.fire_g     = float(fire_g)
@@ -90,30 +102,37 @@ class AirbrakeController:
     # Acceleration estimation
     # ------------------------------------------------------------------
 
-    def _accel_magnitude_g(self, state_vector, sampling_rate):
-        """Estimate total acceleration magnitude [g] from velocity differentiation.
+    def _accel_signed_g(self, state_vector, sampling_rate):
+        """Estimate signed vertical (z-axis) inertial acceleration [g].
 
-        Compares current velocity against the velocity stored at the previous
-        controller call.  dt = 1 / sampling_rate, which is exactly the time
-        between controller invocations — accurate regardless of ODE step size.
+        Uses finite-difference of the vertical velocity component (state[5] = vz).
+        dt = 1 / sampling_rate matches the fixed controller call interval exactly.
+
+        Sign convention:
+          +g  during motor burn   (thrust accelerates rocket upward)
+           0  at burnout          (net force crosses zero)
+          -g  during coast        (gravity + drag decelerate the rocket)
+
+        Returning the signed z-component — not the magnitude — makes the two
+        events unambiguous:
+          motor ignition : az rises from ~0 to +10 g  → triggers ARMED
+          burnout        : az falls from +10 g through 0 → triggers DEPLOYED
+
+        Returns 0.0 on the first call (no previous sample available yet).
 
         State vector layout: [x, y, z, vx, vy, vz, e0, e1, e2, e3, wx, wy, wz]
-
-        Returns 0.0 on the first call (no previous sample yet).
         """
-        vel = (state_vector[3], state_vector[4], state_vector[5])
+        vz_now = state_vector[5]
 
         if self._prev_vel is None:
-            self._prev_vel = vel
+            self._prev_vel = (state_vector[3], state_vector[4], vz_now)
             return 0.0
 
         dt = 1.0 / max(float(sampling_rate), 1e-9)
-        ax = (vel[0] - self._prev_vel[0]) / dt
-        ay = (vel[1] - self._prev_vel[1]) / dt
-        az = (vel[2] - self._prev_vel[2]) / dt
-        self._prev_vel = vel
+        az = (vz_now - self._prev_vel[2]) / dt
+        self._prev_vel = (state_vector[3], state_vector[4], vz_now)
 
-        return np.sqrt(ax * ax + ay * ay + az * az) / _G_SI
+        return az / _G_SI
 
     # ------------------------------------------------------------------
     # RocketPy controller_function interface
@@ -155,25 +174,29 @@ class AirbrakeController:
             air_brakes.deployment_level = 1.0
             return
 
-        accel_g = self._accel_magnitude_g(state_vector, sampling_rate)
+        accel_g = self._accel_signed_g(state_vector, sampling_rate)
 
         # ── IDLE → ARMED (motor burn detected) ───────────────────────────
+        # az > arm_g: signed vertical accel above threshold means the motor
+        # is pushing the rocket upward (typically +8..+15 g during burn).
         if self._state == self._IDLE:
             if accel_g > self.arm_g:
                 self._state = self._ARMED
                 print(
-                    f"[TRIGGER] ARMED  — |a| = {accel_g:.2f} g "
-                    f"(threshold {self.arm_g:.1f} g)  t = {time:.3f} s"
+                    f"[TRIGGER] ARMED  — az = {accel_g:+.2f} g "
+                    f"(arm threshold {self.arm_g:+.1f} g)  t = {time:.3f} s"
                 )
 
         # ── ARMED → DEPLOYED (burnout detected) ──────────────────────────
+        # az < fire_g (≤ 0): signed vertical accel has crossed zero and gone
+        # negative — thrust is gone, gravity + drag now decelerate the rocket.
         if self._state == self._ARMED:
             if accel_g < self.fire_g:
                 self._state = self._DEPLOYED
                 air_brakes.deployment_level = 1.0
                 print(
-                    f"[TRIGGER] FIRED  — |a| = {accel_g:.2f} g "
-                    f"(threshold {self.fire_g:.1f} g)  t = {time:.3f} s  "
+                    f"[TRIGGER] FIRED  — az = {accel_g:+.2f} g "
+                    f"(fire threshold {self.fire_g:+.1f} g)  t = {time:.3f} s  "
                     f"→ deploying to {self.max_angle:.0f}°"
                 )
                 return

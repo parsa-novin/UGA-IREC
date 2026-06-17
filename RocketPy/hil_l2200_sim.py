@@ -1,57 +1,31 @@
 """
-hil_l2200_sim.py — RocketPy-based Hardware-In-the-Loop flight simulator.
+hil_l2200_sim.py — RocketPy-based HIL flight simulator.
 
-Based on mags.py / mags_test_launch.py but adapted for real-time HIL use:
-  • Uses the AeroTech L2200G motor (.eng file in this directory)
-  • Uses the Deployment_Fits_Output/ Mach-vs-Cd CSV tables for airbrake drag
-  • Runs a thread-safe, step-by-step point-mass 1-D ODE so the PC simulation
-    pace exactly matches the packet rate injected into the H5
-  • Accepts live deployment-level updates from the H5 feedback thread
+Runs the full mags.py flight model (AeroTech L2200G motor, actual rocket geometry,
+Deployment_Fits_Output Mach-Cd tables) to pre-compute a high-fidelity 3D trajectory,
+then streams sensor packets derived from that trajectory into the H5 HIL injector.
 
-Public API
-----------
+The H5 is the airbrake controller.  This module provides the sensor data; the H5
+processes it and outputs commanded deployment angles.  Those angles are accepted via
+set_deployment_level() and logged for comparison, but the pre-computed physics
+trajectory is not altered in real time (the same way actual sensor hardware works).
+
+Public API (unchanged from previous version)
+--------------------------------------------
     sim = HILFlightSim()
-    # (optional) override defaults:
-    sim = HILFlightSim(
-        motor_file  = "AeroTech_L2200G.eng",
-        drag_csv_dir= "Deployment_Fits_Output",
-        rocket_mass = 18.7,           # kg — body + motor casing (no propellant)
-        target_apogee_m = 3048.0,     # 10 000 ft AGL
-    )
-
-    # In the serial-RX callback:
-    sim.set_deployment_level(angle_deg / 70.0)   # 0..1
-
-    # In the HIL sender thread:
-    for pkt_fields, dt in sim.generate_packets(rate_hz=50.0):
-        serial.write(build_packet(pkt_fields))
-        serial.flush()
-
-    # After the run completes, save telemetry in the same CSV format
-    # the csv_flight() reader in hil_gui.py / hil_test.py expects:
+    sim.set_deployment_level(angle_deg / 70.0)    # called from H5 feedback thread
+    for pkt, dt in sim.generate_packets(50.0):    # called by HILInjector
+        serial.write(build_packet(pkt))
     sim.save_csv("hil_flight_log.csv")
-
-CSV column names (match hil_gui.py csv_flight() reader)
----------------------------------------------------------
-    packet_time_s, altitude_m, pressure_kpa,
-    imu16_ax_g, imu16_ay_g, imu16_az_g,
-    imu4_ax_g,  imu4_ay_g,  imu4_az_g,
-    mag_x_gauss, mag_y_gauss, mag_z_gauss,
-    bmi_ax_g, bmi_ay_g, bmi_az_g,
-    bmi_gx_dps, bmi_gy_dps, bmi_gz_dps,
-    ext_temp_c,
-    esc_valid, esc_temp_c, esc_voltage_v, esc_current_a,
-    esc_consumption_mah, esc_erpm,
-    encoder_position_mm,
-    sim_deploy_level, sim_velocity_mps   (extra diagnostic columns)
+    sim.print_summary()
 """
 
 from __future__ import annotations
 
 import csv
-import re
+import sys
 import threading
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator, List, Tuple
 
@@ -63,300 +37,63 @@ import numpy as np
 
 _BASE_DIR = Path(__file__).resolve().parent
 
-DEFAULT_MOTOR_FILE   = _BASE_DIR / "AeroTech_L2200G.eng"
-DEFAULT_DRAG_CSV_DIR = _BASE_DIR / "Deployment_Fits_Output"
+DEFAULT_MOTOR_FILE    = _BASE_DIR / "m3400.eng"
+DEFAULT_DRAG_CSV_DIR  = _BASE_DIR / "Deployment_Fits_Output"
+DEFAULT_BASE_DRAG_CSV = _BASE_DIR / "hell.csv"
 
 # ---------------------------------------------------------------------------
-# Rocket / atmosphere constants  (mirrors flight_estimator.h + mags.py)
+# Constants
 # ---------------------------------------------------------------------------
 
-G0          = 9.80665        # m/s²  standard gravity
-RHO0        = 1.225          # kg/m³ sea-level density
-T0_K        = 288.15         # K     sea-level temperature
-T_TROPO_K   = 216.65         # K     tropopause floor
-L_KPM       = 0.0065         # K/m   lapse rate
-R_AIR       = 287.05         # J/kg·K
-GAMMA_AIR   = 1.4            # —
+G0    = 9.80665    # m/s²
+R_AIR = 287.05     # J/(kg·K)
 
-ROCKET_RADIUS   = 0.078359   # m  — matches mags.py
-REF_AREA        = np.pi * ROCKET_RADIUS ** 2   # m²
-
-# Rocket mass (body + motor casing, NO propellant) — matches firmware
-ROCKET_DRY_MASS_KG  = 18.7 + 1.608   # 18.7 kg body + 1.608 kg motor case
-
-# Maximum airbrake deployment angle — must match firmware AIRBRAKE_MAX_ANGLE_DEG
-AIRBRAKE_MAX_ANGLE_DEG = 70.0
-
-# Magnetic field reference (Huntsville area, roughly)
+# Magnetic field reference — Midland TX area
 MAG_X_GAUSS =  0.18
 MAG_Y_GAUSS =  0.02
 MAG_Z_GAUSS =  0.46
 
-
 # ---------------------------------------------------------------------------
-# Atmosphere helpers
-# ---------------------------------------------------------------------------
-
-def _atm_temp(h_m: float) -> float:
-    return max(T0_K - L_KPM * h_m, T_TROPO_K)
-
-
-def _atm_density(h_m: float) -> float:
-    T   = _atm_temp(h_m)
-    exp = G0 / (R_AIR * L_KPM) - 1.0   # ≈ 4.256
-    return RHO0 * (T / T0_K) ** exp
-
-
-def _speed_of_sound(h_m: float) -> float:
-    return (GAMMA_AIR * R_AIR * _atm_temp(h_m)) ** 0.5
-
-
-def _atm_pressure(h_m: float) -> float:
-    """Approximate barometric pressure [Pa]."""
-    T_ratio = _atm_temp(h_m) / T0_K
-    # ISA troposphere pressure formula
-    return 101325.0 * T_ratio ** (G0 / (R_AIR * L_KPM))
-
-
-# ---------------------------------------------------------------------------
-# .eng motor file parser
-# ---------------------------------------------------------------------------
-
-@dataclass
-class MotorData:
-    name:          str
-    prop_mass_kg:  float
-    total_mass_kg: float
-    dry_mass_kg:   float
-    thrust_t:      np.ndarray   # time  [s]
-    thrust_f:      np.ndarray   # force [N]
-    total_impulse: float        # N·s
-
-    def thrust_at(self, t: float) -> float:
-        """Interpolated thrust [N] at time t; 0 before ignition or after burnout."""
-        if t < self.thrust_t[0] or t > self.thrust_t[-1]:
-            return 0.0
-        return float(np.interp(t, self.thrust_t, self.thrust_f))
-
-    @property
-    def burnout_time(self) -> float:
-        return float(self.thrust_t[-1])
-
-
-def parse_eng_file(path: str | Path) -> MotorData:
-    """
-    Parse an RASP .eng thrust-curve file.
-
-    Header line format (space-separated):
-        name diameter_mm length_mm delays prop_mass_kg total_mass_kg manufacturer
-
-    Subsequent non-comment lines:
-        time_s thrust_n
-    """
-    path = Path(path)
-    times: List[float] = []
-    forces: List[float] = []
-    prop_mass = 0.0
-    total_mass = 0.0
-    name = "unknown"
-    header_found = False
-
-    with path.open("r") as fh:
-        for raw in fh:
-            line = raw.strip()
-            if not line or line.startswith(";"):
-                continue
-            # First non-comment line is the header
-            if not header_found:
-                parts = line.split()
-                if len(parts) >= 7:
-                    name       = parts[0]
-                    prop_mass  = float(parts[5])
-                    total_mass = float(parts[6])
-                header_found = True
-                continue
-            # Data lines
-            parts = line.split()
-            if len(parts) >= 2:
-                try:
-                    times.append(float(parts[0]))
-                    forces.append(float(parts[1]))
-                except ValueError:
-                    pass
-
-    if not times:
-        raise ValueError(f"No thrust data found in: {path}")
-
-    t_arr = np.array(times,  dtype=float)
-    f_arr = np.array(forces, dtype=float)
-
-    # Ensure thrust starts at t=0 and ends at 0 N
-    if t_arr[0] > 0.0:
-        t_arr  = np.concatenate([[0.0], t_arr])
-        f_arr  = np.concatenate([[0.0], f_arr])
-    if f_arr[-1] > 0.0:
-        t_arr  = np.concatenate([t_arr,  [t_arr[-1]]])
-        f_arr  = np.concatenate([f_arr,  [0.0]])
-
-    # Total impulse via trapezoidal integration
-    total_impulse = float(np.trapz(f_arr, t_arr))
-
-    return MotorData(
-        name          = name,
-        prop_mass_kg  = prop_mass,
-        total_mass_kg = total_mass,
-        dry_mass_kg   = total_mass - prop_mass,
-        thrust_t      = t_arr,
-        thrust_f      = f_arr,
-        total_impulse = total_impulse,
-    )
-
-
-# ---------------------------------------------------------------------------
-# Airbrake drag model  (adapted from mags_test_launch.py AirbrakeModel)
-# ---------------------------------------------------------------------------
-
-def _normalize_drag_table(df) -> np.ndarray:
-    """Return (N,2) float array [mach, Cd] sorted and anchored at mach=0."""
-    import pandas as pd  # local import — only needed if AirbrakeModel is used
-
-    # Infer column names
-    mach_col = cd_col = None
-    for c in df.columns:
-        if re.search(r"mach", c, re.IGNORECASE):
-            mach_col = c
-        if re.search(r"(drag.*coeff|cd\b|c_d\b|dragcoefficient)", c, re.IGNORECASE):
-            cd_col = c
-    if "MachNumber___" in df.columns and "x_DragCoefficient___" in df.columns:
-        mach_col, cd_col = "MachNumber___", "x_DragCoefficient___"
-    if mach_col is None or cd_col is None:
-        raise ValueError(f"Cannot find Mach/Cd columns in {list(df.columns)}")
-
-    df = df.drop_duplicates(subset=mach_col, keep="first")
-    df = df.sort_values(mach_col).reset_index(drop=True)
-    if float(df[mach_col].iloc[0]) > 0.0:
-        zero_row = {mach_col: 0.0, cd_col: float(df[cd_col].iloc[0])}
-        df = pd.concat([pd.DataFrame([zero_row]), df], ignore_index=True)
-    return df[[mach_col, cd_col]].astype(float).values
-
-
-class AirbrakeModel:
-    """
-    Mach-dependent airbrake drag, exactly mirroring mags_test_launch.py.
-
-    Loads Deployment_<N>deg_CdFit.csv files and interpolates between them.
-
-    drag_coefficient_curve(deployment_level, mach) returns the *delta* Cd
-    that RocketPy would add to the body Cd.
-
-    For the HIL physics loop we use total_cd(angle_deg, mach) instead, which
-    returns the full Cd so we can compute F_drag directly.
-    """
-
-    _AREA_CONST_MM2 = 3982.98097   # exposed area constant from geometry
-
-    def __init__(self, csv_dir: str | Path = DEFAULT_DRAG_CSV_DIR,
-                 reference_area: float = REF_AREA):
-        import pandas as pd
-        self.csv_dir        = Path(csv_dir)
-        self.reference_area = reference_area
-        self.tables: dict[float, np.ndarray] = {}
-        self.deployment_angles: List[float]   = []
-        self._load_tables(pd)
-
-    def _load_tables(self, pd) -> None:
-        pattern = re.compile(r"Deployment_(\d+(?:\.\d+)?)deg_CdFit\.csv", re.IGNORECASE)
-        for path in sorted(self.csv_dir.glob("Deployment_*deg_CdFit.csv")):
-            m = pattern.search(path.name)
-            if not m:
-                continue
-            angle = float(m.group(1))
-            df    = pd.read_csv(path)
-            self.tables[angle] = _normalize_drag_table(df)
-
-        if not self.tables:
-            raise FileNotFoundError(
-                f"No Deployment_*deg_CdFit.csv files found in: {self.csv_dir}"
-            )
-        self.deployment_angles = sorted(self.tables.keys())
-        print(f"[HIL sim] Loaded {len(self.tables)} airbrake drag tables from {self.csv_dir}")
-
-    # ------------------------------------------------------------------
-    def _cd_at_angle_mach(self, angle_deg: float, mach: float) -> float:
-        """Total Cd (body + airbrakes) at a given deployment angle and Mach."""
-        angles    = self.deployment_angles
-        angle_deg = float(np.clip(angle_deg, angles[0], angles[-1]))
-
-        if angle_deg <= angles[0]:
-            tab = self.tables[angles[0]]
-            return float(np.interp(mach, tab[:, 0], tab[:, 1]))
-        if angle_deg >= angles[-1]:
-            tab = self.tables[angles[-1]]
-            return float(np.interp(mach, tab[:, 0], tab[:, 1]))
-
-        hi = next(i for i, v in enumerate(angles) if v >= angle_deg)
-        lo = hi - 1
-        t  = (angle_deg - angles[lo]) / (angles[hi] - angles[lo])
-        cd0 = float(np.interp(mach, self.tables[angles[lo]][:, 0], self.tables[angles[lo]][:, 1]))
-        cd1 = float(np.interp(mach, self.tables[angles[hi]][:, 0], self.tables[angles[hi]][:, 1]))
-        return (1.0 - t) * cd0 + t * cd1
-
-    def total_cd(self, deployment_level: float, mach: float) -> float:
-        """Full Cd at a given RocketPy deployment_level [0..1] and Mach number."""
-        angle_deg = float(np.clip(deployment_level, 0.0, 1.0)) * AIRBRAKE_MAX_ANGLE_DEG
-        return self._cd_at_angle_mach(angle_deg, mach)
-
-    # RocketPy-compatible delta-Cd interface (kept for compatibility)
-    def drag_coefficient_curve(self, deployment_level: float, mach: float) -> float:
-        angle_deg = float(np.clip(deployment_level, 0.0, 1.0)) * AIRBRAKE_MAX_ANGLE_DEG
-        cd_total  = self._cd_at_angle_mach(angle_deg, mach)
-        cd_zero   = self._cd_at_angle_mach(0.0, mach)
-        delta_cd  = cd_total - cd_zero
-        delta_area = self._AREA_CONST_MM2 * np.sin(np.deg2rad(angle_deg)) / 1e6
-        return delta_cd * (1.0 + delta_area / self.reference_area)
-
-
-# ---------------------------------------------------------------------------
-# Telemetry row  (one row per integration step)
+# Telemetry row  (CSV schema compatible with hil_gui.py csv_flight() reader)
 # ---------------------------------------------------------------------------
 
 @dataclass
 class _TelemetryRow:
-    packet_time_s:      float
-    altitude_m:         float
-    pressure_kpa:       float
-    imu16_ax_g:         float
-    imu16_ay_g:         float
-    imu16_az_g:         float
-    imu4_ax_g:          float
-    imu4_ay_g:          float
-    imu4_az_g:          float
-    mag_x_gauss:        float
-    mag_y_gauss:        float
-    mag_z_gauss:        float
-    bmi_ax_g:           float
-    bmi_ay_g:           float
-    bmi_az_g:           float
-    bmi_gx_dps:         float
-    bmi_gy_dps:         float
-    bmi_gz_dps:         float
-    ext_temp_c:         float
-    esc_valid:          int
-    esc_temp_c:         int
-    esc_voltage_v:      float
-    esc_current_a:      float
-    esc_consumption_mah:float
-    esc_erpm:           int
-    encoder_position_mm:float
-    sim_deploy_level:   float
-    sim_velocity_mps:   float
+    packet_time_s:       float
+    altitude_m:          float
+    pressure_kpa:        float
+    imu16_ax_g:          float
+    imu16_ay_g:          float
+    imu16_az_g:          float
+    imu4_ax_g:           float
+    imu4_ay_g:           float
+    imu4_az_g:           float
+    mag_x_gauss:         float
+    mag_y_gauss:         float
+    mag_z_gauss:         float
+    bmi_ax_g:            float
+    bmi_ay_g:            float
+    bmi_az_g:            float
+    bmi_gx_dps:          float
+    bmi_gy_dps:          float
+    bmi_gz_dps:          float
+    ext_temp_c:          float
+    esc_valid:           int
+    esc_temp_c:          int
+    esc_voltage_v:       float
+    esc_current_a:       float
+    esc_consumption_mah: float
+    esc_erpm:            int
+    encoder_position_mm: float
+    sim_deploy_level:    float
+    sim_velocity_mps:    float
 
 
-_CSV_FIELDS = [f.name for f in _TelemetryRow.__dataclass_fields__.values()]
+_CSV_FIELDS = list(_TelemetryRow.__dataclass_fields__.keys())
 
 
 # ---------------------------------------------------------------------------
-# PacketFields dataclass  (matches hil_gui.py PacketFields)
+# PacketFields  (matches hil_gui.py exactly)
 # ---------------------------------------------------------------------------
 
 @dataclass
@@ -386,223 +123,222 @@ class PacketFields:
     esc_consumption_mah: int   = 0
     esc_erpm:            int   = 0
     encoder_position_um: int   = 0
+    cam_current_ma:      float = 0.0
+    batt_voltage_mv:     int   = 16800
 
 
 # ---------------------------------------------------------------------------
-# Main HIL flight simulator
+# HIL flight simulator
 # ---------------------------------------------------------------------------
 
 class HILFlightSim:
     """
-    Real-time step-based 1-D flight simulator for HIL testing.
+    Pre-computes a full RocketPy 6-DOF flight (mags.py model) and replays it
+    as real-time sensor packets for the H5 HIL injector.
 
-    Physics model
-    -------------
-    Vertical (1-D) point mass.  Gravity + motor thrust + aerodynamic drag.
-    Motor thrust from the AeroTech L2200G .eng file.
-    Drag Cd from the Deployment_Fits_Output CSVs via AirbrakeModel.
-    Propellant mass is burned proportionally to impulse delivered.
+    Specific-force mapping (what the on-board accelerometers measure):
+        SF_x/y  = a_body_x/y / G0          [g]   — lateral, no gravity component
+        SF_z    = (a_body_z + G0) / G0     [g]   — axial, gravity removed
+    Valid for near-vertical flights (inclination ≥ ~85°).
 
-    Sensor outputs
-    --------------
-    IMU specific force (az_g) = (F_thrust - F_drag) / (m * G0)
-      • ≈ 14 g during burn  →  triggers firmware ARM at |a| > 5 g
-      • ≈ 0.3 g during coast  →  triggers firmware FIRE at |a| < 3 g
-    Barometric altitude and pressure from ISA model.
-    Temperature from troposphere lapse rate.
+    Angular rate from w1/w2/w3 (rad/s) is converted to deg/s for the gyro channels.
     """
 
     def __init__(
         self,
         motor_file:       str | Path = DEFAULT_MOTOR_FILE,
         drag_csv_dir:     str | Path = DEFAULT_DRAG_CSV_DIR,
-        rocket_dry_mass:  float      = ROCKET_DRY_MASS_KG,
-        target_apogee_m:  float      = 3048.0,    # 10 000 ft AGL
+        base_drag_csv:    str | Path = DEFAULT_BASE_DRAG_CSV,
+        target_apogee_m:  float      = 3048.0,
+        inclination_deg:  float      = 89.0,
+        rail_length_m:    float      = 5.5,
     ):
-        self.motor  = parse_eng_file(motor_file)
-        print(f"[HIL sim] Motor: {self.motor.name}  "
-              f"prop={self.motor.prop_mass_kg:.3f} kg  "
-              f"Isp_equiv={self.motor.total_impulse/(self.motor.prop_mass_kg*G0):.0f} s  "
-              f"burnout={self.motor.burnout_time:.2f} s")
+        print("[HIL sim] Running full RocketPy simulation using mags.py model …")
+        print("[HIL sim] (first run may take ~10–20 s)")
 
-        self.airbrake = AirbrakeModel(drag_csv_dir)
+        # ── ensure mags.py is importable (same directory) ──────────────────
+        if str(_BASE_DIR) not in sys.path:
+            sys.path.insert(0, str(_BASE_DIR))
+        import mags as _m
+        import rocketpy
+
+        # ── environment: site coordinates, calm-air atmosphere ──────────────
+        env = rocketpy.Environment(
+            latitude=_m.DEFAULT_LATITUDE,
+            longitude=_m.DEFAULT_LONGITUDE,
+            elevation=_m.DEFAULT_ELEVATION,
+        )
+        env.set_date((2026, 6, 16, 10))
+        env.set_atmospheric_model(type="custom_atmosphere", wind_u=0.0, wind_v=0.0)
+        elev = float(_m.DEFAULT_ELEVATION)
+
+        # ── rocket: full geometry, no autonomous controller ─────────────────
+        # The H5 is the airbrake controller; we don't add a sim-side one.
+        drag_table = _m.load_base_drag_curve(str(base_drag_csv))
+        rocket = _m.build_rocket(
+            drag_table     = drag_table,
+            motor_file     = motor_file,
+            airbrake_model = None,    # H5 commands flaps — no sim controller
+            elevation      = elev,
+        )
+
+        # ── run the full 6-DOF RocketPy simulation ──────────────────────────
+        flight = rocketpy.Flight(
+            rocket      = rocket,
+            environment = env,
+            rail_length = rail_length_m,
+            inclination = inclination_deg,
+            heading     = 0.0,
+        )
+
+        # ── sample at 200 Hz for smooth interpolation ───────────────────────
+        t_full  = np.array(flight.time)
+        t_dense = np.arange(0.0, float(t_full[-1]) + 0.005, 0.005)  # 200 Hz
+
+        alt_asl = np.array(flight.altitude(t_dense))
+        alt_agl = np.clip(alt_asl - elev, 0.0, None)
+
+        press   = np.array(flight.pressure(t_dense))          # Pa
+        rho     = np.array(flight.density(t_dense))            # kg/m³
+        ax_b    = np.array(flight.ax_body_frame(t_dense))     # m/s²
+        ay_b    = np.array(flight.ay_body_frame(t_dense))
+        az_b    = np.array(flight.az_body_frame(t_dense))
+        vz      = np.array(flight.vz(t_dense))                # m/s  (inertial vertical)
+        w1      = np.array(flight.w1(t_dense))                # rad/s body angular rate
+        w2      = np.array(flight.w2(t_dense))
+        w3      = np.array(flight.w3(t_dense))
+
+        # ── specific force (accelerometer reading) ──────────────────────────
+        # Body frame: +z from tail to nose.  Gravity projects as -G0 onto z
+        # when rocket is vertical, so SF_z = a_body_z + G0.
+        self._t          = t_dense
+        self._alt_agl    = alt_agl
+        self._press      = press
+        self._temp_c     = press / (np.maximum(rho, 1e-9) * R_AIR) - 273.15
+        self._sf_ax      = ax_b / G0
+        self._sf_ay      = ay_b / G0
+        self._sf_az      = (az_b + G0) / G0
+        self._vz         = vz
+        self._gx_dps     = w1 * (180.0 / np.pi)
+        self._gy_dps     = w2 * (180.0 / np.pi)
+        self._gz_dps     = w3 * (180.0 / np.pi)
+
+        # ── stop replay just after the rocket descends past drogue altitude ─
+        # (avoids streaming 10+ min of parachute descent)
+        apogee_idx = int(np.argmax(alt_agl))
+        post_drop  = np.where(alt_agl[apogee_idx:] < 200.0)[0]
+        if len(post_drop):
+            self._t_stop = float(t_dense[apogee_idx + post_drop[0]])
+        else:
+            self._t_stop = float(t_dense[-1])
+
+        # ── metadata ────────────────────────────────────────────────────────
         self.target_apogee_m = target_apogee_m
+        self._apogee_agl     = float(flight.apogee) - elev
 
-        # State
-        self._t          = 0.0
-        self._alt        = 0.0    # m AGL
-        self._vel        = 0.0    # m/s  (positive = upward)
-        self._dry_mass   = rocket_dry_mass
-        self._prop_mass  = self.motor.prop_mass_kg
-        self._cum_imp    = 0.0    # N·s impulse delivered so far
-        self._done       = False
-
-        # Thread-safe deployment level (set by H5 feedback)
+        # thread-safe deployment feedback from H5
         self._deploy_lock  = threading.Lock()
-        self._deploy_level = 0.0  # 0..1
-
-        # Telemetry log
+        self._deploy_level = 0.0
+        self._done         = False
         self._log: List[_TelemetryRow] = []
 
-        print(f"[HIL sim] Rocket dry mass = {self._dry_mass:.2f} kg  "
-              f"(+{self._prop_mass:.3f} kg propellant at ignition)")
-        print(f"[HIL sim] Target apogee   = {target_apogee_m:.0f} m  "
+        print(f"[HIL sim] Motor    : {motor_file.name if isinstance(motor_file, Path) else motor_file}")
+        print(f"[HIL sim] Apogee   : {self._apogee_agl:.0f} m AGL "
+              f"({self._apogee_agl / 0.3048:.0f} ft)  —  target {target_apogee_m:.0f} m "
               f"({target_apogee_m / 0.3048:.0f} ft)")
+        print(f"[HIL sim] Replay   : 0 → {self._t_stop:.1f} s  "
+              f"({len(t_dense)} points at 200 Hz sampled, "
+              f"replay capped at 200 m AGL descent)")
 
-    # ------------------------------------------------------------------
-    # Thread-safe deployment update (call from H5 feedback thread)
-    # ------------------------------------------------------------------
+    # ── thread-safe deployment update ──────────────────────────────────────
 
     def set_deployment_level(self, level: float) -> None:
-        """Set airbrake deployment fraction [0..1].  Thread-safe."""
+        """Accept commanded deployment fraction [0..1] from the H5 feedback thread."""
         with self._deploy_lock:
-            self._deploy_level = max(0.0, min(1.0, float(level)))
+            self._deploy_level = float(np.clip(level, 0.0, 1.0))
 
     def get_deployment_level(self) -> float:
         with self._deploy_lock:
             return self._deploy_level
 
-    # ------------------------------------------------------------------
-    # Current mass
-    # ------------------------------------------------------------------
-
-    def _current_mass(self) -> float:
-        prop_remaining = self._prop_mass * max(
-            0.0, 1.0 - self._cum_imp / max(self.motor.total_impulse, 1e-9)
-        )
-        return self._dry_mass + prop_remaining
-
-    # ------------------------------------------------------------------
-    # Single physics step
-    # ------------------------------------------------------------------
-
-    def step(self, dt: float) -> _TelemetryRow:
-        """Advance simulation by dt seconds and return the telemetry row."""
-        deploy   = self.get_deployment_level()
-        mass     = self._current_mass()
-        thrust   = self.motor.thrust_at(self._t)
-
-        # Aerodynamic drag
-        rho      = _atm_density(self._alt)
-        spd      = abs(self._vel)
-        mach_num = spd / max(_speed_of_sound(self._alt), 1.0)
-        cd_total = self.airbrake.total_cd(deploy, mach_num)
-        F_drag   = 0.5 * rho * spd * spd * cd_total * REF_AREA
-        # Drag force direction opposes velocity
-        F_drag_up = -np.sign(self._vel) * F_drag if self._vel != 0.0 else 0.0
-
-        # Net upward force
-        F_net = thrust + F_drag_up - mass * G0
-        a_inertial = F_net / mass
-
-        # Integrate state
-        self._vel += a_inertial * dt
-        self._alt  = max(0.0, self._alt + self._vel * dt)
-        self._t   += dt
-
-        # Propellant consumption (proportional to impulse delivered)
-        self._cum_imp = min(self._cum_imp + thrust * dt, self.motor.total_impulse)
-
-        # Landing detection (allow at least 3 s of flight first)
-        if self._alt <= 0.0 and self._t > 3.0:
-            self._done = True
-
-        # ── Sensor data generation ────────────────────────────────────────
-        # Specific force (what an accelerometer on the rocket axis reads):
-        #   SF = (F_thrust + F_drag_up) / mass
-        # This reads ~14 g during burn, ~0-0.5 g during coast, matching
-        # the firmware's trigger thresholds (arm >5 g, fire <3 g).
-        az_sf_g = (thrust + F_drag_up) / (mass * G0)
-
-        baro_alt   = self._alt
-        pressure   = _atm_pressure(baro_alt)
-        temp_k     = _atm_temp(baro_alt)
-        temp_c     = temp_k - 273.15
-
-        row = _TelemetryRow(
-            packet_time_s       = self._t,
-            altitude_m          = baro_alt,
-            pressure_kpa        = pressure / 1000.0,
-            imu16_ax_g          = 0.0,
-            imu16_ay_g          = 0.0,
-            imu16_az_g          = float(az_sf_g),
-            imu4_ax_g           = 0.0,
-            imu4_ay_g           = 0.0,
-            imu4_az_g           = float(az_sf_g),
-            mag_x_gauss         = MAG_X_GAUSS,
-            mag_y_gauss         = MAG_Y_GAUSS,
-            mag_z_gauss         = MAG_Z_GAUSS,
-            bmi_ax_g            = 0.0,
-            bmi_ay_g            = 0.0,
-            bmi_az_g            = float(az_sf_g),
-            bmi_gx_dps          = 0.0,
-            bmi_gy_dps          = 0.0,
-            bmi_gz_dps          = 0.0,
-            ext_temp_c          = float(temp_c),
-            esc_valid           = 0,
-            esc_temp_c          = 25,
-            esc_voltage_v       = 16.8,
-            esc_current_a       = 0.0,
-            esc_consumption_mah = 0.0,
-            esc_erpm            = 0,
-            encoder_position_mm = 0.0,
-            sim_deploy_level    = float(deploy),
-            sim_velocity_mps    = float(self._vel),
-        )
-        self._log.append(row)
-        return row
-
-    # ------------------------------------------------------------------
-    # Generator (for HILInjector / hil_gui.py)
-    # ------------------------------------------------------------------
+    # ── packet generator ───────────────────────────────────────────────────
 
     def generate_packets(
         self, rate_hz: float = 50.0
     ) -> Iterator[Tuple[PacketFields, float]]:
         """
-        Yield (PacketFields, dt) until landing.
-
-        This is the generator used by HILInjector in hil_gui.py.
-        dt is the nominal wall-clock delay between packets (= 1/rate_hz).
+        Yield (PacketFields, dt) at rate_hz packets/s until the flight replay ends.
+        Interpolates all sensor channels from the 200 Hz pre-sampled trajectory.
         """
-        dt = 1.0 / rate_hz
-        while not self._done:
-            row = self.step(dt)
-            pf  = PacketFields(
-                altitude_m          = row.altitude_m,
-                pressure_pa         = int(row.pressure_kpa * 1000.0),
-                imu16_ax_g          = row.imu16_ax_g,
-                imu16_ay_g          = row.imu16_ay_g,
-                imu16_az_g          = row.imu16_az_g,
-                imu4_ax_g           = row.imu4_ax_g,
-                imu4_ay_g           = row.imu4_ay_g,
-                imu4_az_g           = row.imu4_az_g,
-                mag_x_gauss         = row.mag_x_gauss,
-                mag_y_gauss         = row.mag_y_gauss,
-                mag_z_gauss         = row.mag_z_gauss,
-                bmi_ax_g            = row.bmi_ax_g,
-                bmi_ay_g            = row.bmi_ay_g,
-                bmi_az_g            = row.bmi_az_g,
-                bmi_gx_dps          = row.bmi_gx_dps,
-                bmi_gy_dps          = row.bmi_gy_dps,
-                bmi_gz_dps          = row.bmi_gz_dps,
-                ext_temp_c          = row.ext_temp_c,
-                esc_valid           = bool(row.esc_valid),
-                esc_temp_c          = row.esc_temp_c,
-                esc_voltage_mv      = int(row.esc_voltage_v * 1000.0),
-                esc_current_ma      = int(row.esc_current_a * 1000.0),
-                esc_consumption_mah = int(row.esc_consumption_mah),
-                esc_erpm            = row.esc_erpm,
+        dt    = 1.0 / rate_hz
+        t_sim = 0.0
+
+        while t_sim <= self._t_stop:
+            deploy = self.get_deployment_level()
+
+            # interpolate from pre-sampled dense arrays
+            alt  = float(np.interp(t_sim, self._t, self._alt_agl))
+            prs  = float(np.interp(t_sim, self._t, self._press))
+            tmp  = float(np.interp(t_sim, self._t, self._temp_c))
+            ax   = float(np.interp(t_sim, self._t, self._sf_ax))
+            ay   = float(np.interp(t_sim, self._t, self._sf_ay))
+            az   = float(np.interp(t_sim, self._t, self._sf_az))
+            vz   = float(np.interp(t_sim, self._t, self._vz))
+            gx   = float(np.interp(t_sim, self._t, self._gx_dps))
+            gy   = float(np.interp(t_sim, self._t, self._gy_dps))
+            gz   = float(np.interp(t_sim, self._t, self._gz_dps))
+
+            pf = PacketFields(
+                altitude_m          = alt,
+                pressure_pa         = int(prs),
+                imu16_ax_g          = ax,   imu16_ay_g  = ay,   imu16_az_g  = az,
+                imu4_ax_g           = ax,   imu4_ay_g   = ay,   imu4_az_g   = az,
+                mag_x_gauss         = MAG_X_GAUSS,
+                mag_y_gauss         = MAG_Y_GAUSS,
+                mag_z_gauss         = MAG_Z_GAUSS,
+                bmi_ax_g            = ax,   bmi_ay_g    = ay,   bmi_az_g    = az,
+                bmi_gx_dps          = gx,   bmi_gy_dps  = gy,   bmi_gz_dps  = gz,
+                ext_temp_c          = tmp,
+                esc_valid           = False,
+                esc_temp_c          = 25,
+                esc_voltage_mv      = 16800,
+                esc_current_ma      = 0,
+                esc_consumption_mah = 0,
+                esc_erpm            = 0,
                 encoder_position_um = 0,
             )
-            yield pf, dt
 
-    # ------------------------------------------------------------------
-    # CSV export  (matches hil_gui.py csv_flight() reader format)
-    # ------------------------------------------------------------------
+            self._log.append(_TelemetryRow(
+                packet_time_s       = t_sim,
+                altitude_m          = alt,
+                pressure_kpa        = prs / 1000.0,
+                imu16_ax_g          = ax,   imu16_ay_g          = ay,   imu16_az_g = az,
+                imu4_ax_g           = ax,   imu4_ay_g           = ay,   imu4_az_g  = az,
+                mag_x_gauss         = MAG_X_GAUSS,
+                mag_y_gauss         = MAG_Y_GAUSS,
+                mag_z_gauss         = MAG_Z_GAUSS,
+                bmi_ax_g            = ax,   bmi_ay_g            = ay,   bmi_az_g   = az,
+                bmi_gx_dps          = gx,   bmi_gy_dps          = gy,   bmi_gz_dps = gz,
+                ext_temp_c          = tmp,
+                esc_valid           = 0,
+                esc_temp_c          = 25,
+                esc_voltage_v       = 16.8,
+                esc_current_a       = 0.0,
+                esc_consumption_mah = 0.0,
+                esc_erpm            = 0,
+                encoder_position_mm = 0.0,
+                sim_deploy_level    = deploy,
+                sim_velocity_mps    = vz,
+            ))
+
+            yield pf, dt
+            t_sim += dt
+
+        self._done = True
+
+    # ── CSV export ─────────────────────────────────────────────────────────
 
     def save_csv(self, output_path: str | Path = "hil_flight_log.csv") -> None:
-        """Save the telemetry log to a CSV file."""
         output_path = Path(output_path)
         with output_path.open("w", newline="", encoding="utf-8") as fh:
             writer = csv.DictWriter(fh, fieldnames=_CSV_FIELDS)
@@ -611,29 +347,30 @@ class HILFlightSim:
                 writer.writerow(row.__dict__)
         print(f"[HIL sim] Saved {len(self._log)} rows → {output_path}")
 
-    # ------------------------------------------------------------------
-    # Quick stats (call after simulation completes)
-    # ------------------------------------------------------------------
+    # ── summary ────────────────────────────────────────────────────────────
 
     def print_summary(self) -> None:
         if not self._log:
             print("[HIL sim] No data.")
             return
-        alts = [r.altitude_m for r in self._log]
+        alts  = [r.altitude_m     for r in self._log]
+        vels  = [r.sim_velocity_mps for r in self._log]
+        deps  = [r.sim_deploy_level for r in self._log]
         max_alt   = max(alts)
         max_alt_t = self._log[alts.index(max_alt)].packet_time_s
-        vels      = [r.sim_velocity_mps for r in self._log]
         max_vel   = max(vels)
+        max_dep   = max(deps)
         print(f"[HIL sim] Duration     : {self._log[-1].packet_time_s:.2f} s")
         print(f"[HIL sim] Max altitude : {max_alt:.1f} m  ({max_alt/0.3048:.0f} ft AGL)  "
               f"at t = {max_alt_t:.2f} s")
         print(f"[HIL sim] Max velocity : {max_vel:.1f} m/s")
+        print(f"[HIL sim] Max H5 deploy: {max_dep:.3f}  ({max_dep * 70:.1f}°)")
         print(f"[HIL sim] Target apogee: {self.target_apogee_m:.0f} m  "
               f"({self.target_apogee_m/0.3048:.0f} ft)")
 
 
 # ---------------------------------------------------------------------------
-# Quick standalone test
+# Standalone test
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -642,15 +379,12 @@ if __name__ == "__main__":
     print("Running standalone HIL sim (no serial, no H5 feedback) …\n")
     sim = HILFlightSim()
 
-    # Simulate airbrakes deploying at 70 % after burnout (for testing)
-    burnout = sim.motor.burnout_time
-    t_start = time.perf_counter()
-
+    t0 = time.perf_counter()
+    n  = 0
     for pf, dt in sim.generate_packets(50.0):
-        if sim._t > burnout + 0.5:
-            sim.set_deployment_level(0.70)  # 70 % deployment after burnout
+        n += 1
 
-    elapsed = time.perf_counter() - t_start
+    elapsed = time.perf_counter() - t0
     sim.print_summary()
     sim.save_csv("hil_l2200_standalone_test.csv")
-    print(f"\nSimulated {sim._t:.1f} s in {elapsed:.2f} s wall-clock time.")
+    print(f"\nStreamed {n} packets ({n/50.0:.1f} s sim) in {elapsed:.2f} s wall-clock time.")

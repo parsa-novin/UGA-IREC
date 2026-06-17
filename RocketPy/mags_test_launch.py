@@ -21,7 +21,7 @@ from airbrake_controller import AirbrakeController
 BASE_DIR = Path(__file__).resolve().parent
 
 DEFAULT_BASE_DRAG_CSV   = BASE_DIR / "Deployment_Fits_Output" / "Deployment_0deg_CdFit.csv"
-DEFAULT_MOTOR_FILE      = BASE_DIR / "m2050x_corrected.eng"
+DEFAULT_MOTOR_FILE      = BASE_DIR / "AeroTech_L2200G.eng"
 DEFAULT_AIRBRAKE_CSV_DIR = BASE_DIR / "Deployment_Fits_Output"
 
 ROCKET_RADIUS        = 0.078359
@@ -34,15 +34,15 @@ NOSE_LENGTH        = 0.7625
 TAIL_TOP_RADIUS    = 0.157 / 2
 TAIL_BOTTOM_RADIUS = 0.12 / 2
 TAIL_LENGTH        = 0.112
-TAIL_POSITION      = 2.1467
+TAIL_POSITION      = 2.205
 
 FIN_COUNT      = 3
 FIN_ROOT_CHORD = 0.2032
 FIN_TIP_CHORD  = 0.095
 FIN_SPAN       = 0.1778
-FIN_POSITION   = 1.9445
+FIN_POSITION   = 1.9445+0.0583
 
-MOTOR_POSITION           = 2.262
+MOTOR_POSITION           = 2.262+0.0583
 AIRBRAKE_SURFACE_POSITION = 0.762
 
 DROGUE_CD_S              = 1.16 * np.pi * (0.61 / 2) ** 2   # 0.339 m²
@@ -845,15 +845,16 @@ def build_parser():
         )
         p.add_argument(
             "--arm-g", type=float, default=4.0,
-            help="Acceleration threshold [g] to enter ARMED state. "
-                 "Real firmware uses 5g body-frame; simulation velocity-diff gives inertial "
-                 "acceleration (excludes gravity), so effective threshold is ~1g lower. (default: 4.0)"
+            help="Signed vertical acceleration threshold [g] to enter ARMED state. "
+                 "Motor ignition drives az to +10 g or more; 4.0 g gives a "
+                 "comfortable margin above rail-clearance noise. (default: 4.0)"
         )
         p.add_argument(
-            "--fire-g", type=float, default=2.0,
-            help="Acceleration threshold [g] to trigger deployment. "
-                 "Real firmware uses 3g body-frame; simulation inertial accel is ~1g lower "
-                 "at the same physical event, so set to 2.0 to match burnout timing. (default: 2.0)"
+            "--fire-g", type=float, default=0.0,
+            help="Signed vertical acceleration threshold [g] to trigger deployment. "
+                 "At burnout az crosses zero and goes negative; 0.0 deploys the "
+                 "instant the net upward acceleration ends. Use a small negative "
+                 "value (e.g. -0.5) for hysteresis. (default: 0.0)"
         )
 
     preview = subparsers.add_parser("preview", help="Show rocket geometry only")

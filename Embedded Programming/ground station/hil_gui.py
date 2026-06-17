@@ -51,17 +51,17 @@ from matplotlib.figure import Figure
 # ── Constants ─────────────────────────────────────────────────────────────────
 AGGREGATE_HEADER = 0xA55A
 UPSTREAM_HEADER  = 0xAA55
-PACKET_LEN       = 100
+PACKET_LEN       = 108
 DEFAULT_BAUD     = 115200
 DEFAULT_RATE_HZ  = 50.0
 HISTORY_LEN      = 800
 UI_REFRESH_MS    = 33
 
-AGGREGATE_FORMAT = "<" + "H" + "Hii" + "f" * 16 + "B" + "B" + "B" + "I" + "I" + "I" + "I" + "i" + "B"
+AGGREGATE_FORMAT = "<" + "H" + "Hii" + "f" * 16 + "B" + "B" + "B" + "I" + "I" + "I" + "I" + "i" + "f" + "I" + "B"
 PACKET_STRUCT    = struct.Struct(AGGREGATE_FORMAT)
 
 # Path to the RocketPy directory (one level up, then RocketPy/)
-_ROCKETPY_DIR = Path(__file__).resolve().parent.parent / "RocketPy"
+_ROCKETPY_DIR = Path(__file__).resolve().parent.parent.parent / "RocketPy"
 
 # Maximum airbrake deployment angle in the H5 firmware (must match
 # AIRBRAKE_MAX_ANGLE_DEG in airbrake_control.h = 70°)
@@ -118,10 +118,12 @@ class PacketFields:
     esc_consumption_mah: int = 0
     esc_erpm: int            = 0
     encoder_position_um: int = 0
+    cam_current_ma: float    = 0.0
+    batt_voltage_mv: int     = 16800
 
 
 def build_packet(f: PacketFields) -> bytes:
-    altitude_cm = int(f.altitude_m)
+    altitude_cm = int(f.altitude_m * 100)
     imu = (
         f.imu16_ax_g, f.imu16_ay_g, f.imu16_az_g,
         f.imu4_ax_g,  f.imu4_ay_g,  f.imu4_az_g,
@@ -139,7 +141,9 @@ def build_packet(f: PacketFields) -> bytes:
         int(f.esc_valid), f.esc_temp_c,
         f.esc_voltage_mv, f.esc_current_ma,
         f.esc_consumption_mah, f.esc_erpm,
-        f.encoder_position_um, 0,
+        f.encoder_position_um,
+        f.cam_current_ma, f.batt_voltage_mv,
+        0,
     ))
     pkt[-1] = _xor(pkt[2:-1])
     return bytes(pkt)
@@ -302,6 +306,287 @@ class SimulatedH5:
         return msgs, updated
 
 
+# ── H5 control-loop mirror ────────────────────────────────────────────────────
+
+class H5ControlLoop:
+    """Python mirror of the H5 firmware control stack.
+
+    Processes the same PacketFields sent to the H5 and produces matching
+    estimated state + airbrake command.  All constants mirror the firmware
+    header files exactly so outputs should converge to the same values.
+
+    flight_trigger.h  → ARM_G=5.0, FIRE_G=3.0
+    flight_estimator.h → KF tuning, atmosphere model, drag table
+    airbrake_control.h → KP=1/300, DEADBAND=5m, MAX_STEP=0.05
+    """
+
+    # Atmosphere (flight_estimator.c)
+    G0     = 9.80665
+    RHO0   = 1.225
+    T0     = 288.15
+    L_KPM  = 0.0065
+    R_AIR  = 287.05
+    GAMMA  = 1.4
+
+    # Rocket parameters (flight_estimator.h)
+    PROP_MASS  = 2.866
+    CASE_MASS  = 1.608
+    BODY_MASS  = 18.7
+    M0         = 18.7 + 1.608 + 2.866   # 23.174 kg
+    M_DRY      = 18.7 + 1.608            # 20.308 kg
+    TOTAL_IMP  = 5910.0
+    REF_AREA   = 0.019284
+
+    # Drag table (flight_estimator.c)
+    CD_MACH_BP = [0.00, 0.10, 0.30, 0.50, 0.70, 0.85, 0.95, 1.05, 1.20, 1.50, 2.00]
+    CD_BODY_BP = [0.45, 0.45, 0.43, 0.42, 0.44, 0.50, 0.65, 0.75, 0.62, 0.52, 0.48]
+    CD_AB_FULL = 0.30
+
+    # KF tuning (flight_estimator.c)
+    KF_Q_H = 0.0001
+    KF_Q_V = 0.01
+    KF_R   = 0.25
+    KF_P0  = 100.0
+
+    BARO_CAL_N = 50
+    PRED_DT    = 0.05
+    PRED_TMAX  = 90.0
+    APOGEE_V   = -2.0
+    MAX_DT     = 0.10
+
+    # Flight trigger (flight_trigger.h)
+    ARM_G  = 5.0
+    FIRE_G = 3.0
+
+    # Airbrake controller (airbrake_control.h)
+    TARGET_ALT  = 3048.0      # default 10 000 ft
+    KP          = 1.0 / 300.0
+    DEADBAND    = 5.0
+    MAX_STEP    = 0.05
+    CTRL_PERIOD = 0.050       # 20 Hz
+    MAX_ANGLE   = 70.0        # deg
+
+    def __init__(self):
+        self._last_t: float | None = None
+        self.reset()
+
+    def reset(self):
+        self._phase         = "IDLE"
+        self._kf_x          = [0.0, 0.0]   # [altitude_m, velocity_mps]
+        self._kf_P          = [[self.KF_P0, 0.0], [0.0, self.KF_P0]]
+        self._h_gnd         = 0.0
+        self._cal_n         = 0
+        self._cal_s         = 0.0
+        self._mass          = self.M0
+        self._imp           = 0.0
+        self._apogee_est    = 0.0
+        self._deploy_inj    = 0.0
+        self._trig          = "IDLE"
+        self._ctrl_active   = False
+        self._ctrl_level    = 0.0
+        self._target_m      = self.TARGET_ALT
+        self._last_ctrl_t   = 0.0
+        self._last_t        = None
+        # Public outputs
+        self.altitude_m     = 0.0
+        self.velocity_mps   = 0.0
+        self.apogee_est_m   = 0.0
+        self.deploy_level   = 0.0
+        self.cmd_angle_deg  = 0.0
+        self.trigger_state  = "IDLE"
+        self.phase          = "IDLE"
+
+    def set_target_ft(self, feet: float):
+        self._target_m = feet * 0.3048
+
+    # ── Atmosphere ───────────────────────────────────────────────────────────
+
+    def _temp(self, h: float) -> float:
+        return max(216.65, self.T0 - self.L_KPM * h)
+
+    def _density(self, h: float) -> float:
+        T   = self._temp(h)
+        exp = self.G0 / (self.R_AIR * self.L_KPM) - 1.0
+        return self.RHO0 * (T / self.T0) ** exp
+
+    def _sos(self, h: float) -> float:
+        return math.sqrt(self.GAMMA * self.R_AIR * self._temp(h))
+
+    # ── Aerodynamics ─────────────────────────────────────────────────────────
+
+    def _cd_body(self, mach: float) -> float:
+        bp, cd = self.CD_MACH_BP, self.CD_BODY_BP
+        if mach <= bp[0]:  return cd[0]
+        if mach >= bp[-1]: return cd[-1]
+        for i in range(1, len(bp)):
+            if mach <= bp[i]:
+                t = (mach - bp[i-1]) / (bp[i] - bp[i-1])
+                return cd[i-1] + t * (cd[i] - cd[i-1])
+        return cd[-1]
+
+    def _drag_accel(self, v: float, h: float, deploy: float, mass: float) -> float:
+        rho  = self._density(h)
+        spd  = abs(v)
+        mach = spd / self._sos(h)
+        cd   = self._cd_body(mach) + deploy * deploy * self.CD_AB_FULL
+        q    = 0.5 * rho * spd * spd
+        return (q * cd * self.REF_AREA) / mass
+
+    # ── Kalman filter ─────────────────────────────────────────────────────────
+
+    def _kf_predict(self, dt: float, deploy: float):
+        v  = self._kf_x[1]
+        h  = self._kf_x[0]
+        ad = self._drag_accel(v, h, deploy, self._mass)
+        a  = -self.G0 - (ad if v >= 0 else -ad)
+        self._kf_x[0] += v * dt + 0.5 * a * dt * dt
+        self._kf_x[1] += a * dt
+        P   = self._kf_P
+        p00 = P[0][0] + dt * (P[1][0] + P[0][1]) + dt * dt * P[1][1] + self.KF_Q_H
+        p01 = P[0][1] + dt * P[1][1]
+        p10 = P[1][0] + dt * P[1][1]
+        p11 = P[1][1] + self.KF_Q_V
+        self._kf_P = [[p00, p01], [p10, p11]]
+
+    def _kf_update(self, baro_h: float):
+        P    = self._kf_P
+        y    = baro_h - self._kf_x[0]
+        Sinv = 1.0 / (P[0][0] + self.KF_R)
+        K0   = P[0][0] * Sinv
+        K1   = P[1][0] * Sinv
+        self._kf_x[0] += K0 * y
+        self._kf_x[1] += K1 * y
+        self._kf_P = [
+            [(1.0 - K0) * P[0][0], (1.0 - K0) * P[0][1]],
+            [P[1][0] - K1 * P[0][0], P[1][1] - K1 * P[0][1]],
+        ]
+
+    # ── Apogee predictor ──────────────────────────────────────────────────────
+
+    def _predict_apogee(self, h0: float, v0: float, deploy: float) -> float:
+        h, v = h0, v0
+        if v <= 0:
+            return h
+        t = 0.0
+        while t < self.PRED_TMAX:
+            ad = self._drag_accel(v, h, deploy, self._mass)
+            a  = -self.G0 - ad
+            v += a * self.PRED_DT
+            h += v * self.PRED_DT
+            t += self.PRED_DT
+            if v <= 0:
+                return h
+        return h
+
+    # ── Main update ───────────────────────────────────────────────────────────
+
+    def process(self, f: "PacketFields", now: float) -> list[str]:
+        """Process one packet; returns list of log messages emitted this tick."""
+        if self._last_t is None:
+            self._last_t = now
+            dt = 0.020
+        else:
+            dt = min(max(now - self._last_t, 0.0001), self.MAX_DT)
+            self._last_t = now
+
+        baro_m    = f.altitude_m
+        ax, ay, az = f.imu16_ax_g, f.imu16_ay_g, f.imu16_az_g
+        imu_mag_g  = math.sqrt(ax * ax + ay * ay + az * az)
+
+        msgs: list[str] = []
+
+        # ── Flight trigger ────────────────────────────────────────────────
+        if self._trig == "IDLE":
+            if imu_mag_g > self.ARM_G:
+                self._trig  = "ARMED"
+                self._phase = "BOOST"
+                self._imp   = 0.0
+                self._mass  = self.M0
+                self._kf_x[1] = 0.0
+                msgs.append(
+                    f"[GS-TRIG] ARMED — IMU16 |a| = {imu_mag_g:.2f} g "
+                    f"(threshold {self.ARM_G:.1f} g)"
+                )
+
+        elif self._trig == "ARMED":
+            if imu_mag_g < self.FIRE_G:
+                self._trig        = "FIRED"
+                self._mass        = self.M_DRY
+                self._phase       = "COAST"
+                self._ctrl_active = True
+                self._ctrl_level  = 0.0
+                self._deploy_inj  = 0.0
+                self._last_ctrl_t = now
+                msgs.append(
+                    f"[GS-TRIG] FIRED  — IMU16 |a| = {imu_mag_g:.2f} g "
+                    f"(threshold {self.FIRE_G:.1f} g) — starting control"
+                )
+
+        # ── Estimator ─────────────────────────────────────────────────────
+        if self._phase == "IDLE":
+            self._cal_s += baro_m
+            self._cal_n += 1
+            if self._cal_n >= self.BARO_CAL_N:
+                self._h_gnd = self._cal_s / self._cal_n
+                self._cal_s = 0.0
+                self._cal_n = 0
+            self._kf_x[0] = 0.0
+            self._kf_x[1] = 0.0
+
+        elif self._phase == "BOOST":
+            h_agl  = baro_m - self._h_gnd
+            F_est  = self._mass * imu_mag_g * self.G0
+            self._imp  += F_est * dt
+            prop   = min((self._imp / self.TOTAL_IMP) * self.PROP_MASS, self.PROP_MASS)
+            self._mass  = self.M0 - prop
+            a_in   = (imu_mag_g - 1.0) * self.G0
+            self._kf_x[0] += self._kf_x[1] * dt + 0.5 * a_in * dt * dt
+            self._kf_x[1] += a_in * dt
+            self._kf_P[0][0] += self.KF_Q_H * 10.0
+            self._kf_P[1][1] += self.KF_Q_V * 10.0
+            self._kf_update(h_agl)
+
+        elif self._phase == "COAST":
+            h_agl = baro_m - self._h_gnd
+            self._kf_predict(dt, self._deploy_inj)
+            self._kf_update(h_agl)
+            self._apogee_est = self._predict_apogee(
+                self._kf_x[0], self._kf_x[1], self._deploy_inj)
+            if self._kf_x[1] < self.APOGEE_V:
+                self._phase = "DESCENT"
+
+        elif self._phase == "DESCENT":
+            h_agl = baro_m - self._h_gnd
+            self._kf_predict(dt, 0.0)
+            self._kf_update(h_agl)
+
+        # ── Airbrake P-controller ─────────────────────────────────────────
+        if self._ctrl_active:
+            if self._phase == "DESCENT":
+                self._ctrl_level  = 0.0
+                self._deploy_inj  = 0.0
+                self._ctrl_active = False
+            elif self._phase == "COAST" and (now - self._last_ctrl_t) >= self.CTRL_PERIOD:
+                self._last_ctrl_t = now
+                error = self._apogee_est - self._target_m
+                if not (-self.DEADBAND < error < self.DEADBAND):
+                    cmd   = max(0.0, min(1.0, self.KP * error))
+                    delta = max(-self.MAX_STEP, min(self.MAX_STEP, cmd - self._ctrl_level))
+                    self._ctrl_level += delta
+                self._deploy_inj = self._ctrl_level
+
+        # ── Update public outputs ─────────────────────────────────────────
+        self.altitude_m    = self._kf_x[0]
+        self.velocity_mps  = self._kf_x[1]
+        self.apogee_est_m  = self._apogee_est
+        self.deploy_level  = self._ctrl_level
+        self.cmd_angle_deg = self._ctrl_level * self.MAX_ANGLE
+        self.trigger_state = self._trig
+        self.phase         = self._phase
+
+        return msgs
+
+
 # ── Worker threads ────────────────────────────────────────────────────────────
 
 class HILInjector(threading.Thread):
@@ -331,7 +616,18 @@ class HILInjector(threading.Thread):
         self._last_t    = 0.0
 
     def run(self):
-        t_start = time.perf_counter()
+        try:
+            self._run_inner()
+        except Exception as exc:
+            self.q.put(("error", f"Injector crashed: {exc}"))
+        finally:
+            self.q.put(("done", None))
+
+    def _run_inner(self):
+        t_start       = time.perf_counter()
+        consec_errors = 0
+        MAX_CONSEC_TX_ERRORS = 5
+
         for pkt_fields, nominal_dt in self.source_fn():
             if self.stop.is_set():
                 break
@@ -353,8 +649,18 @@ class HILInjector(threading.Thread):
                 try:
                     self.ser.write(packet)
                     self.ser.flush()
+                    consec_errors = 0
                 except Exception as exc:
-                    self.q.put(("error", f"TX error: {exc}"))
+                    consec_errors += 1
+                    if consec_errors == 1:
+                        self.q.put(("error", f"TX error: {exc}"))
+                    elif consec_errors == MAX_CONSEC_TX_ERRORS:
+                        self.q.put(("error",
+                            f"TX failing consistently — check that no other "
+                            f"program (STM32CubeIDE, Tera Term, main.py) has "
+                            f"the COM port open, then replug the USB adapter. "
+                            f"Stopping injection."))
+                        return
 
             self.tx_count += 1
             now = time.perf_counter()
@@ -370,8 +676,6 @@ class HILInjector(threading.Thread):
             sleep  = ideal - (now - t_start)
             if sleep > 0.001:
                 time.sleep(sleep)
-
-        self.q.put(("done", None))
 
 
 class SerialRxListener(threading.Thread):
@@ -409,11 +713,12 @@ class HILHistory:
         self.enc_mm      = deque(maxlen=maxlen)
         self.flap_actual = deque(maxlen=maxlen)
         self.flap_cmd    = deque(maxlen=maxlen)
+        self.flap_gs     = deque(maxlen=maxlen)  # GS control loop command
         self.esc_curr    = deque(maxlen=maxlen)
         self.esc_volt    = deque(maxlen=maxlen)
         self._t0: float | None = None
 
-    def add(self, f: PacketFields, cmd_angle: float):
+    def add(self, f: PacketFields, cmd_angle: float, gs_angle: float):
         now = time.perf_counter()
         if self._t0 is None:
             self._t0 = now
@@ -425,6 +730,7 @@ class HILHistory:
         self.enc_mm.append(enc)
         self.flap_actual.append(_enc_to_angle(enc))
         self.flap_cmd.append(cmd_angle)
+        self.flap_gs.append(gs_angle)
         self.esc_curr.append(f.esc_current_ma / 1000.0)
         self.esc_volt.append(f.esc_voltage_mv / 1000.0)
 
@@ -469,6 +775,8 @@ class HILApp:
         self._sim_h5                 = SimulatedH5()
         self._history                = HILHistory(HISTORY_LEN)
         self._hil_sim                = None   # HILFlightSim when source=="rocketpy"
+        self._gs_ctrl                = H5ControlLoop()
+        self._gs_ctrl_log_n          = 0      # packet counter for periodic GS log
 
         # UI state vars
         self.port_var    = tk.StringVar(value="(sim)")
@@ -653,12 +961,14 @@ class HILApp:
         sb.pack(side="right", fill="y")
         self._log.pack(side="left", fill="both", expand=True)
 
-        self._log.tag_config("ts",    foreground="#2a3d55")
-        self._log.tag_config("tx",    foreground="#3d5a7a")
-        self._log.tag_config("rx",    foreground="#9ff1c7")
-        self._log.tag_config("state", foreground="#ffd479")
-        self._log.tag_config("error", foreground="#ff6b6b")
-        self._log.tag_config("info",  foreground="#aab7d5")
+        self._log.tag_config("ts",     foreground="#2a3d55")
+        self._log.tag_config("tx",     foreground="#3d5a7a")
+        self._log.tag_config("rx",     foreground="#9ff1c7")
+        self._log.tag_config("state",  foreground="#ffd479")
+        self._log.tag_config("error",  foreground="#ff6b6b")
+        self._log.tag_config("info",   foreground="#aab7d5")
+        self._log.tag_config("hs_ok",  foreground="#00ff88")
+        self._log.tag_config("hs_warn",foreground="#ffcc44")
 
         # ── Manual command entry ──────────────────────────────────────────────
         cmd_row = ttk.Frame(parent)
@@ -695,9 +1005,10 @@ class HILApp:
         ax_az.axhline(0, color="#2a3d55", lw=0.8, ls=":")
         ax_az.legend(facecolor="#0a111c", edgecolor="#22324f", labelcolor="#dce7ff", fontsize=8)
 
-        # flap: actual (encoder) vs commanded (H5 output)
-        self._ln_fa, = ax_flap.plot([], [], color="#9ff1c7", lw=2.2, label="Actual")
-        self._ln_fc, = ax_flap.plot([], [], color="#d1b3ff", lw=1.8, ls="--", label="Commanded")
+        # flap: actual (encoder) vs H5 commanded vs GS control loop computed
+        self._ln_fa,  = ax_flap.plot([], [], color="#9ff1c7", lw=2.2, label="Actual")
+        self._ln_fc,  = ax_flap.plot([], [], color="#d1b3ff", lw=1.8, ls="--", label="H5 Cmd")
+        self._ln_fgs, = ax_flap.plot([], [], color="#ff9a3c", lw=1.6, ls=":", label="GS Cmd")
         ax_flap.set_ylim(-2, 75)
         ax_flap.legend(facecolor="#0a111c", edgecolor="#22324f", labelcolor="#dce7ff", fontsize=8)
 
@@ -723,9 +1034,11 @@ class HILApp:
 
     def _start(self):
         self._stop.clear()
-        self._sim_h5  = SimulatedH5()
-        self._history = HILHistory(HISTORY_LEN)
-        self._hil_sim = None
+        self._sim_h5       = SimulatedH5()
+        self._gs_ctrl      = H5ControlLoop()
+        self._gs_ctrl_log_n = 0
+        self._history      = HILHistory(HISTORY_LEN)
+        self._hil_sim      = None
         self._tx_n = self._rx_n = 0
         self._flight_state = "IDLE"
         self._cmd_angle    = 0.0
@@ -736,20 +1049,17 @@ class HILApp:
 
         if not dry:
             try:
-                self._ser = serial.Serial(port, self.baud_var.get(), timeout=0.05)
+                self._ser = serial.Serial(port, self.baud_var.get(), timeout=0.1)
                 self._conn_var.set(f"Connected — {port} @ {self.baud_var.get()} baud")
-                SerialRxListener(self._ser, self._eq, self._stop).start()
             except serial.SerialException as exc:
                 messagebox.showerror("Serial Error", str(exc))
                 return
         else:
             ports = _available_ports()
             if len(ports) == 1:
-                # auto-connect if exactly one port is attached
                 try:
-                    self._ser = serial.Serial(ports[0], self.baud_var.get(), timeout=0.05)
+                    self._ser = serial.Serial(ports[0], self.baud_var.get(), timeout=0.1)
                     self._conn_var.set(f"Auto-connected — {ports[0]} @ {self.baud_var.get()} baud")
-                    SerialRxListener(self._ser, self._eq, self._stop).start()
                     dry = False
                 except serial.SerialException:
                     pass
@@ -757,10 +1067,95 @@ class HILApp:
             if dry:
                 self._conn_var.set("Simulation mode — no serial port (H5 responses are synthetic)")
 
+        self._start_btn.config(state="disabled")
+        self._stop_btn.config(state="normal")
+
+        if self._ser is not None:
+            # Real H5: run 3-step handshake on a background thread, then begin injection
+            self._log_msg("Serial port open — starting H5 handshake...", "state")
+            threading.Thread(target=self._run_handshake, daemon=True).start()
+        else:
+            # Simulation mode: skip handshake, start immediately
+            self._begin_injection()
+
+    def _run_handshake(self):
+        """Background thread: 3-step handshake with H5, then kick off injection.
+
+        Step 1 — wait for H5 to announce itself ([HIL] HELLO).
+        Step 2 — send HILSYN, wait for [HIL] SYN-ACK.
+        Step 3 — send HILGO,  wait for [HIL] GO.
+        """
+        ser     = self._ser
+        leftover = b""
+
+        def read_until(keyword: str, timeout_s: float) -> str | None:
+            """Drain serial, route lines to event queue, return first line matching keyword."""
+            nonlocal leftover
+            deadline = time.perf_counter() + timeout_s
+            while time.perf_counter() < deadline:
+                if self._stop.is_set():
+                    return None
+                try:
+                    n = max(1, ser.in_waiting or 1)
+                    chunk = ser.read(min(n, 256))
+                except Exception:
+                    return None
+                leftover += chunk
+                while b"\n" in leftover:
+                    line, leftover = leftover.split(b"\n", 1)
+                    text = line.decode("ascii", errors="replace").strip()
+                    if text:
+                        self._eq.put(("rx", text))
+                        if keyword in text:
+                            return text
+            return None
+
+        # ── Step 1: H5 PRESENT ───────────────────────────────────────────
+        self._eq.put(("info_log", "Waiting for H5 HELLO (up to 5 s)..."))
+        result = read_until("[HIL] HELLO", 5.0)
+        if result:
+            self._eq.put(("hs_ok",  "✓  H5 PRESENT — firmware detected and online"))
+        else:
+            self._eq.put(("hs_warn",
+                "⚠  H5 HELLO not received — confirm HIL_MODE is enabled in firmware"))
+
+        # ── Step 2: H5 ACKNOWLEDGES GROUND STATION ───────────────────────
+        try:
+            ser.write(b"HILSYN\n")
+            ser.flush()
+        except Exception as exc:
+            self._eq.put(("error", f"HILSYN send failed: {exc}"))
+        result = read_until("SYN-ACK", 3.0)
+        if result:
+            self._eq.put(("hs_ok",  "✓  H5 ACKNOWLEDGED — ground station recognized by H5"))
+        else:
+            self._eq.put(("hs_warn",
+                "⚠  SYN-ACK not received — H5 may be running older firmware"))
+
+        # ── Step 3: LINK VERIFIED ─────────────────────────────────────────
+        try:
+            ser.write(b"HILGO\n")
+            ser.flush()
+        except Exception as exc:
+            self._eq.put(("error", f"HILGO send failed: {exc}"))
+        result = read_until("[HIL] GO", 3.0)
+        if result:
+            self._eq.put(("hs_ok",  "✓  H5 COMM OK — bidirectional link verified, starting injection"))
+        else:
+            self._eq.put(("hs_warn",
+                "⚠  GO not received — starting injection anyway"))
+
+        # Signal main thread to launch RX listener + injector
+        self._eq.put(("hs_begin", None))
+
+    def _begin_injection(self):
+        """Launch the SerialRxListener and HILInjector threads."""
+        if self._ser is not None:
+            SerialRxListener(self._ser, self._eq, self._stop).start()
+
         src_fn, hil_sim = self._make_source()
         self._hil_sim = hil_sim
 
-        # Use SimulatedH5 only when no real H5 is connected AND no RocketPy sim
         sim_h5 = self._sim_h5 if (self._ser is None and hil_sim is None) else None
 
         self._injector = HILInjector(
@@ -773,15 +1168,13 @@ class HILApp:
             hil_sim     = hil_sim,
         )
         self._injector.start()
-
         self._log_msg("HIL injection started.", "state")
-        self._start_btn.config(state="disabled")
-        self._stop_btn.config(state="normal")
 
     def _stop(self):
         self._stop.set()
         if self._ser and self._ser.is_open:
             self._ser.close()
+        self._ser = None
         self._start_btn.config(state="normal")
         self._stop_btn.config(state="disabled")
         self._conn_var.set("Stopped")
@@ -884,7 +1277,15 @@ class HILApp:
 
             if kind == "tx":
                 self._tx_n += 1
-                self._history.add(data, self._cmd_angle)
+                now_t = time.perf_counter()
+
+                # Run GS control loop mirror on the same packet
+                gs_msgs = self._gs_ctrl.process(data, now_t)
+                for m in gs_msgs:
+                    self._log_msg(m, "state")
+
+                self._history.add(data, self._cmd_angle, self._gs_ctrl.cmd_angle_deg)
+
                 if self._tx_n % 50 == 0:
                     f = data
                     self._log_msg(
@@ -893,6 +1294,18 @@ class HILApp:
                         f"az={f.imu16_az_g:+5.2f} g  "
                         f"enc={f.encoder_position_um / 1000:.1f} mm",
                         "tx",
+                    )
+
+                # Periodic GS control loop status line (every 100 packets ≈ 2 s at 50 Hz)
+                self._gs_ctrl_log_n += 1
+                if self._gs_ctrl_log_n % 100 == 0:
+                    gc = self._gs_ctrl
+                    self._log_msg(
+                        f"[GS-CTRL] phase={gc.phase}  "
+                        f"alt={gc.altitude_m:.0f}m  vel={gc.velocity_mps:.1f}mps  "
+                        f"apogee={gc.apogee_est_m:.0f}m  "
+                        f"deploy={gc.deploy_level:.3f}  angle={gc.cmd_angle_deg:.1f}deg",
+                        "info",
                     )
                 dirty = True
 
@@ -911,9 +1324,6 @@ class HILApp:
                             try:
                                 angle_deg = float(part[len(prefix):])
                                 self._cmd_angle = angle_deg
-                                # ── Live feedback into RocketPy simulation ──
-                                # Convert the H5's commanded angle to a
-                                # deployment fraction and update the physics.
                                 if self._hil_sim is not None:
                                     self._hil_sim.set_deployment_level(
                                         angle_deg / H5_MAX_ANGLE_DEG
@@ -921,6 +1331,18 @@ class HILApp:
                             except ValueError:
                                 pass
                 self._log_msg(f"← {msg}", "rx")
+
+            elif kind == "hs_ok":
+                self._log_msg(str(data), "hs_ok")
+
+            elif kind == "hs_warn":
+                self._log_msg(str(data), "hs_warn")
+
+            elif kind == "info_log":
+                self._log_msg(str(data), "info")
+
+            elif kind == "hs_begin":
+                self._begin_injection()
 
             elif kind == "error":
                 self._log_msg(str(data), "error")
@@ -989,6 +1411,7 @@ class HILApp:
         _update(self._ln_amag, self._history.accel_mag)
         _update(self._ln_fa,   self._history.flap_actual)
         _update(self._ln_fc,   self._history.flap_cmd)
+        _update(self._ln_fgs,  self._history.flap_gs)
         _update(self._ln_curr, self._history.esc_curr)
         _update(self._ln_volt, self._history.esc_volt)
 
